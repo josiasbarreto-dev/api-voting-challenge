@@ -18,5 +18,6 @@ public class Agenda {
     private String title;
     private String description;
     private Status status;
+    @Setter(AccessLevel.NONE)
     private LocalDate creationDate;
 }
