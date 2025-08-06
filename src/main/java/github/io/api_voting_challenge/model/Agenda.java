@@ -1,7 +1,7 @@
 package github.io.api_voting_challenge.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -10,14 +10,17 @@ import java.time.LocalDate;
 @Table(name="agendas")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Agenda {
-    @Setter(AccessLevel.NONE)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String description;
     private Status status;
-    @Setter(AccessLevel.NONE)
     private LocalDate creationDate;
+    @OneToOne(mappedBy = "agenda", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private VotingSession votingSession;
 }
