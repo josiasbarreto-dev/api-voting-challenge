@@ -9,24 +9,26 @@ import github.io.api_voting_challenge.model.enums.Status;
 import github.io.api_voting_challenge.model.VotingSession;
 import github.io.api_voting_challenge.repository.AgendaRepository;
 import github.io.api_voting_challenge.repository.VotingSessionRepository;
+import github.io.api_voting_challenge.service.VotingSessionServiceInterface;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 @Service
-public class VotingSessionService {
+@Transactional
+public class VotingSessionServiceImpl implements VotingSessionServiceInterface {
     private final VotingSessionRepository votingSessionRepository;
     private final AgendaRepository agendaRepository;
     private final VotingSessionMapper votingSessionMapper;
 
-public VotingSessionService(VotingSessionRepository votingSessionRepository, AgendaRepository agendaRepository, VotingSessionMapper votingSessionMapper) {
+public VotingSessionServiceImpl(VotingSessionRepository votingSessionRepository, AgendaRepository agendaRepository, VotingSessionMapper votingSessionMapper) {
         this.votingSessionRepository = votingSessionRepository;
         this.agendaRepository = agendaRepository;
         this.votingSessionMapper = votingSessionMapper;
     }
 
-    @Transactional
+    @Override
     public VotingSessionResponseDto openVotingSession(Long id, VotingSessionRequestDto votingSessionRequestDto) {
         Agenda agenda = agendaRepository.findById(id).orElseThrow(
                 () -> new AgendaNotFoundException("Agenda not found with ID: " + id)
