@@ -16,12 +16,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class VotingSessionScheduler implements VotingSessionSchedulerInterface {
+public class VotingSessionSchedulerImpl implements VotingSessionSchedulerInterface {
     private final AgendaRepository agendaRepository;
     private final VotingSessionRepository votingSessionRepository;
     private final VotingSessionMapper votingSessionMapper;
 
-    public VotingSessionScheduler(AgendaRepository agendaRepository, VotingSessionRepository votingSessionRepository, VotingSessionMapper votingSessionMapper) {
+    public VotingSessionSchedulerImpl(AgendaRepository agendaRepository, VotingSessionRepository votingSessionRepository, VotingSessionMapper votingSessionMapper) {
         this.agendaRepository = agendaRepository;
         this.votingSessionRepository = votingSessionRepository;
         this.votingSessionMapper = votingSessionMapper;
