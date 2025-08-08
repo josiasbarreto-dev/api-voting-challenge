@@ -31,3 +31,13 @@ build/
 
 ### VS Code ###
 .vscode/
+
+.env
+
+# Diretório de build do Maven e Gradle, onde ficam os arquivos .jar
+target/
+build/
+
+# Ignorar o arquivo .jar que o Maven ou Gradle geram
+*.jar
+*.war
