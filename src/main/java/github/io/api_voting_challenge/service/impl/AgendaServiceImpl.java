@@ -17,12 +17,12 @@ import java.time.format.DateTimeFormatter;
 
 @Service
 @Transactional
-public class AgendaService implements AgendaServiceInterface {
+public class AgendaServiceImpl implements AgendaServiceInterface {
     AgendaRepository agendaRepository;
     AgendaMapper agendaMapper;
     UserAdminRepository userAdminRepository;
 
-    public AgendaService(AgendaRepository agendaRepository, AgendaMapper agendaMapper, UserAdminRepository userAdminRepository) {
+    public AgendaServiceImpl(AgendaRepository agendaRepository, AgendaMapper agendaMapper, UserAdminRepository userAdminRepository) {
         this.agendaRepository = agendaRepository;
         this.agendaMapper = agendaMapper;
         this.userAdminRepository = userAdminRepository;
