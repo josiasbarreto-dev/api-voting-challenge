@@ -1,5 +1,8 @@
 package github.io.api_voting_challenge.dto;
 
+import lombok.Builder;
+
+@Builder
 public record VoteResultResponseDTO (
         String message,
         Long yesVotes,
