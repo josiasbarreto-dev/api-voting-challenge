@@ -1,4 +1,4 @@
-package github.io.api_voting_challenge.unit.fixtures;
+package github.io.api_voting_challenge.fixtures;
 
 import github.io.api_voting_challenge.dto.VotingSessionRequestDto;
 import github.io.api_voting_challenge.dto.VotingSessionResponseDto;
@@ -19,6 +19,11 @@ public class VotingSessionFixtures {
     public static VotingSessionRequestDto.VotingSessionRequestDtoBuilder createValidVotingSessionRequestDtoBuilder() {
         return VotingSessionRequestDto.builder()
                 .durationInMinutes(60);
+    }
+
+    public static VotingSessionRequestDto.VotingSessionRequestDtoBuilder createInvalidVotingSessionRequestDtoBuilder() {
+        return VotingSessionRequestDto.builder()
+                .durationInMinutes(null);
     }
 
     public static VotingSessionResponseDto.VotingSessionResponseDtoBuilder createVotingSessionResponseDtoBuilder() {
@@ -67,6 +72,10 @@ public class VotingSessionFixtures {
 
     public static VotingSession createValidVotingSessionEntity() {
         return createVotingSessionEntity().build();
+    }
+
+    public static VotingSessionRequestDto createInvalidVotingSessionRequestDto() {
+        return createInvalidVotingSessionRequestDtoBuilder().build();
     }
 
     public static List<VotingSessionResponseDto> createVotingSessionResponseDtoList(int count) {
