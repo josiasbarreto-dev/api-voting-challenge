@@ -10,8 +10,8 @@ import github.io.api_voting_challenge.model.enums.Status;
 import github.io.api_voting_challenge.repository.AgendaRepository;
 import github.io.api_voting_challenge.repository.VotingSessionRepository;
 import github.io.api_voting_challenge.service.impl.VotingSessionServiceImpl;
-import github.io.api_voting_challenge.unit.fixtures.AgendaFixtures;
-import github.io.api_voting_challenge.unit.fixtures.VotingSessionFixtures;
+import github.io.api_voting_challenge.fixtures.AgendaFixtures;
+import github.io.api_voting_challenge.fixtures.VotingSessionFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,8 +22,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static github.io.api_voting_challenge.unit.fixtures.TestConstants.INVALID_ID;
-import static github.io.api_voting_challenge.unit.fixtures.TestConstants.VALID_ID;
+import static github.io.api_voting_challenge.fixtures.TestConstants.INVALID_ID;
+import static github.io.api_voting_challenge.fixtures.TestConstants.VALID_ID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

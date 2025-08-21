@@ -1,4 +1,4 @@
-package github.io.api_voting_challenge.unit.fixtures;
+package github.io.api_voting_challenge.fixtures;
 
 import github.io.api_voting_challenge.dto.AgendaRequestDto;
 import github.io.api_voting_challenge.dto.AgendaResponseDto;
@@ -7,7 +7,7 @@ import github.io.api_voting_challenge.model.enums.Status;
 
 import java.time.LocalDate;
 
-import static github.io.api_voting_challenge.unit.fixtures.TestConstants.*;
+import static github.io.api_voting_challenge.fixtures.TestConstants.*;
 
 public class AgendaFixtures {
     public static AgendaRequestDto.AgendaRequestDtoBuilder createValidAgendaRequestDtoBuilder() {

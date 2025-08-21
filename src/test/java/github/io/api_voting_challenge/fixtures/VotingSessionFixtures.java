@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static github.io.api_voting_challenge.unit.fixtures.TestConstants.VALID_ID;
+import static github.io.api_voting_challenge.fixtures.TestConstants.VALID_ID;
 
 public class VotingSessionFixtures {
     public static VotingSessionRequestDto.VotingSessionRequestDtoBuilder createValidVotingSessionRequestDtoBuilder() {

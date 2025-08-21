@@ -1,11 +1,11 @@
-package github.io.api_voting_challenge.unit.fixtures;
+package github.io.api_voting_challenge.fixtures;
 
 import github.io.api_voting_challenge.dto.VoteRequestDTO;
 import github.io.api_voting_challenge.dto.VoteResultResponseDTO;
 import github.io.api_voting_challenge.model.Vote;
 import github.io.api_voting_challenge.model.enums.VoteOption;
 
-import static github.io.api_voting_challenge.unit.fixtures.TestConstants.VALID_ID;
+import static github.io.api_voting_challenge.fixtures.TestConstants.VALID_ID;
 
 public class VoteFixtures {
     public static VoteRequestDTO.VoteRequestDTOBuilder createValidVoteRequestDtoBuilder() {

@@ -3,14 +3,14 @@ package github.io.api_voting_challenge.unit.impl;
 import github.io.api_voting_challenge.dto.AgendaRequestDto;
 import github.io.api_voting_challenge.dto.AgendaResponseDto;
 import github.io.api_voting_challenge.exception.UserNotFoundException;
-import github.io.api_voting_challenge.service.impl.AgendaServiceImpl;
-import github.io.api_voting_challenge.unit.fixtures.AdminFixtures;
-import github.io.api_voting_challenge.unit.fixtures.AgendaFixtures;
+import github.io.api_voting_challenge.fixtures.AdminFixtures;
+import github.io.api_voting_challenge.fixtures.AgendaFixtures;
 import github.io.api_voting_challenge.mapper.AgendaMapper;
 import github.io.api_voting_challenge.model.AdminUser;
 import github.io.api_voting_challenge.model.Agenda;
 import github.io.api_voting_challenge.repository.AgendaRepository;
 import github.io.api_voting_challenge.repository.UserAdminRepository;
+import github.io.api_voting_challenge.service.impl.AgendaServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,8 +20,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static github.io.api_voting_challenge.unit.fixtures.TestConstants.VALID_ID;
+import static github.io.api_voting_challenge.fixtures.TestConstants.VALID_ID;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -49,9 +50,8 @@ public class AgendaServiceImplTest {
         AdminUser adminUser = AdminFixtures.createValidAdminUserEntity();
 
         when(userAdminRepository.findById(VALID_ID)).thenReturn(Optional.of(adminUser));
-        when(agendaMapper.toEntity(agendaRequestDto)).thenReturn(agendaEntity);
-        when(agendaRepository.save(agendaEntity)).thenReturn(agendaEntity);
-        when(agendaMapper.toDto(agendaEntity)).thenReturn(agendaResponseDto);
+        when(agendaRepository.save(any(Agenda.class))).thenReturn(agendaEntity);
+        when(agendaMapper.toDto(any(Agenda.class))).thenReturn(agendaResponseDto);
 
         AgendaResponseDto result = agendaServiceImpl.createAgenda(agendaRequestDto, VALID_ID);
 

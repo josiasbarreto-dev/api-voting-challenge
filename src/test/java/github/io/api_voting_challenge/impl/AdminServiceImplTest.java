@@ -1,4 +1,4 @@
-package github.io.api_voting_challenge.unit.impl;
+package github.io.api_voting_challenge.impl;
 
 import github.io.api_voting_challenge.dto.AdminUserRequestDto;
 import github.io.api_voting_challenge.dto.AdminUserResponseDto;
@@ -7,15 +7,15 @@ import github.io.api_voting_challenge.dto.VoterResponseDto;
 import github.io.api_voting_challenge.exception.CpfAlreadyRegisteredException;
 import github.io.api_voting_challenge.exception.CpfModificationNotAllowedException;
 import github.io.api_voting_challenge.exception.UserNotFoundException;
-import github.io.api_voting_challenge.service.impl.AdminServiceImpl;
-import github.io.api_voting_challenge.unit.fixtures.AdminFixtures;
-import github.io.api_voting_challenge.unit.fixtures.VoterFixtures;
+import github.io.api_voting_challenge.fixtures.AdminFixtures;
+import github.io.api_voting_challenge.fixtures.VoterFixtures;
 import github.io.api_voting_challenge.mapper.UserMapper;
 import github.io.api_voting_challenge.model.AdminUser;
 import github.io.api_voting_challenge.model.VotingUser;
 import github.io.api_voting_challenge.model.enums.Role;
 import github.io.api_voting_challenge.repository.UserAdminRepository;
 import github.io.api_voting_challenge.repository.UserVotingRepository;
+import github.io.api_voting_challenge.service.impl.AdminServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static github.io.api_voting_challenge.unit.fixtures.TestConstants.*;
+import static github.io.api_voting_challenge.fixtures.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

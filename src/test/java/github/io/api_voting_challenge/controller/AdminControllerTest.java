@@ -1,17 +1,16 @@
-package github.io.api_voting_challenge.unit.controller;
+package github.io.api_voting_challenge.controller;
 
-import github.io.api_voting_challenge.controller.AdminController;
 import github.io.api_voting_challenge.dto.*;
 import github.io.api_voting_challenge.exception.AgendaNotFoundException;
 import github.io.api_voting_challenge.exception.CpfAlreadyRegisteredException;
 import github.io.api_voting_challenge.exception.UserNotFoundException;
+import github.io.api_voting_challenge.fixtures.AdminFixtures;
+import github.io.api_voting_challenge.fixtures.AgendaFixtures;
+import github.io.api_voting_challenge.fixtures.VoterFixtures;
+import github.io.api_voting_challenge.fixtures.VotingSessionFixtures;
 import github.io.api_voting_challenge.service.AdminServiceInterface;
 import github.io.api_voting_challenge.service.AgendaServiceInterface;
 import github.io.api_voting_challenge.service.VotingSessionServiceInterface;
-import github.io.api_voting_challenge.unit.fixtures.AdminFixtures;
-import github.io.api_voting_challenge.unit.fixtures.AgendaFixtures;
-import github.io.api_voting_challenge.unit.fixtures.VoterFixtures;
-import github.io.api_voting_challenge.unit.fixtures.VotingSessionFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static github.io.api_voting_challenge.unit.fixtures.TestConstants.*;
+import static github.io.api_voting_challenge.fixtures.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;

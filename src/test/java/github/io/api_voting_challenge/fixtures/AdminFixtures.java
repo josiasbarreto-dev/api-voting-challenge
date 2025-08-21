@@ -1,11 +1,11 @@
-package github.io.api_voting_challenge.unit.fixtures;
+package github.io.api_voting_challenge.fixtures;
 
 import github.io.api_voting_challenge.dto.AdminUserRequestDto;
 import github.io.api_voting_challenge.dto.AdminUserResponseDto;
 import github.io.api_voting_challenge.model.AdminUser;
 import github.io.api_voting_challenge.model.enums.Role;
 
-import static github.io.api_voting_challenge.unit.fixtures.TestConstants.*;
+import static github.io.api_voting_challenge.fixtures.TestConstants.*;
 
 public class AdminFixtures {
     public static AdminUserRequestDto.AdminUserRequestDtoBuilder createValidAdminUserRequestDtoBuilder() {

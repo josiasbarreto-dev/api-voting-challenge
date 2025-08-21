@@ -1,15 +1,14 @@
-package github.io.api_voting_challenge.unit.controller;
+package github.io.api_voting_challenge.controller;
 
-import github.io.api_voting_challenge.controller.VoterController;
 import github.io.api_voting_challenge.dto.VoteRequestDTO;
 import github.io.api_voting_challenge.dto.VoteResultResponseDTO;
 import github.io.api_voting_challenge.dto.VotingSessionResponseDto;
 import github.io.api_voting_challenge.exception.VotingSessionClosedException;
 import github.io.api_voting_challenge.exception.VotingSessionNotFoundException;
+import github.io.api_voting_challenge.fixtures.VoteFixtures;
 import github.io.api_voting_challenge.model.enums.VoteOption;
 import github.io.api_voting_challenge.service.VotingSessionSchedulerInterface;
 import github.io.api_voting_challenge.service.impl.VoteServiceImpl;
-import github.io.api_voting_challenge.unit.fixtures.VoteFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,8 +23,8 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Collections;
 
-import static github.io.api_voting_challenge.unit.fixtures.TestConstants.*;
-import static github.io.api_voting_challenge.unit.fixtures.VotingSessionFixtures.createVotingSessionResponseDtoPage;
+import static github.io.api_voting_challenge.fixtures.TestConstants.*;
+import static github.io.api_voting_challenge.fixtures.VotingSessionFixtures.createVotingSessionResponseDtoPage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;

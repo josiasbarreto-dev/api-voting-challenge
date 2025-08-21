@@ -1,13 +1,12 @@
-package github.io.api_voting_challenge.unit.impl;
+package github.io.api_voting_challenge.impl;
 
 import github.io.api_voting_challenge.dto.VoteRequestDTO;
 import github.io.api_voting_challenge.dto.VoteResultResponseDTO;
 import github.io.api_voting_challenge.exception.*;
-import github.io.api_voting_challenge.service.impl.VoteServiceImpl;
-import github.io.api_voting_challenge.unit.fixtures.AgendaFixtures;
-import github.io.api_voting_challenge.unit.fixtures.VoteFixtures;
-import github.io.api_voting_challenge.unit.fixtures.VoterFixtures;
-import github.io.api_voting_challenge.unit.fixtures.VotingSessionFixtures;
+import github.io.api_voting_challenge.fixtures.AgendaFixtures;
+import github.io.api_voting_challenge.fixtures.VoteFixtures;
+import github.io.api_voting_challenge.fixtures.VoterFixtures;
+import github.io.api_voting_challenge.fixtures.VotingSessionFixtures;
 import github.io.api_voting_challenge.model.Agenda;
 import github.io.api_voting_challenge.model.Vote;
 import github.io.api_voting_challenge.model.VotingSession;
@@ -16,6 +15,7 @@ import github.io.api_voting_challenge.model.enums.VoteOption;
 import github.io.api_voting_challenge.repository.UserVotingRepository;
 import github.io.api_voting_challenge.repository.VoteRepository;
 import github.io.api_voting_challenge.repository.VotingSessionRepository;
+import github.io.api_voting_challenge.service.impl.VoteServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static github.io.api_voting_challenge.unit.fixtures.TestConstants.VALID_ID;
+import static github.io.api_voting_challenge.fixtures.TestConstants.VALID_ID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

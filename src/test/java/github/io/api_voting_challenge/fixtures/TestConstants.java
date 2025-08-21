@@ -1,4 +1,4 @@
-package github.io.api_voting_challenge.unit.fixtures;
+package github.io.api_voting_challenge.fixtures;
 
 public class TestConstants {
     public static final Long VALID_ID = 1L;

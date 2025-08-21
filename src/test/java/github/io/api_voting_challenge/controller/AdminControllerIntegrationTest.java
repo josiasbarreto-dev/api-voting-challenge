@@ -1,18 +1,17 @@
-package github.io.api_voting_challenge.unit.controller;
+package github.io.api_voting_challenge.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import github.io.api_voting_challenge.controller.AdminController;
 import github.io.api_voting_challenge.dto.*;
 import github.io.api_voting_challenge.exception.CpfAlreadyRegisteredException;
 import github.io.api_voting_challenge.exception.GlobalExceptionHandler;
 import github.io.api_voting_challenge.exception.UserNotFoundException;
+import github.io.api_voting_challenge.fixtures.AdminFixtures;
+import github.io.api_voting_challenge.fixtures.AgendaFixtures;
+import github.io.api_voting_challenge.fixtures.VoterFixtures;
+import github.io.api_voting_challenge.fixtures.VotingSessionFixtures;
 import github.io.api_voting_challenge.service.AdminServiceInterface;
 import github.io.api_voting_challenge.service.AgendaServiceInterface;
 import github.io.api_voting_challenge.service.VotingSessionServiceInterface;
-import github.io.api_voting_challenge.unit.fixtures.AdminFixtures;
-import github.io.api_voting_challenge.unit.fixtures.AgendaFixtures;
-import github.io.api_voting_challenge.unit.fixtures.VoterFixtures;
-import github.io.api_voting_challenge.unit.fixtures.VotingSessionFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static github.io.api_voting_challenge.unit.fixtures.TestConstants.*;
+import static github.io.api_voting_challenge.fixtures.TestConstants.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -66,14 +65,14 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("Deve retornar status Bad Request ao criar usuário administrador com dados inválidos")
-    void shouldReturnBadRequestWhenCreatingAdminUserWithInvalidData() throws Exception {
+    @DisplayName("Deve retornar Unprocessable Entity ao criar usuário administrador com dados inválidos")
+    void shouldReturnUnprocessableEntityWhenCreatingAdminUserWithInvalidData() throws Exception {
         AdminUserRequestDto invalidAdminUserRequestDto = AdminFixtures.createInvalidAdminUserRequestDto();
 
         mockMvc.perform(post("/api/v1/admin")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(invalidAdminUserRequestDto)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnprocessableEntity());
 
         verifyNoInteractions(adminService);
     }
@@ -112,14 +111,14 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("Deve retornar status Bad Request ao atualizar usuário administrador com dados inválidos")
-    void shouldReturnBadRequestWhenUpdatingAdminUserWithInvalidData() throws Exception {
+    @DisplayName("Deve retornar status Unprocessable Entity ao atualizar usuário administrador com dados inválidos")
+    void shouldReturnUnprocessableEntityWhenUpdatingAdminUserWithInvalidData() throws Exception {
         AdminUserRequestDto invalidAdminUserRequestDto = AdminFixtures.createInvalidAdminUserRequestDto();
 
         mockMvc.perform(put("/api/v1/admin/{id}", VALID_ID)
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(invalidAdminUserRequestDto)))
-                        .andExpect(status().isBadRequest());
+                        .andExpect(status().isUnprocessableEntity());
 
         verifyNoInteractions(adminService);
     }
@@ -316,14 +315,14 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("Deve retornar status Bad Request ao criar pauta com dados inválidos")
-    void shouldReturnBadRequestWhenCreatingAgendaWithInvalidData() throws Exception {
+    @DisplayName("Deve retornar status Unprocessable Entity ao criar pauta com dados inválidos")
+    void shouldReturnUnprocessableEntityWhenCreatingAgendaWithInvalidData() throws Exception {
         AgendaRequestDto invalidAgendaRequestDto = AgendaFixtures.createInvalidAgendaRequestDto();
 
         mockMvc.perform(post("/api/v1/admin/{id}/agenda", VALID_ID)
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(invalidAgendaRequestDto)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnprocessableEntity());
 
         verifyNoInteractions(agendaService, adminService, votingSessionService);
     }
@@ -408,14 +407,14 @@ public class AdminControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("Deve retornar status Bad Request ao criar usuário votante com dados inválidos")
-    void shouldReturnBadRequestWhenCreatingVoterWithInvalidData() throws Exception {
+    @DisplayName("Deve retornar status Unprocessable Entity ao criar usuário votante com dados inválidos")
+    void shouldReturnUnprocessableEntityWhenCreatingVoterWithInvalidData() throws Exception {
         VoterRequestDto invalidVoterRequestDto = VoterFixtures.createInvalidVoterRequestDto();
 
         mockMvc.perform(post("/api/v1/admin/voters")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(invalidVoterRequestDto)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnprocessableEntity());
 
         verifyNoInteractions(adminService, agendaService, votingSessionService);
     }
