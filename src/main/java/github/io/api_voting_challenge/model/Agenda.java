@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Table(name="agendas")
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Agenda {
@@ -19,9 +20,12 @@ public class Agenda {
     private Long id;
     private String title;
     private String description;
+
+    @Enumerated(EnumType.STRING)
     private Status status;
     private LocalDate creationDate;
     private String createdBy;
+
     @OneToOne(mappedBy = "agenda", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private VotingSession votingSession;
