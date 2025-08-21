@@ -11,6 +11,8 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
 public class VotingUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
