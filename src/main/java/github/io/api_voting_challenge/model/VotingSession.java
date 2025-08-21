@@ -2,10 +2,7 @@ package github.io.api_voting_challenge.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +10,7 @@ import java.time.LocalDateTime;
 @Table(name = "voting_sessions")
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class VotingSession {
@@ -22,6 +20,7 @@ public class VotingSession {
     private Integer durationInMinutes;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+
     @OneToOne
     @JoinColumn(name = "agenda_id")
     @JsonBackReference
