@@ -16,8 +16,7 @@ public record AdminUserRequestDto(
         @CPF
         String cpf,
 
-        @NotBlank(message = "Email cannot be empty")
-        @Email
+        @Email(message = "Invalid email format")
         String email,
 
         @NotBlank(message = "Password cannot be empty")
