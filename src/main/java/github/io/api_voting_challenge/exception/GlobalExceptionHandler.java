@@ -24,12 +24,12 @@ public class GlobalExceptionHandler {
         });
 
         Map<String, Object> response = new HashMap<>();
-        response.put("status", HttpStatus.BAD_REQUEST.value()); // 400
+        response.put("status", HttpStatus.UNPROCESSABLE_ENTITY.value());
         response.put("error", "Bad Request");
         response.put("message", "Validation failed for one or more fields.");
         response.put("details", fieldErrors);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);
     }
 
     @ExceptionHandler(AgendaNotFoundException.class)
