@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 
 @Mapper(componentModel = "spring")
 public interface VotingSessionMapper {
+    @Mapping(source = "id", target = "id")
     @Mapping(source = "durationInMinutes", target = "durationInMinutes")
     @Mapping(source = "agenda.status", target = "status")
     @Mapping(source = "agenda.id", target = "agendaId")

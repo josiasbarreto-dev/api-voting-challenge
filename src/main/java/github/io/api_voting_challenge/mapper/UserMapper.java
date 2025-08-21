@@ -7,12 +7,18 @@ import github.io.api_voting_challenge.dto.VoterResponseDto;
 import github.io.api_voting_challenge.model.AdminUser;
 import github.io.api_voting_challenge.model.VotingUser;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     AdminUserResponseDto toDto(AdminUser adminUser);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "role", ignore = true)
     AdminUser toEntity(AdminUserRequestDto adminUserRequestDto);
 
-    VotingUser toEntity(VoterRequestDto voterRequestDto);
     VoterResponseDto toDto(VotingUser votingUser);
+
+    @Mapping(target = "id", ignore = true)
+    VotingUser toEntity(VoterRequestDto voterRequestDto);
 }
