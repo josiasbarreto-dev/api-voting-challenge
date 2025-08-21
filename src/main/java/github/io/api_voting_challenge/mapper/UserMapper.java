@@ -20,5 +20,6 @@ public interface UserMapper {
     VoterResponseDto toDto(VotingUser votingUser);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "role", ignore = true)
     VotingUser toEntity(VoterRequestDto voterRequestDto);
 }
