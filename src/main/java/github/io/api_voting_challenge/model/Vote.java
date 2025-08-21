@@ -2,10 +2,7 @@ package github.io.api_voting_challenge.model;
 
 import github.io.api_voting_challenge.model.enums.VoteOption;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "votes", uniqueConstraints = {
@@ -13,6 +10,7 @@ import lombok.Setter;
 })
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Vote {
