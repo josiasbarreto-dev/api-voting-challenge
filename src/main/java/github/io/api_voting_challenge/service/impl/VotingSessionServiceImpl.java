@@ -10,6 +10,7 @@ import github.io.api_voting_challenge.model.VotingSession;
 import github.io.api_voting_challenge.repository.AgendaRepository;
 import github.io.api_voting_challenge.repository.VotingSessionRepository;
 import github.io.api_voting_challenge.service.VotingSessionServiceInterface;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,16 +18,11 @@ import java.time.LocalDateTime;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class VotingSessionServiceImpl implements VotingSessionServiceInterface {
     private final VotingSessionRepository votingSessionRepository;
     private final AgendaRepository agendaRepository;
     private final VotingSessionMapper votingSessionMapper;
-
-public VotingSessionServiceImpl(VotingSessionRepository votingSessionRepository, AgendaRepository agendaRepository, VotingSessionMapper votingSessionMapper) {
-        this.votingSessionRepository = votingSessionRepository;
-        this.agendaRepository = agendaRepository;
-        this.votingSessionMapper = votingSessionMapper;
-    }
 
     @Override
     public VotingSessionResponseDto openVotingSession(Long id, VotingSessionRequestDto votingSessionRequestDto) {
@@ -39,23 +35,20 @@ public VotingSessionServiceImpl(VotingSessionRepository votingSessionRepository,
         }
 
         int durationMinutes = votingSessionRequestDto.durationInMinutes() != null ? votingSessionRequestDto.durationInMinutes() : 1;
-
-        VotingSession votingSession = new VotingSession();
-        votingSession.setAgenda(agenda);
-        votingSession.setDurationInMinutes(durationMinutes);
         LocalDateTime now = LocalDateTime.now();
-        votingSession.setStartTime(now);
-        votingSession.setEndTime(now.plusMinutes(durationMinutes));
+
+        VotingSession votingSession = VotingSession.builder()
+                .agenda(agenda)
+                .durationInMinutes(durationMinutes)
+                .startTime(now)
+                .endTime(now.plusMinutes(durationMinutes))
+                .build();
+
         agenda.setStatus(Status.IN_PROGRESS);
-
-        votingSession = votingSessionRepository.save(votingSession);
-
         agenda.setVotingSession(votingSession);
 
-        agenda = agendaRepository.save(agenda);
+        Agenda savedAgenda = agendaRepository.save(agenda);
 
-        votingSession.setAgenda(agenda);
-
-        return votingSessionMapper.toDto(votingSession);
+        return votingSessionMapper.toDto(savedAgenda.getVotingSession());
     }
 }
