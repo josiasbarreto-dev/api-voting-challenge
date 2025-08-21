@@ -34,6 +34,23 @@ build/
 
 .env
 
+# Ignora arquivos de log e temporários do MySQL/InnoDB
+*.dblwr
+# Ignora arquivos de redo log
+data/innodb_redo/
+# Ignora arquivos de undo log
+data/innodb_undo/
+# Ignora arquivos de definição de esquema
+data/*.sdi
+# Ignora o diretório de performance_schema inteiro
+data/performance_schema/
+# Outros arquivos temporários do MySQL que podem aparecer
+data/*.err
+data/mysql.log
+
+# Específico para os temporários
+data/#ib_redo*.tmp
+
 # Diretório de build do Maven e Gradle, onde ficam os arquivos .jar
 target/
 build/
