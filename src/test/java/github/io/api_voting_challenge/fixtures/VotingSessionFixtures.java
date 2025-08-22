@@ -2,18 +2,21 @@ package github.io.api_voting_challenge.fixtures;
 
 import github.io.api_voting_challenge.dto.VotingSessionRequestDto;
 import github.io.api_voting_challenge.dto.VotingSessionResponseDto;
+import github.io.api_voting_challenge.model.Agenda;
 import github.io.api_voting_challenge.model.VotingSession;
 import github.io.api_voting_challenge.model.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static github.io.api_voting_challenge.fixtures.TestConstants.VALID_ID;
+import static github.io.api_voting_challenge.fixtures.AgendaFixtures.createAgenda;
+import static github.io.api_voting_challenge.fixtures.TestConstants.*;
 
 public class VotingSessionFixtures {
     public static VotingSessionRequestDto.VotingSessionRequestDtoBuilder createValidVotingSessionRequestDtoBuilder() {
@@ -56,6 +59,61 @@ public class VotingSessionFixtures {
                 .durationInMinutes(60)
                 .startTime(LocalDateTime.now())
                 .endTime(LocalDateTime.now().plusMinutes(60));
+    }
+
+    public static VotingSession createExpiredVotingSession() {
+        Agenda agenda = createAgenda();
+        agenda.setStatus(Status.IN_PROGRESS);
+
+        return VotingSession.builder()
+                .id(99L)
+                .durationInMinutes(1)
+                .startTime(LocalDateTime.now().minusMinutes(5))
+                .endTime(LocalDateTime.now().minusMinutes(4))
+                .agenda(agenda)
+                .build();
+    }
+
+    public static List<VotingSession> createExpiredVotingSessionList(int count) {
+        return IntStream.range(0, count)
+                .mapToObj(i -> {
+                    Agenda agenda = Agenda.builder()
+                            .id((long) i + 100)
+                            .status(Status.IN_PROGRESS)
+                            .build();
+
+                    return VotingSession.builder()
+                            .id((long) i + 100)
+                            .durationInMinutes(1)
+                            .startTime(LocalDateTime.now().minusMinutes(10 + i))
+                            .endTime(LocalDateTime.now().minusMinutes(5 + i))
+                            .agenda(agenda)
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
+    public static Agenda createAgendaWithStatus(Status status) {
+        return Agenda.builder()
+                .id(VALID_ID)
+                .title(VALID_AGENDA_TITLE)
+                .description(VALID_AGENDA_DESCRIPTION)
+                .status(status)
+                .creationDate(LocalDate.now())
+                .createdBy(VALID_NAME)
+                .build();
+    }
+
+    public static VotingSession createOpenVotingSession() {
+        Agenda openAgenda = createAgendaWithStatus(Status.IN_PROGRESS);
+
+        return VotingSession.builder()
+                .id(VALID_ID)
+                .durationInMinutes(60)
+                .startTime(LocalDateTime.now().minusMinutes(10))
+                .endTime(LocalDateTime.now().plusMinutes(50))
+                .agenda(openAgenda)
+                .build();
     }
 
     public static VotingSessionRequestDto createValidVotingSessionRequestDto() {
