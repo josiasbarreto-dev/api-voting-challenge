@@ -1,4 +1,4 @@
-package github.io.api_voting_challenge.unit.impl;
+package github.io.api_voting_challenge.service.impl;
 
 import github.io.api_voting_challenge.dto.AgendaRequestDto;
 import github.io.api_voting_challenge.dto.AgendaResponseDto;
@@ -10,7 +10,6 @@ import github.io.api_voting_challenge.model.AdminUser;
 import github.io.api_voting_challenge.model.Agenda;
 import github.io.api_voting_challenge.repository.AgendaRepository;
 import github.io.api_voting_challenge.repository.UserAdminRepository;
-import github.io.api_voting_challenge.service.impl.AgendaServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
