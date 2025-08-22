@@ -42,6 +42,17 @@ public class AgendaFixtures {
                 .createdBy(VALID_NAME);
     }
 
+    public static Agenda createAgendaWithStatus(Status status) {
+        return Agenda.builder()
+                .id(VALID_ID)
+                .title(VALID_AGENDA_TITLE)
+                .description(VALID_AGENDA_DESCRIPTION)
+                .status(status)
+                .creationDate(LocalDate.now())
+                .createdBy(VALID_NAME)
+                .build();
+    }
+
     public static AgendaRequestDto createValidAgendaRequestDto() {
         return createValidAgendaRequestDtoBuilder().build();
     }
