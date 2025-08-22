@@ -1,4 +1,4 @@
-package github.io.api_voting_challenge.impl;
+package github.io.api_voting_challenge.service.impl;
 
 import github.io.api_voting_challenge.dto.AdminUserRequestDto;
 import github.io.api_voting_challenge.dto.AdminUserResponseDto;
@@ -15,7 +15,6 @@ import github.io.api_voting_challenge.model.VotingUser;
 import github.io.api_voting_challenge.model.enums.Role;
 import github.io.api_voting_challenge.repository.UserAdminRepository;
 import github.io.api_voting_challenge.repository.UserVotingRepository;
-import github.io.api_voting_challenge.service.impl.AdminServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

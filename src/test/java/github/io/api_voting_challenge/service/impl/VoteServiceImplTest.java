@@ -1,4 +1,4 @@
-package github.io.api_voting_challenge.impl;
+package github.io.api_voting_challenge.service.impl;
 
 import github.io.api_voting_challenge.dto.VoteRequestDTO;
 import github.io.api_voting_challenge.dto.VoteResultResponseDTO;
@@ -15,7 +15,6 @@ import github.io.api_voting_challenge.model.enums.VoteOption;
 import github.io.api_voting_challenge.repository.UserVotingRepository;
 import github.io.api_voting_challenge.repository.VoteRepository;
 import github.io.api_voting_challenge.repository.VotingSessionRepository;
-import github.io.api_voting_challenge.service.impl.VoteServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
