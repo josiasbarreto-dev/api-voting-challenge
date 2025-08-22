@@ -1,17 +1,16 @@
-package github.io.api_voting_challenge.impl;
+package github.io.api_voting_challenge.service.impl;
 
 import github.io.api_voting_challenge.dto.VotingSessionRequestDto;
 import github.io.api_voting_challenge.dto.VotingSessionResponseDto;
 import github.io.api_voting_challenge.exception.AgendaNotFoundException;
+import github.io.api_voting_challenge.fixtures.AgendaFixtures;
+import github.io.api_voting_challenge.fixtures.VotingSessionFixtures;
 import github.io.api_voting_challenge.mapper.VotingSessionMapper;
 import github.io.api_voting_challenge.model.Agenda;
 import github.io.api_voting_challenge.model.VotingSession;
 import github.io.api_voting_challenge.model.enums.Status;
 import github.io.api_voting_challenge.repository.AgendaRepository;
 import github.io.api_voting_challenge.repository.VotingSessionRepository;
-import github.io.api_voting_challenge.service.impl.VotingSessionServiceImpl;
-import github.io.api_voting_challenge.fixtures.AgendaFixtures;
-import github.io.api_voting_challenge.fixtures.VotingSessionFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
