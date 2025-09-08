@@ -3,8 +3,8 @@ package github.io.api_voting_challenge.controller;
 import github.io.api_voting_challenge.dto.VoteRequest;
 import github.io.api_voting_challenge.dto.VoteResultResponse;
 import github.io.api_voting_challenge.dto.VotingSessionResponse;
-import github.io.api_voting_challenge.service.VoteServiceInterface;
-import github.io.api_voting_challenge.service.VotingSessionSchedulerInterface;
+import github.io.api_voting_challenge.service.VoteService;
+import github.io.api_voting_challenge.service.VotingSessionScheduler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,8 +26,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/voters")
 @Tag(name = "Voter Operations", description = "Endpoints for voters to interact with voting sessions and results.")
 public class VoterController {
-    private final VotingSessionSchedulerInterface votingSessionScheduler;
-    private final VoteServiceInterface voteService;
+    private final VotingSessionScheduler votingSessionScheduler;
+    private final VoteService voteService;
 
     @Operation(summary = "Get a list of all open voting sessions", description = "Retrieves all voting sessions that are currently active and open for voting.")
     @ApiResponses(value = {

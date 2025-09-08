@@ -12,7 +12,7 @@ import github.io.api_voting_challenge.model.AdminUser;
 import github.io.api_voting_challenge.model.enums.Role;
 import github.io.api_voting_challenge.repository.UserAdminRepository;
 import github.io.api_voting_challenge.repository.UserVotingRepository;
-import github.io.api_voting_challenge.service.AdminServiceInterface;
+import github.io.api_voting_challenge.service.AdminService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class AdminServiceImpl implements AdminServiceInterface {
+public class AdminServiceImpl implements AdminService {
     private final UserAdminRepository userAdminRepository;
     private final UserVotingRepository userVotingRepository;
     private final UserMapper userMapper;

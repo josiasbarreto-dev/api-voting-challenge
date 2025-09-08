@@ -11,7 +11,7 @@ import github.io.api_voting_challenge.model.enums.VoteOption;
 import github.io.api_voting_challenge.repository.UserVotingRepository;
 import github.io.api_voting_challenge.repository.VoteRepository;
 import github.io.api_voting_challenge.repository.VotingSessionRepository;
-import github.io.api_voting_challenge.service.VoteServiceInterface;
+import github.io.api_voting_challenge.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class VoteServiceImpl implements VoteServiceInterface {
+public class VoteServiceImpl implements VoteService {
     private final UserVotingRepository userVotingRepository;
     private final VotingSessionRepository votingSessionRepository;
     private final VoteRepository voteRepository;

@@ -8,9 +8,9 @@ import github.io.api_voting_challenge.fixtures.AdminFixtures;
 import github.io.api_voting_challenge.fixtures.AgendaFixtures;
 import github.io.api_voting_challenge.fixtures.VoterFixtures;
 import github.io.api_voting_challenge.fixtures.VotingSessionFixtures;
-import github.io.api_voting_challenge.service.AdminServiceInterface;
-import github.io.api_voting_challenge.service.AgendaServiceInterface;
-import github.io.api_voting_challenge.service.VotingSessionServiceInterface;
+import github.io.api_voting_challenge.service.AdminService;
+import github.io.api_voting_challenge.service.AgendaService;
+import github.io.api_voting_challenge.service.VotingSessionService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,13 +32,13 @@ public class AdminControllerTest {
     private AdminController adminController;
 
     @Mock
-    private AdminServiceInterface adminService;
+    private AdminService adminService;
 
     @Mock
-    private AgendaServiceInterface agendaService;
+    private AgendaService agendaService;
 
     @Mock
-    private VotingSessionServiceInterface votingSessionService;
+    private VotingSessionService votingSessionService;
 
     @Test
     @DisplayName("Deve criar um usuário administrador com sucesso e retornar o status 201")

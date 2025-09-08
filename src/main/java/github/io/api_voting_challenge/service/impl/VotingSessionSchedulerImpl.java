@@ -7,7 +7,7 @@ import github.io.api_voting_challenge.model.VotingSession;
 import github.io.api_voting_challenge.model.enums.Status;
 import github.io.api_voting_challenge.repository.AgendaRepository;
 import github.io.api_voting_challenge.repository.VotingSessionRepository;
-import github.io.api_voting_challenge.service.VotingSessionSchedulerInterface;
+import github.io.api_voting_challenge.service.VotingSessionScheduler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +19,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class VotingSessionSchedulerImpl implements VotingSessionSchedulerInterface {
+public class VotingSessionSchedulerImpl implements VotingSessionScheduler {
     private final AgendaRepository agendaRepository;
     private final VotingSessionRepository votingSessionRepository;
     private final VotingSessionMapper votingSessionMapper;

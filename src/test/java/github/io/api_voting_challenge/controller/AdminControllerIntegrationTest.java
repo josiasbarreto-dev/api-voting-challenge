@@ -9,9 +9,9 @@ import github.io.api_voting_challenge.fixtures.AdminFixtures;
 import github.io.api_voting_challenge.fixtures.AgendaFixtures;
 import github.io.api_voting_challenge.fixtures.VoterFixtures;
 import github.io.api_voting_challenge.fixtures.VotingSessionFixtures;
-import github.io.api_voting_challenge.service.AdminServiceInterface;
-import github.io.api_voting_challenge.service.AgendaServiceInterface;
-import github.io.api_voting_challenge.service.VotingSessionServiceInterface;
+import github.io.api_voting_challenge.service.AdminService;
+import github.io.api_voting_challenge.service.AgendaService;
+import github.io.api_voting_challenge.service.VotingSessionService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +32,13 @@ public class AdminControllerIntegrationTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private AdminServiceInterface adminService;
+    private AdminService adminService;
 
     @MockitoBean
-    private VotingSessionServiceInterface votingSessionService;
+    private VotingSessionService votingSessionService;
 
     @MockitoBean
-    private AgendaServiceInterface agendaService;
+    private AgendaService agendaService;
 
     @Autowired
     private ObjectMapper objectMapper;

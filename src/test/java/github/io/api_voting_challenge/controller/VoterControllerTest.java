@@ -7,7 +7,7 @@ import github.io.api_voting_challenge.exception.VotingSessionClosedException;
 import github.io.api_voting_challenge.exception.VotingSessionNotFoundException;
 import github.io.api_voting_challenge.fixtures.VoteFixtures;
 import github.io.api_voting_challenge.model.enums.VoteOption;
-import github.io.api_voting_challenge.service.VotingSessionSchedulerInterface;
+import github.io.api_voting_challenge.service.VotingSessionScheduler;
 import github.io.api_voting_challenge.service.impl.VoteServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ public class VoterControllerTest {
     private VoteServiceImpl voteServiceImpl;
 
     @Mock
-    private VotingSessionSchedulerInterface votingSessionScheduler;
+    private VotingSessionScheduler votingSessionScheduler;
 
 
     @Test

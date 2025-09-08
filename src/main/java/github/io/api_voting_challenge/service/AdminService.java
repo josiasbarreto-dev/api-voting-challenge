@@ -5,7 +5,7 @@ import github.io.api_voting_challenge.dto.AdminUserResponse;
 import github.io.api_voting_challenge.dto.VoterRequest;
 import github.io.api_voting_challenge.dto.VoterResponse;
 
-public interface AdminServiceInterface {
+public interface AdminService {
     AdminUserResponse create(AdminUserRequest userRequest);
     AdminUserResponse update(Long id, AdminUserRequest updateUserRequest );
     AdminUserResponse getById(Long id);

@@ -8,7 +8,7 @@ import github.io.api_voting_challenge.model.Agenda;
 import github.io.api_voting_challenge.model.enums.Status;
 import github.io.api_voting_challenge.repository.AgendaRepository;
 import github.io.api_voting_challenge.repository.UserAdminRepository;
-import github.io.api_voting_challenge.service.AgendaServiceInterface;
+import github.io.api_voting_challenge.service.AgendaService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class AgendaServiceImpl implements AgendaServiceInterface {
+public class AgendaServiceImpl implements AgendaService {
     private final AgendaRepository agendaRepository;
     private final AgendaMapper agendaMapper;
     private final UserAdminRepository userAdminRepository;

@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import github.io.api_voting_challenge.dto.VoteRequest;
 import github.io.api_voting_challenge.dto.VotingSessionResponse;
 import github.io.api_voting_challenge.fixtures.VotingSessionFixtures;
-import github.io.api_voting_challenge.service.VoteServiceInterface;
-import github.io.api_voting_challenge.service.VotingSessionSchedulerInterface;
+import github.io.api_voting_challenge.service.VoteService;
+import github.io.api_voting_challenge.service.VotingSessionScheduler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +32,10 @@ public class VoterControllerIntegrationTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private VotingSessionSchedulerInterface votingSessionScheduler;
+    private VotingSessionScheduler votingSessionScheduler;
 
     @MockitoBean
-    private VoteServiceInterface voteService;
+    private VoteService voteService;
 
     @Autowired
     private ObjectMapper objectMapper;

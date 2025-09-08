@@ -9,7 +9,7 @@ import github.io.api_voting_challenge.model.enums.Status;
 import github.io.api_voting_challenge.model.VotingSession;
 import github.io.api_voting_challenge.repository.AgendaRepository;
 import github.io.api_voting_challenge.repository.VotingSessionRepository;
-import github.io.api_voting_challenge.service.VotingSessionServiceInterface;
+import github.io.api_voting_challenge.service.VotingSessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class VotingSessionServiceImpl implements VotingSessionServiceInterface {
+public class VotingSessionServiceImpl implements VotingSessionService {
     private final VotingSessionRepository votingSessionRepository;
     private final AgendaRepository agendaRepository;
     private final VotingSessionMapper votingSessionMapper;

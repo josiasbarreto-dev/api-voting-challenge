@@ -1,9 +1,9 @@
 package github.io.api_voting_challenge.controller;
 
 import github.io.api_voting_challenge.dto.*;
-import github.io.api_voting_challenge.service.AdminServiceInterface;
-import github.io.api_voting_challenge.service.AgendaServiceInterface;
-import github.io.api_voting_challenge.service.VotingSessionServiceInterface;
+import github.io.api_voting_challenge.service.AdminService;
+import github.io.api_voting_challenge.service.AgendaService;
+import github.io.api_voting_challenge.service.VotingSessionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/admin")
 @Tag(name = "Admin Operations", description = "Endpoints for managing admin users, agendas, and voting sessions.")
 public class AdminController {
-    private final AdminServiceInterface adminService;
-    private final VotingSessionServiceInterface votingSessionService;
-    private final AgendaServiceInterface agendaService;
+    private final AdminService adminService;
+    private final VotingSessionService votingSessionService;
+    private final AgendaService agendaService;
 
     @Operation(summary = "Create a new admin user", description = "Creates a new admin user with a unique CPF.")
     @ApiResponses(value = {
