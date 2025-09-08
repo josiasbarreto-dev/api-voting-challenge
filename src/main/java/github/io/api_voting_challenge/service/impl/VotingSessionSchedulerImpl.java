@@ -1,6 +1,6 @@
 package github.io.api_voting_challenge.service.impl;
 
-import github.io.api_voting_challenge.dto.VotingSessionResponseDto;
+import github.io.api_voting_challenge.dto.VotingSessionResponse;
 import github.io.api_voting_challenge.mapper.VotingSessionMapper;
 import github.io.api_voting_challenge.model.Agenda;
 import github.io.api_voting_challenge.model.VotingSession;
@@ -40,7 +40,7 @@ public class VotingSessionSchedulerImpl implements VotingSessionSchedulerInterfa
     }
 
     @Override
-    public Page<VotingSessionResponseDto> getOpenVotingSessions(Pageable pageable) {
+    public Page<VotingSessionResponse> getOpenVotingSessions(Pageable pageable) {
         return votingSessionRepository.findByEndTimeAfter(LocalDateTime.now(), pageable)
                 .map(votingSessionMapper::toDto);
     }

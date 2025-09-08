@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
-public record VoteRequestDTO (
+public record VoteRequest(
         @NotNull(message = "Vote option cannot be null.")
         VoteOption voteOption
 ){}

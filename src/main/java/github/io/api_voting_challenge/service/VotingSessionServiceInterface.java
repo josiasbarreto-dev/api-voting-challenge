@@ -1,8 +1,8 @@
 package github.io.api_voting_challenge.service;
 
-import github.io.api_voting_challenge.dto.VotingSessionRequestDto;
-import github.io.api_voting_challenge.dto.VotingSessionResponseDto;
+import github.io.api_voting_challenge.dto.VotingSessionRequest;
+import github.io.api_voting_challenge.dto.VotingSessionResponse;
 
 public interface VotingSessionServiceInterface {
-    VotingSessionResponseDto openVotingSession(Long id, VotingSessionRequestDto votingSessionRequestDto);
+    VotingSessionResponse openVotingSession(Long id, VotingSessionRequest votingSessionRequest);
 }

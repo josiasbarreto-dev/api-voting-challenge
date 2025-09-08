@@ -1,7 +1,7 @@
 package github.io.api_voting_challenge.service.impl;
 
-import github.io.api_voting_challenge.dto.AgendaRequestDto;
-import github.io.api_voting_challenge.dto.AgendaResponseDto;
+import github.io.api_voting_challenge.dto.AgendaRequest;
+import github.io.api_voting_challenge.dto.AgendaResponse;
 import github.io.api_voting_challenge.exception.UserNotFoundException;
 import github.io.api_voting_challenge.mapper.AgendaMapper;
 import github.io.api_voting_challenge.model.Agenda;
@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Service
 @Transactional
@@ -25,14 +24,14 @@ public class AgendaServiceImpl implements AgendaServiceInterface {
     private final UserAdminRepository userAdminRepository;
 
     @Override
-    public AgendaResponseDto createAgenda(AgendaRequestDto agendaRequestDto, Long adminId) {
+    public AgendaResponse createAgenda(AgendaRequest agendaRequest, Long adminId) {
         var userAdmin = userAdminRepository.findById(adminId).orElseThrow(
                 () -> new UserNotFoundException("Admin user not found with id: " + adminId)
         );
 
         Agenda agendaToSave = Agenda.builder()
-                .title(agendaRequestDto.title())
-                .description(agendaRequestDto.description())
+                .title(agendaRequest.title())
+                .description(agendaRequest.description())
                 .createdBy(userAdmin.getName())
                 .creationDate(LocalDate.now())
                 .status(Status.PENDING)

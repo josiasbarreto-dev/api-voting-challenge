@@ -1,9 +1,9 @@
 package github.io.api_voting_challenge.service.impl;
 
-import github.io.api_voting_challenge.dto.AdminUserRequestDto;
-import github.io.api_voting_challenge.dto.AdminUserResponseDto;
-import github.io.api_voting_challenge.dto.VoterRequestDto;
-import github.io.api_voting_challenge.dto.VoterResponseDto;
+import github.io.api_voting_challenge.dto.AdminUserRequest;
+import github.io.api_voting_challenge.dto.AdminUserResponse;
+import github.io.api_voting_challenge.dto.VoterRequest;
+import github.io.api_voting_challenge.dto.VoterResponse;
 import github.io.api_voting_challenge.exception.CpfAlreadyRegisteredException;
 import github.io.api_voting_challenge.exception.CpfModificationNotAllowedException;
 import github.io.api_voting_challenge.exception.UserNotFoundException;
@@ -46,37 +46,36 @@ public class AdminServiceImplTest {
     @Test
     @DisplayName("Deve criar um usuário admin com sucesso")
     void shouldCreateAdminUserSuccessfully() {
-        AdminUserRequestDto adminUserRequestDto = AdminFixtures.createValidAdminUserRequestDto();
+        AdminUserRequest adminUserRequest = AdminFixtures.createValidAdminUserRequest();
 
         AdminUser adminUserEntity = AdminFixtures.createValidAdminUserEntity();
         adminUserEntity.setRole(Role.ADMIN);
 
-        AdminUserResponseDto adminUserResponseDto = AdminFixtures.createAdminUserResponseDto();
+        AdminUserResponse adminUserResponse = AdminFixtures.createAdminUserResponse();
 
-        when(userAdminRepository.existsByCpf(adminUserRequestDto.cpf())).thenReturn(false);
-        when(userMapper.toEntity(adminUserRequestDto)).thenReturn(adminUserEntity);
+        when(userAdminRepository.existsByCpf(adminUserRequest.cpf())).thenReturn(false);
         when(userAdminRepository.save(adminUserEntity)).thenReturn(adminUserEntity);
-        when(userMapper.toDto(adminUserEntity)).thenReturn(adminUserResponseDto);
+        when(userMapper.toDto(adminUserEntity)).thenReturn(adminUserResponse);
 
-        var result = adminServiceImpl.create(adminUserRequestDto);
+        var result = adminServiceImpl.create(adminUserRequest);
 
         assertNotNull(result);
-        assertEquals(adminUserResponseDto, result);
+        assertEquals(adminUserResponse, result);
         verifyNoMoreInteractions(userAdminRepository, userMapper);
     }
 
     @Test
     @DisplayName("Deve lançar exceção ao tentar criar usuário admin com CPF já cadastrado")
     void shouldThrowExceptionWhenCreatingAdminUserWithExistingCpf() {
-        AdminUserRequestDto adminUserRequestDto = AdminFixtures.createValidAdminUserRequestDto();
+        AdminUserRequest adminUserRequest = AdminFixtures.createValidAdminUserRequest();
 
-        when(userAdminRepository.existsByCpf(adminUserRequestDto.cpf())).thenReturn(true);
+        when(userAdminRepository.existsByCpf(adminUserRequest.cpf())).thenReturn(true);
         CpfAlreadyRegisteredException exception = assertThrows(
                 CpfAlreadyRegisteredException.class, () -> {
-                    adminServiceImpl.create(adminUserRequestDto);
+                    adminServiceImpl.create(adminUserRequest);
                 });
 
-        String message = String.format("CPF already registered: %s", adminUserRequestDto.cpf());
+        String message = String.format("CPF already registered: %s", adminUserRequest.cpf());
         assertEquals(message, exception.getMessage());
         verifyNoMoreInteractions(userAdminRepository, userMapper);
     }
@@ -84,34 +83,34 @@ public class AdminServiceImplTest {
     @Test
     @DisplayName("Deve atualizar um usuário admin com sucesso")
     void shouldUpdateAdminUserSuccessfully() {
-        AdminUserRequestDto adminUserRequestDto = AdminFixtures.createAdminUserUpdateRequestDto();
+        AdminUserRequest adminUserRequest = AdminFixtures.createAdminUserUpdateRequest();
 
         AdminUser existingAdminUser = AdminFixtures.createValidAdminUserEntity();
 
-        AdminUserResponseDto updatedAdminUserResponseDto = AdminFixtures.createAdminUserResponseDtoAfterUpdate();
+        AdminUserResponse updatedAdminUserResponse = AdminFixtures.createAdminUserResponseAfterUpdate();
 
         when(userAdminRepository.findById(VALID_ID)).thenReturn(Optional.of(existingAdminUser));
         when(userAdminRepository.save(existingAdminUser)).thenReturn(existingAdminUser);
-        when(userMapper.toDto(existingAdminUser)).thenReturn(updatedAdminUserResponseDto);
+        when(userMapper.toDto(existingAdminUser)).thenReturn(updatedAdminUserResponse);
 
-        AdminUserResponseDto result = adminServiceImpl.update(VALID_ID, adminUserRequestDto);
+        AdminUserResponse result = adminServiceImpl.update(VALID_ID, adminUserRequest);
 
         assertNotNull(result);
-        assertEquals(updatedAdminUserResponseDto, result);
+        assertEquals(updatedAdminUserResponse, result);
         verifyNoMoreInteractions(userAdminRepository, userMapper);
     }
 
     @Test
     @DisplayName("Deve lançar exceção ao tentar atualizar usuário admin com CPF diferente do existente")
     void shouldThrowExceptionWhenUpdatingAdminUserWithDifferentCpf() {
-        AdminUserRequestDto adminUserRequestDto = AdminFixtures.createInvalidAdminUserRequestDto();
+        AdminUserRequest adminUserRequest = AdminFixtures.createInvalidAdminUserRequest();
 
         AdminUser existingAdminUser = AdminFixtures.buildValidAdminUserEntity().build();
 
         when(userAdminRepository.findById(VALID_ID)).thenReturn(Optional.of(existingAdminUser));
         Exception exception = assertThrows(
                 CpfModificationNotAllowedException.class, () -> {
-                    adminServiceImpl.update(VALID_ID, adminUserRequestDto);
+                    adminServiceImpl.update(VALID_ID, adminUserRequest);
                 });
         String message = "Cannot change the CPF of an existing Admin.";
         assertEquals(message, exception.getMessage());
@@ -121,12 +120,12 @@ public class AdminServiceImplTest {
     @Test
     @DisplayName("Deve lançar exceção ao tentar atualizar usuário admin com id inválido")
     void shouldThrowExceptionWhenUpdatingAdminUserWithInvalidId() {
-        AdminUserRequestDto adminUserRequestDto = AdminFixtures.createValidAdminUserRequestDto();
+        AdminUserRequest adminUserRequest = AdminFixtures.createValidAdminUserRequest();
 
         when(userAdminRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
         Exception exception = assertThrows(
                 UserNotFoundException.class, () -> {
-                    adminServiceImpl.update(INVALID_ID, adminUserRequestDto);
+                    adminServiceImpl.update(INVALID_ID, adminUserRequest);
                 });
         String message = String.format("Admin not found with ID: %d", INVALID_ID);
         assertEquals(message, exception.getMessage());
@@ -136,16 +135,16 @@ public class AdminServiceImplTest {
     @Test
     @DisplayName("Deve buscar usuário admin por ID com sucesso")
     void shouldGetAdminUserByIdSuccessfully() {
-        AdminUserResponseDto adminUserResponseDto = AdminFixtures.createAdminUserResponseDto();
+        AdminUserResponse adminUserResponse = AdminFixtures.createAdminUserResponse();
         AdminUser adminUserEntity = AdminFixtures.createValidAdminUserEntity();
 
         when(userAdminRepository.findById(VALID_ID)).thenReturn(Optional.of(adminUserEntity));
-        when(userMapper.toDto(adminUserEntity)).thenReturn(adminUserResponseDto);
+        when(userMapper.toDto(adminUserEntity)).thenReturn(adminUserResponse);
 
-        AdminUserResponseDto result = adminServiceImpl.getById(VALID_ID);
+        AdminUserResponse result = adminServiceImpl.getById(VALID_ID);
 
         assertNotNull(result);
-        assertEquals(adminUserResponseDto, result);
+        assertEquals(adminUserResponse, result);
         verifyNoMoreInteractions(userAdminRepository, userMapper);
     }
 
@@ -191,16 +190,16 @@ public class AdminServiceImplTest {
     @Test
     @DisplayName("Deve buscar usuário admin por email com sucesso")
     void shouldGetAdminUserByEmailSuccessfully() {
-        AdminUserResponseDto adminUserResponseDto = AdminFixtures.createAdminUserResponseDto();
+        AdminUserResponse adminUserResponse = AdminFixtures.createAdminUserResponse();
         AdminUser adminUserEntity = AdminFixtures.createValidAdminUserEntity();
 
         when(userAdminRepository.findByEmail(VALID_EMAIL)).thenReturn(Optional.of(adminUserEntity));
-        when(userMapper.toDto(adminUserEntity)).thenReturn(adminUserResponseDto);
+        when(userMapper.toDto(adminUserEntity)).thenReturn(adminUserResponse);
 
-        AdminUserResponseDto result = adminServiceImpl.getByEmail(VALID_EMAIL);
+        AdminUserResponse result = adminServiceImpl.getByEmail(VALID_EMAIL);
 
         assertNotNull(result);
-        assertEquals(adminUserResponseDto, result);
+        assertEquals(adminUserResponse, result);
         verifyNoMoreInteractions(userAdminRepository, userMapper);
     }
 
@@ -220,16 +219,16 @@ public class AdminServiceImplTest {
     @Test
     @DisplayName("Deve buscar usuário admin por CPF com sucesso")
     void shouldGetAdminUserByCpfSuccessfully() {
-        AdminUserResponseDto adminUserResponseDto = AdminFixtures.createAdminUserResponseDto();
+        AdminUserResponse adminUserResponse = AdminFixtures.createAdminUserResponse();
         AdminUser adminUserEntity = AdminFixtures.createValidAdminUserEntity();
 
         when(userAdminRepository.findByCpf(VALID_CPF)).thenReturn(Optional.of(adminUserEntity));
-        when(userMapper.toDto(adminUserEntity)).thenReturn(adminUserResponseDto);
+        when(userMapper.toDto(adminUserEntity)).thenReturn(adminUserResponse);
 
-        AdminUserResponseDto result = adminServiceImpl.getByCpf(VALID_CPF);
+        AdminUserResponse result = adminServiceImpl.getByCpf(VALID_CPF);
 
         assertNotNull(result);
-        assertEquals(adminUserResponseDto, result);
+        assertEquals(adminUserResponse, result);
         verifyNoMoreInteractions(userAdminRepository, userMapper);
     }
 
@@ -249,38 +248,38 @@ public class AdminServiceImplTest {
     @Test
     @DisplayName("Deve criar um usuário votante com sucesso")
     void shouldCreateVotingUserSuccessfully() {
-        VoterRequestDto voterRequestDto = VoterFixtures.createValidVoterRequestDto();
+        VoterRequest voterRequest = VoterFixtures.createValidVoterRequest();
 
-        when(userVotingRepository.existsByCpf(voterRequestDto.cpf())).thenReturn(false);
+        when(userVotingRepository.existsByCpf(voterRequest.cpf())).thenReturn(false);
 
         VotingUser voterUserEntity = VoterFixtures.createValidVotingUserEntity();
         voterUserEntity.setRole(Role.USER);
 
-        VoterResponseDto voterResponseDto = VoterFixtures.createVoterResponseDto();
+        VoterResponse voterResponse = VoterFixtures.createVoterResponse();
 
-        when(userMapper.toEntity(voterRequestDto)).thenReturn(voterUserEntity);
+        when(userMapper.toEntity(voterRequest)).thenReturn(voterUserEntity);
         when(userVotingRepository.save(voterUserEntity)).thenReturn(voterUserEntity);
-        when(userMapper.toDto(voterUserEntity)).thenReturn(voterResponseDto);
+        when(userMapper.toDto(voterUserEntity)).thenReturn(voterResponse);
 
-        var result = adminServiceImpl.createVoter(voterRequestDto);
+        var result = adminServiceImpl.createVoter(voterRequest);
 
         assertNotNull(result);
-        assertEquals(voterResponseDto, result);
+        assertEquals(voterResponse, result);
         verifyNoMoreInteractions(userVotingRepository, userMapper);
     }
 
     @Test
     @DisplayName("Deve lançar exceção ao tentar criar usuário votante com CPF já cadastrado")
     void shouldThrowExceptionWhenCreatingVotingUserWithExistingCpf() {
-        VoterRequestDto voterRequestDto = VoterFixtures.createValidVoterRequestDto();
+        VoterRequest voterRequest = VoterFixtures.createValidVoterRequest();
 
-        when(userVotingRepository.existsByCpf(voterRequestDto.cpf())).thenReturn(true);
+        when(userVotingRepository.existsByCpf(voterRequest.cpf())).thenReturn(true);
         CpfAlreadyRegisteredException exception = assertThrows(
                 CpfAlreadyRegisteredException.class, () -> {
-                    adminServiceImpl.createVoter(voterRequestDto);
+                    adminServiceImpl.createVoter(voterRequest);
                 });
 
-        String message = String.format("CPF already registered: %s", voterRequestDto.cpf());
+        String message = String.format("CPF already registered: %s", voterRequest.cpf());
         assertEquals(message, exception.getMessage());
         verifyNoMoreInteractions(userVotingRepository, userMapper);
     }

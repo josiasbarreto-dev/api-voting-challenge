@@ -1,8 +1,8 @@
 package github.io.api_voting_challenge.controller;
 
-import github.io.api_voting_challenge.dto.VoteRequestDTO;
-import github.io.api_voting_challenge.dto.VoteResultResponseDTO;
-import github.io.api_voting_challenge.dto.VotingSessionResponseDto;
+import github.io.api_voting_challenge.dto.VoteRequest;
+import github.io.api_voting_challenge.dto.VoteResultResponse;
+import github.io.api_voting_challenge.dto.VotingSessionResponse;
 import github.io.api_voting_challenge.service.VoteServiceInterface;
 import github.io.api_voting_challenge.service.VotingSessionSchedulerInterface;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,8 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/voters")
@@ -33,11 +31,11 @@ public class VoterController {
 
     @Operation(summary = "Get a list of all open voting sessions", description = "Retrieves all voting sessions that are currently active and open for voting.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "List of open voting sessions returned successfully", content = @Content(schema = @Schema(implementation = VotingSessionResponseDto.class)))
+            @ApiResponse(responseCode = "200", description = "List of open voting sessions returned successfully", content = @Content(schema = @Schema(implementation = VotingSessionResponse.class)))
     })
     @GetMapping("/open-sessions")
-    public ResponseEntity<Page<VotingSessionResponseDto>> getOpenVotingSessions(@ParameterObject Pageable pageable) {
-        Page<VotingSessionResponseDto> openSessions = votingSessionScheduler.getOpenVotingSessions(pageable);
+    public ResponseEntity<Page<VotingSessionResponse>> getOpenVotingSessions(@ParameterObject Pageable pageable) {
+        Page<VotingSessionResponse> openSessions = votingSessionScheduler.getOpenVotingSessions(pageable);
         return ResponseEntity.ok(openSessions);
     }
 
@@ -47,17 +45,17 @@ public class VoterController {
             @ApiResponse(responseCode = "400", description = "Invalid request or user has already voted"),
             @ApiResponse(responseCode = "404", description = "Voting session not found or is closed")})
     @PostMapping("/voting-session/{sessionId}/vote")
-    public ResponseEntity<Void> vote(@Parameter(description = "ID of the voting session") @PathVariable Long sessionId, @Parameter(description = "Unique ID of the user casting the vote", required = true) @RequestHeader("X-User-Id") Long userId, @RequestBody @Valid VoteRequestDTO voteRequest) {
+    public ResponseEntity<Void> vote(@Parameter(description = "ID of the voting session") @PathVariable Long sessionId, @Parameter(description = "Unique ID of the user casting the vote", required = true) @RequestHeader("X-User-Id") Long userId, @RequestBody @Valid VoteRequest voteRequest) {
         voteService.registerVote(sessionId, userId, voteRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Operation(summary = "Get voting results for a session", description = "Retrieves the final vote count for a specific voting session. This endpoint should be accessed only after the session has ended.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Voting results retrieved successfully", content = @Content(schema = @Schema(implementation = VoteResultResponseDTO.class))),
+            @ApiResponse(responseCode = "200", description = "Voting results retrieved successfully", content = @Content(schema = @Schema(implementation = VoteResultResponse.class))),
             @ApiResponse(responseCode = "404", description = "Voting session not found")})
     @GetMapping("/voting-session/{sessionId}/results")
-    public ResponseEntity<VoteResultResponseDTO> getVotingResults(@PathVariable Long sessionId) {
+    public ResponseEntity<VoteResultResponse> getVotingResults(@PathVariable Long sessionId) {
         return ResponseEntity.ok(voteService.calculateVotingResult(sessionId));
     }
 }

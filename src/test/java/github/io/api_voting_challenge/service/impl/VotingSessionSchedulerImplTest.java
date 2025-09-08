@@ -1,6 +1,6 @@
 package github.io.api_voting_challenge.service.impl;
 
-import github.io.api_voting_challenge.dto.VotingSessionResponseDto;
+import github.io.api_voting_challenge.dto.VotingSessionResponse;
 import github.io.api_voting_challenge.fixtures.VotingSessionFixtures;
 import github.io.api_voting_challenge.mapper.VotingSessionMapper;
 import github.io.api_voting_challenge.model.Agenda;
@@ -75,18 +75,18 @@ class VotingSessionSchedulerImplTest {
         VotingSession openSession = VotingSessionFixtures.createOpenVotingSession();
         Pageable pageable = mock(Pageable.class);
         Page<VotingSession> sessionsPage = new PageImpl<>(Collections.singletonList(openSession));
-        VotingSessionResponseDto responseDto = VotingSessionResponseDto.builder().id(2L).build();
+        VotingSessionResponse response = VotingSessionResponse.builder().id(2L).build();
 
         when(votingSessionRepository.findByEndTimeAfter(any(LocalDateTime.class), eq(pageable)))
                 .thenReturn(sessionsPage);
         when(votingSessionMapper.toDto(any(VotingSession.class)))
-                .thenReturn(responseDto);
+                .thenReturn(response);
 
-        Page<VotingSessionResponseDto> result = votingSessionScheduler.getOpenVotingSessions(pageable);
+        Page<VotingSessionResponse> result = votingSessionScheduler.getOpenVotingSessions(pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getTotalElements());
-        assertEquals(responseDto, result.getContent().get(0));
+        assertEquals(response, result.getContent().get(0));
         verify(votingSessionRepository).findByEndTimeAfter(any(LocalDateTime.class), eq(pageable));
         verify(votingSessionMapper).toDto(openSession);
     }

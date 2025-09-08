@@ -46,32 +46,32 @@ public class AdminControllerIntegrationTest {
     @Test
     @DisplayName("Deve criar um usuário administrador com sucesso e retornar status 201")
     void shouldCreateAdminUserSuccessfullyAndReturn201() throws Exception {
-        AdminUserRequestDto adminUserRequestDto = AdminFixtures.createValidAdminUserRequestDto();
-        AdminUserResponseDto adminUserResponseDto = AdminFixtures.createAdminUserResponseDto();
-        when(adminService.create(adminUserRequestDto)).thenReturn(adminUserResponseDto);
+        AdminUserRequest adminUserRequest = AdminFixtures.createValidAdminUserRequest();
+        AdminUserResponse adminUserResponse = AdminFixtures.createAdminUserResponse();
+        when(adminService.create(adminUserRequest)).thenReturn(adminUserResponse);
 
         mockMvc.perform(post("/api/v1/admin")
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(adminUserRequestDto)))
+                .content(objectMapper.writeValueAsString(adminUserRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(adminUserResponseDto.id()))
-                .andExpect(jsonPath("$.name").value(adminUserResponseDto.name()))
-                .andExpect(jsonPath("$.cpf").value(adminUserResponseDto.cpf()))
-                .andExpect(jsonPath("$.email").value(adminUserResponseDto.email()))
-                .andExpect(jsonPath("$.role").value(adminUserResponseDto.role().name()));
+                .andExpect(jsonPath("$.id").value(adminUserResponse.id()))
+                .andExpect(jsonPath("$.name").value(adminUserResponse.name()))
+                .andExpect(jsonPath("$.cpf").value(adminUserResponse.cpf()))
+                .andExpect(jsonPath("$.email").value(adminUserResponse.email()))
+                .andExpect(jsonPath("$.role").value(adminUserResponse.role().name()));
 
-        verify(adminService).create(adminUserRequestDto);
+        verify(adminService).create(adminUserRequest);
         verifyNoInteractions(votingSessionService, agendaService);
     }
 
     @Test
     @DisplayName("Deve retornar Unprocessable Entity ao criar usuário administrador com dados inválidos")
     void shouldReturnUnprocessableEntityWhenCreatingAdminUserWithInvalidData() throws Exception {
-        AdminUserRequestDto invalidAdminUserRequestDto = AdminFixtures.createInvalidAdminUserRequestDto();
+        AdminUserRequest invalidAdminUserRequest = AdminFixtures.createInvalidAdminUserRequest();
 
         mockMvc.perform(post("/api/v1/admin")
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(invalidAdminUserRequestDto)))
+                .content(objectMapper.writeValueAsString(invalidAdminUserRequest)))
                 .andExpect(status().isUnprocessableEntity());
 
         verifyNoInteractions(adminService);
@@ -80,44 +80,44 @@ public class AdminControllerIntegrationTest {
     @Test
     @DisplayName("Deve retornar erro Conflict ao criar usuário administrador com CPF já cadastrado")
     void shouldReturnConflictWhenCreatingAdminUserWithExistingCpf() throws Exception {
-        AdminUserRequestDto adminUserRequestDto = AdminFixtures.createValidAdminUserRequestDto();
-        when(adminService.create(adminUserRequestDto)).thenThrow(new CpfAlreadyRegisteredException("CPF already registered"));
+        AdminUserRequest adminUserRequest = AdminFixtures.createValidAdminUserRequest();
+        when(adminService.create(adminUserRequest)).thenThrow(new CpfAlreadyRegisteredException("CPF already registered"));
 
         mockMvc.perform(post("/api/v1/admin")
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(adminUserRequestDto)))
+                        .content(objectMapper.writeValueAsString(adminUserRequest)))
                         .andDo(print())
                         .andExpect(status().isConflict())
                         .andExpect(jsonPath("$.message").value("CPF already registered"));
 
-        verify(adminService).create(adminUserRequestDto);
+        verify(adminService).create(adminUserRequest);
         verifyNoInteractions(votingSessionService, agendaService);
     }
 
     @Test
     @DisplayName("Deve atualizar um usuário administrador com sucesso e retornar status 200")
     void shouldUpdateAdminUserSuccessfullyAndReturn200() throws Exception {
-        AdminUserRequestDto adminUserRequestDto = AdminFixtures.createAdminUserUpdateRequestDto();
-        AdminUserResponseDto adminUserResponseDto = AdminFixtures.createAdminUserResponseDtoAfterUpdate();
-        when(adminService.update(VALID_ID, adminUserRequestDto)).thenReturn(adminUserResponseDto);
+        AdminUserRequest adminUserRequest = AdminFixtures.createAdminUserUpdateRequest();
+        AdminUserResponse adminUserResponse = AdminFixtures.createAdminUserResponseAfterUpdate();
+        when(adminService.update(VALID_ID, adminUserRequest)).thenReturn(adminUserResponse);
 
         mockMvc.perform(put("/api/v1/admin/{id}", VALID_ID)
                 .contentType("application/json")
-                .content(objectMapper.writeValueAsString(adminUserRequestDto)))
+                .content(objectMapper.writeValueAsString(adminUserRequest)))
                 .andExpect(status().isOk());
 
-        verify(adminService).update(VALID_ID, adminUserRequestDto);
+        verify(adminService).update(VALID_ID, adminUserRequest);
         verifyNoInteractions(votingSessionService, agendaService);
     }
 
     @Test
     @DisplayName("Deve retornar status Unprocessable Entity ao atualizar usuário administrador com dados inválidos")
     void shouldReturnUnprocessableEntityWhenUpdatingAdminUserWithInvalidData() throws Exception {
-        AdminUserRequestDto invalidAdminUserRequestDto = AdminFixtures.createInvalidAdminUserRequestDto();
+        AdminUserRequest invalidAdminUserRequest = AdminFixtures.createInvalidAdminUserRequest();
 
         mockMvc.perform(put("/api/v1/admin/{id}", VALID_ID)
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(invalidAdminUserRequestDto)))
+                        .content(objectMapper.writeValueAsString(invalidAdminUserRequest)))
                         .andExpect(status().isUnprocessableEntity());
 
         verifyNoInteractions(adminService);
@@ -126,51 +126,51 @@ public class AdminControllerIntegrationTest {
     @Test
     @DisplayName("Deve retornar status Bad Request ao atualizar usuário administrador com CPF diferente do original")
     void shouldReturnBadRequestWhenUpdatingAdminUserWithDifferentCpf() throws Exception {
-        AdminUserRequestDto adminUserRequestDto = AdminFixtures.createAdminUserUpdateRequestDto();
-        when(adminService.update(VALID_ID, adminUserRequestDto))
+        AdminUserRequest adminUserRequest = AdminFixtures.createAdminUserUpdateRequest();
+        when(adminService.update(VALID_ID, adminUserRequest))
                 .thenThrow(new CpfAlreadyRegisteredException("Cannot change the CPF of an existing Admin."));
 
         mockMvc.perform(put("/api/v1/admin/{id}", VALID_ID)
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(adminUserRequestDto)))
+                        .content(objectMapper.writeValueAsString(adminUserRequest)))
                         .andExpect(status().isConflict())
                         .andExpect(jsonPath("$.message").value("Cannot change the CPF of an existing Admin."));
 
-        verify(adminService).update(VALID_ID, adminUserRequestDto);
+        verify(adminService).update(VALID_ID, adminUserRequest);
         verifyNoInteractions(votingSessionService, agendaService);
     }
 
     @Test
     @DisplayName("Deve retornar status Not Found ao tentar atualizar usuário administrador inexistente")
     void shouldReturnNotFoundWhenUpdatingNonExistentAdminUser() throws Exception {
-        AdminUserRequestDto adminUserRequestDto = AdminFixtures.createAdminUserUpdateRequestDto();
-        when(adminService.update(INVALID_ID, adminUserRequestDto))
+        AdminUserRequest adminUserRequest = AdminFixtures.createAdminUserUpdateRequest();
+        when(adminService.update(INVALID_ID, adminUserRequest))
                 .thenThrow(new UserNotFoundException("Admin not found with ID: " + INVALID_ID));
 
         mockMvc.perform(put("/api/v1/admin/{id}", INVALID_ID)
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(adminUserRequestDto)))
+                        .content(objectMapper.writeValueAsString(adminUserRequest)))
                         .andExpect(status().isNotFound())
                         .andExpect(jsonPath("$.message").value("Admin not found with ID: " + INVALID_ID));
 
-        verify(adminService).update(INVALID_ID, adminUserRequestDto);
+        verify(adminService).update(INVALID_ID, adminUserRequest);
         verifyNoInteractions(votingSessionService, agendaService);
     }
 
     @Test
     @DisplayName("Deve recuperar um usuário administrador por ID com sucesso e retornar status 200")
     void shouldGetAdminUserByIdSuccessfullyAndReturn200() throws Exception {
-        AdminUserResponseDto adminUserResponseDto = AdminFixtures.createAdminUserResponseDto();
-        when(adminService.getById(VALID_ID)).thenReturn(adminUserResponseDto);
+        AdminUserResponse adminUserResponse = AdminFixtures.createAdminUserResponse();
+        when(adminService.getById(VALID_ID)).thenReturn(adminUserResponse);
 
         mockMvc.perform(get("/api/v1/admin/{id}", VALID_ID)
                         .contentType("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(adminUserResponseDto.id()))
-                .andExpect(jsonPath("$.name").value(adminUserResponseDto.name()))
-                .andExpect(jsonPath("$.cpf").value(adminUserResponseDto.cpf()))
-                .andExpect(jsonPath("$.email").value(adminUserResponseDto.email()))
-                .andExpect(jsonPath("$.role").value(adminUserResponseDto.role().name()));
+                .andExpect(jsonPath("$.id").value(adminUserResponse.id()))
+                .andExpect(jsonPath("$.name").value(adminUserResponse.name()))
+                .andExpect(jsonPath("$.cpf").value(adminUserResponse.cpf()))
+                .andExpect(jsonPath("$.email").value(adminUserResponse.email()))
+                .andExpect(jsonPath("$.role").value(adminUserResponse.role().name()));
 
         verify(adminService).getById(VALID_ID);
         verifyNoInteractions(votingSessionService, agendaService);
@@ -222,18 +222,18 @@ public class AdminControllerIntegrationTest {
     @Test
     @DisplayName("Deve recuperar um usuário administrador por email com sucesso e retornar status 200")
     void shouldGetAdminUserByEmailSuccessfullyAndReturn200() throws Exception {
-        AdminUserResponseDto adminUserResponseDto = AdminFixtures.createAdminUserResponseDto();
-        when(adminService.getByEmail(VALID_EMAIL)).thenReturn(adminUserResponseDto);
+        AdminUserResponse adminUserResponse = AdminFixtures.createAdminUserResponse();
+        when(adminService.getByEmail(VALID_EMAIL)).thenReturn(adminUserResponse);
 
         mockMvc.perform(get("/api/v1/admin/email")
                         .param("email", VALID_EMAIL)
                         .contentType("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(adminUserResponseDto.id()))
-                .andExpect(jsonPath("$.name").value(adminUserResponseDto.name()))
-                .andExpect(jsonPath("$.cpf").value(adminUserResponseDto.cpf()))
-                .andExpect(jsonPath("$.email").value(adminUserResponseDto.email()))
-                .andExpect(jsonPath("$.role").value(adminUserResponseDto.role().name()));
+                .andExpect(jsonPath("$.id").value(adminUserResponse.id()))
+                .andExpect(jsonPath("$.name").value(adminUserResponse.name()))
+                .andExpect(jsonPath("$.cpf").value(adminUserResponse.cpf()))
+                .andExpect(jsonPath("$.email").value(adminUserResponse.email()))
+                .andExpect(jsonPath("$.role").value(adminUserResponse.role().name()));
 
         verify(adminService).getByEmail(VALID_EMAIL);
         verifyNoInteractions(votingSessionService, agendaService);
@@ -258,18 +258,18 @@ public class AdminControllerIntegrationTest {
     @Test
     @DisplayName("Deve recuperar um usuário administrador por CPF com sucesso e retornar status 200")
     void shouldGetAdminUserByCpfSuccessfullyAndReturn200() throws Exception {
-        AdminUserResponseDto adminUserResponseDto = AdminFixtures.createAdminUserResponseDto();
-        when(adminService.getByCpf(VALID_CPF)).thenReturn(adminUserResponseDto);
+        AdminUserResponse adminUserResponse = AdminFixtures.createAdminUserResponse();
+        when(adminService.getByCpf(VALID_CPF)).thenReturn(adminUserResponse);
 
         mockMvc.perform(get("/api/v1/admin/cpf")
                         .param("cpf", VALID_CPF)
                         .contentType("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(adminUserResponseDto.id()))
-                .andExpect(jsonPath("$.name").value(adminUserResponseDto.name()))
-                .andExpect(jsonPath("$.cpf").value(adminUserResponseDto.cpf()))
-                .andExpect(jsonPath("$.email").value(adminUserResponseDto.email()))
-                .andExpect(jsonPath("$.role").value(adminUserResponseDto.role().name()));
+                .andExpect(jsonPath("$.id").value(adminUserResponse.id()))
+                .andExpect(jsonPath("$.name").value(adminUserResponse.name()))
+                .andExpect(jsonPath("$.cpf").value(adminUserResponse.cpf()))
+                .andExpect(jsonPath("$.email").value(adminUserResponse.email()))
+                .andExpect(jsonPath("$.role").value(adminUserResponse.role().name()));
 
         verify(adminService).getByCpf(VALID_CPF);
         verifyNoInteractions(votingSessionService, agendaService);
@@ -294,34 +294,34 @@ public class AdminControllerIntegrationTest {
     @Test
     @DisplayName("Deve criar uma pauta com sucesso e retornar status 201")
     void shouldCreateAgendaSuccessfullyAndReturn201() throws Exception {
-        AgendaRequestDto agendaRequestDto = AgendaFixtures.createValidAgendaRequestDto();
-        AgendaResponseDto agendaResponseDto = AgendaFixtures.createAgendaResponseDto();
+        AgendaRequest agendaRequest = AgendaFixtures.createValidAgendaRequest();
+        AgendaResponse agendaResponse = AgendaFixtures.createAgendaResponse();
 
-        when(agendaService.createAgenda(agendaRequestDto, VALID_ID)).thenReturn(agendaResponseDto);
+        when(agendaService.createAgenda(agendaRequest, VALID_ID)).thenReturn(agendaResponse);
 
         mockMvc.perform(post("/api/v1/admin/{id}/agenda", VALID_ID)
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(agendaRequestDto)))
+                        .content(objectMapper.writeValueAsString(agendaRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(agendaResponseDto.id()))
-                .andExpect(jsonPath("$.title").value(agendaResponseDto.title()))
-                .andExpect(jsonPath("$.description").value(agendaResponseDto.description()))
-                .andExpect(jsonPath("$.status").value(agendaResponseDto.status()))
-                .andExpect(jsonPath("$.creationDate").value(agendaResponseDto.creationDate().toString()))
-                .andExpect(jsonPath("$.createdBy").value(agendaResponseDto.createdBy()));
+                .andExpect(jsonPath("$.id").value(agendaResponse.id()))
+                .andExpect(jsonPath("$.title").value(agendaResponse.title()))
+                .andExpect(jsonPath("$.description").value(agendaResponse.description()))
+                .andExpect(jsonPath("$.status").value(agendaResponse.status()))
+                .andExpect(jsonPath("$.creationDate").value(agendaResponse.creationDate().toString()))
+                .andExpect(jsonPath("$.createdBy").value(agendaResponse.createdBy()));
 
-        verify(agendaService).createAgenda(agendaRequestDto, VALID_ID);
+        verify(agendaService).createAgenda(agendaRequest, VALID_ID);
         verifyNoInteractions(adminService, votingSessionService);
     }
 
     @Test
     @DisplayName("Deve retornar status Unprocessable Entity ao criar pauta com dados inválidos")
     void shouldReturnUnprocessableEntityWhenCreatingAgendaWithInvalidData() throws Exception {
-        AgendaRequestDto invalidAgendaRequestDto = AgendaFixtures.createInvalidAgendaRequestDto();
+        AgendaRequest invalidAgendaRequest = AgendaFixtures.createInvalidAgendaRequest();
 
         mockMvc.perform(post("/api/v1/admin/{id}/agenda", VALID_ID)
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(invalidAgendaRequestDto)))
+                        .content(objectMapper.writeValueAsString(invalidAgendaRequest)))
                 .andExpect(status().isUnprocessableEntity());
 
         verifyNoInteractions(agendaService, adminService, votingSessionService);
@@ -330,90 +330,90 @@ public class AdminControllerIntegrationTest {
     @Test
     @DisplayName("Deve retornar status Not Found ao criar pauta para usuário administrador inexistente")
     void shouldReturnNotFoundWhenCreatingAgendaForNonExistentAdminUser() throws Exception {
-        AgendaRequestDto agendaRequestDto = AgendaFixtures.createValidAgendaRequestDto();
-        when(agendaService.createAgenda(agendaRequestDto, INVALID_ID))
+        AgendaRequest agendaRequest = AgendaFixtures.createValidAgendaRequest();
+        when(agendaService.createAgenda(agendaRequest, INVALID_ID))
                 .thenThrow(new UserNotFoundException("Admin not found with ID: " + INVALID_ID));
 
         mockMvc.perform(post("/api/v1/admin/{id}/agenda", INVALID_ID)
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(agendaRequestDto)))
+                        .content(objectMapper.writeValueAsString(agendaRequest)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Admin not found with ID: " + INVALID_ID));
 
-        verify(agendaService).createAgenda(agendaRequestDto, INVALID_ID);
+        verify(agendaService).createAgenda(agendaRequest, INVALID_ID);
         verifyNoInteractions(adminService, votingSessionService);
     }
 
     @Test
     @DisplayName("Deve criar uma sessão de votação com sucesso e retornar status 201")
     void shouldCreateVotingSessionSuccessfullyAndReturn201() throws Exception {
-        VotingSessionRequestDto votingSessionRequestDto = VotingSessionFixtures.createValidVotingSessionRequestDto();
-        VotingSessionResponseDto votingSessionResponseDto = VotingSessionFixtures.createVotingSessionResponseDto();
+        VotingSessionRequest votingSessionRequest = VotingSessionFixtures.createValidVotingSessionRequest();
+        VotingSessionResponse votingSessionResponse = VotingSessionFixtures.createVotingSessionResponse();
 
-        when(votingSessionService.openVotingSession(VALID_ID, votingSessionRequestDto))
-                .thenReturn(votingSessionResponseDto);
+        when(votingSessionService.openVotingSession(VALID_ID, votingSessionRequest))
+                .thenReturn(votingSessionResponse);
 
         mockMvc.perform(post("/api/v1/admin/agenda/{id}/voting-session", VALID_ID)
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(votingSessionRequestDto)))
+                        .content(objectMapper.writeValueAsString(votingSessionRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(votingSessionResponseDto.id()))
-                .andExpect(jsonPath("$.durationInMinutes").value(votingSessionResponseDto.durationInMinutes()))
+                .andExpect(jsonPath("$.id").value(votingSessionResponse.id()))
+                .andExpect(jsonPath("$.durationInMinutes").value(votingSessionResponse.durationInMinutes()))
                 .andExpect(jsonPath("$.startTime").exists())
                 .andExpect(jsonPath("$.endTime").exists())
-                .andExpect(jsonPath("$.status").value(votingSessionResponseDto.status().name()))
-                .andExpect(jsonPath("$.agendaId").value(votingSessionResponseDto.agendaId()));
+                .andExpect(jsonPath("$.status").value(votingSessionResponse.status().name()))
+                .andExpect(jsonPath("$.agendaId").value(votingSessionResponse.agendaId()));
 
-    verify(votingSessionService).openVotingSession(VALID_ID, votingSessionRequestDto);
+    verify(votingSessionService).openVotingSession(VALID_ID, votingSessionRequest);
     verifyNoInteractions(adminService, agendaService);
     }
 
     @Test
     @DisplayName("Deve retornar status Not Found ao criar sessão de votação para pauta inexistente")
     void shouldReturnNotFoundWhenCreatingVotingSessionForNonExistentAgenda() throws Exception {
-        VotingSessionRequestDto votingSessionRequestDto = VotingSessionFixtures.createValidVotingSessionRequestDto();
-        when(votingSessionService.openVotingSession(INVALID_ID, votingSessionRequestDto))
+        VotingSessionRequest votingSessionRequest = VotingSessionFixtures.createValidVotingSessionRequest();
+        when(votingSessionService.openVotingSession(INVALID_ID, votingSessionRequest))
                 .thenThrow(new UserNotFoundException("Agenda not found with ID: " + INVALID_ID));
 
         mockMvc.perform(post("/api/v1/admin/agenda/{id}/voting-session", INVALID_ID)
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(votingSessionRequestDto)))
+                        .content(objectMapper.writeValueAsString(votingSessionRequest)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Agenda not found with ID: " + INVALID_ID));
 
-        verify(votingSessionService).openVotingSession(INVALID_ID, votingSessionRequestDto);
+        verify(votingSessionService).openVotingSession(INVALID_ID, votingSessionRequest);
         verifyNoInteractions(adminService, agendaService);
     }
 
     @Test
     @DisplayName("Deve criar usuário votante com sucesso e retornar status 201")
     void shouldCreateVoterSuccessfullyAndReturn201() throws Exception {
-        VoterRequestDto voterRequestDto = VoterFixtures.createValidVoterRequestDto();
-        VoterResponseDto voterResponseDto = VoterFixtures.createVoterResponseDto();
+        VoterRequest voterRequest = VoterFixtures.createValidVoterRequest();
+        VoterResponse voterResponse = VoterFixtures.createVoterResponse();
 
-        when(adminService.createVoter(voterRequestDto)).thenReturn(voterResponseDto);
+        when(adminService.createVoter(voterRequest)).thenReturn(voterResponse);
 
         mockMvc.perform(post("/api/v1/admin/voters")
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(voterRequestDto)))
+                        .content(objectMapper.writeValueAsString(voterRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(voterResponseDto.id()))
-                .andExpect(jsonPath("$.name").value(voterResponseDto.name()))
-                .andExpect(jsonPath("$.cpf").value(voterResponseDto.cpf()))
-                .andExpect(jsonPath("$.role").value(voterResponseDto.role().name()));
+                .andExpect(jsonPath("$.id").value(voterResponse.id()))
+                .andExpect(jsonPath("$.name").value(voterResponse.name()))
+                .andExpect(jsonPath("$.cpf").value(voterResponse.cpf()))
+                .andExpect(jsonPath("$.role").value(voterResponse.role().name()));
 
-        verify(adminService).createVoter(voterRequestDto);
+        verify(adminService).createVoter(voterRequest);
         verifyNoInteractions(agendaService, votingSessionService);
     }
 
     @Test
     @DisplayName("Deve retornar status Unprocessable Entity ao criar usuário votante com dados inválidos")
     void shouldReturnUnprocessableEntityWhenCreatingVoterWithInvalidData() throws Exception {
-        VoterRequestDto invalidVoterRequestDto = VoterFixtures.createInvalidVoterRequestDto();
+        VoterRequest invalidVoterRequest = VoterFixtures.createInvalidVoterRequest();
 
         mockMvc.perform(post("/api/v1/admin/voters")
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(invalidVoterRequestDto)))
+                        .content(objectMapper.writeValueAsString(invalidVoterRequest)))
                 .andExpect(status().isUnprocessableEntity());
 
         verifyNoInteractions(adminService, agendaService, votingSessionService);
@@ -422,34 +422,34 @@ public class AdminControllerIntegrationTest {
     @Test
     @DisplayName("Deve retornar status Conflict ao criar usuário votante com CPF já cadastrado")
     void shouldReturnConflictWhenCreatingVoterWithExistingCpf() throws Exception {
-        VoterRequestDto voterRequestDto = VoterFixtures.createValidVoterRequestDto();
-        when(adminService.createVoter(voterRequestDto))
+        VoterRequest voterRequest = VoterFixtures.createValidVoterRequest();
+        when(adminService.createVoter(voterRequest))
                 .thenThrow(new CpfAlreadyRegisteredException("CPF already registered"));
 
         mockMvc.perform(post("/api/v1/admin/voters")
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(voterRequestDto)))
+                        .content(objectMapper.writeValueAsString(voterRequest)))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message").value("CPF already registered"));
 
-        verify(adminService).createVoter(voterRequestDto);
+        verify(adminService).createVoter(voterRequest);
         verifyNoInteractions(agendaService, votingSessionService);
     }
 
     @Test
     @DisplayName("Deve retornar status Not Found ao tentar criar usuário votante para administrador inexistente")
     void shouldReturnNotFoundWhenCreatingVoterForNonExistentAdminUser() throws Exception {
-        VoterRequestDto voterRequestDto = VoterFixtures.createValidVoterRequestDto();
-        when(adminService.createVoter(voterRequestDto))
+        VoterRequest voterRequest = VoterFixtures.createValidVoterRequest();
+        when(adminService.createVoter(voterRequest))
                 .thenThrow(new UserNotFoundException("Admin not found with ID: " + INVALID_ID));
 
         mockMvc.perform(post("/api/v1/admin/voters")
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(voterRequestDto)))
+                        .content(objectMapper.writeValueAsString(voterRequest)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Admin not found with ID: " + INVALID_ID));
 
-        verify(adminService).createVoter(voterRequestDto);
+        verify(adminService).createVoter(voterRequest);
         verifyNoInteractions(agendaService, votingSessionService);
     }
 }

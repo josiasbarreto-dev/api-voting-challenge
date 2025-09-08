@@ -1,8 +1,8 @@
 package github.io.api_voting_challenge.controller;
 
-import github.io.api_voting_challenge.dto.VoteRequestDTO;
-import github.io.api_voting_challenge.dto.VoteResultResponseDTO;
-import github.io.api_voting_challenge.dto.VotingSessionResponseDto;
+import github.io.api_voting_challenge.dto.VoteRequest;
+import github.io.api_voting_challenge.dto.VoteResultResponse;
+import github.io.api_voting_challenge.dto.VotingSessionResponse;
 import github.io.api_voting_challenge.exception.VotingSessionClosedException;
 import github.io.api_voting_challenge.exception.VotingSessionNotFoundException;
 import github.io.api_voting_challenge.fixtures.VoteFixtures;
@@ -24,7 +24,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.Collections;
 
 import static github.io.api_voting_challenge.fixtures.TestConstants.*;
-import static github.io.api_voting_challenge.fixtures.VotingSessionFixtures.createVotingSessionResponseDtoPage;
+import static github.io.api_voting_challenge.fixtures.VotingSessionFixtures.createVotingSessionResponsePage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -45,10 +45,10 @@ public class VoterControllerTest {
     @Test
     @DisplayName("Deve buscar a primeira página de sessões ativas com sucesso")
     void shouldFetchFirstPageOfActiveVotingSessionsAndReturnSuccess() {
-        Page<VotingSessionResponseDto> mockedPage = createVotingSessionResponseDtoPage(15, Pageable.ofSize(10));
+        Page<VotingSessionResponse> mockedPage = createVotingSessionResponsePage(15, Pageable.ofSize(10));
         when(votingSessionScheduler.getOpenVotingSessions(any(Pageable.class))).thenReturn(mockedPage);
 
-        ResponseEntity<Page<VotingSessionResponseDto>> result = voterController.getOpenVotingSessions(Pageable.ofSize(10));
+        ResponseEntity<Page<VotingSessionResponse>> result = voterController.getOpenVotingSessions(Pageable.ofSize(10));
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(mockedPage, result.getBody());
@@ -60,10 +60,10 @@ public class VoterControllerTest {
     @Test
     @DisplayName("Deve retornar uma página vazia se não houver sessões ativas")
     void shouldReturnEmptyPageWhenNoActiveSessionsFound() {
-        Page<VotingSessionResponseDto> emptyPage = new PageImpl<>(Collections.emptyList(), Pageable.unpaged(), 0);
+        Page<VotingSessionResponse> emptyPage = new PageImpl<>(Collections.emptyList(), Pageable.unpaged(), 0);
         when(votingSessionScheduler.getOpenVotingSessions(any(Pageable.class))).thenReturn(emptyPage);
 
-        ResponseEntity<Page<VotingSessionResponseDto>> result = voterController.getOpenVotingSessions(Pageable.ofSize(10));
+        ResponseEntity<Page<VotingSessionResponse>> result = voterController.getOpenVotingSessions(Pageable.ofSize(10));
 
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(0, result.getBody().getTotalElements());
@@ -73,7 +73,7 @@ public class VoterControllerTest {
     @Test
     @DisplayName("Deve permitir que um usuário vote com sucesso em Pautas com Sessão Aberta Disponível")
     void shouldAllowUserToVoteSuccessfullyInOpenVotingSession() {
-        VoteRequestDTO voteRequest = VoteFixtures.createValidVoteRequestDto();
+        VoteRequest voteRequest = VoteFixtures.createValidVoteRequest();
 
         doNothing().when(voteServiceImpl).registerVote(VALID_SESSION_ID, VALID_USER_ID, voteRequest);
         ResponseEntity<Void> response = voterController.vote(VALID_SESSION_ID, VALID_USER_ID, voteRequest);
@@ -85,7 +85,7 @@ public class VoterControllerTest {
     @Test
     @DisplayName("Deve permitir que o usuário vote 'Não' em Pautas com Sessão Aberta Disponível")
     void shouldAllowUserToVoteNoSuccessfullyInOpenVotingSession() {
-        VoteRequestDTO voteRequest = VoteFixtures.createValidVoteRequestDtoBuilder().voteOption(VoteOption.NO).build();
+        VoteRequest voteRequest = VoteFixtures.createValidVoteRequestBuilder().voteOption(VoteOption.NO).build();
 
         doNothing().when(voteServiceImpl).registerVote(VALID_SESSION_ID, VALID_USER_ID, voteRequest);
         ResponseEntity<Void> response = voterController.vote(VALID_USER_ID, VALID_USER_ID, voteRequest);
@@ -97,7 +97,7 @@ public class VoterControllerTest {
     @Test
     @DisplayName("Deve lançar uma exceção quando o usuário tentar votar em uma sessão fechada")
     void shouldThrowExceptionWhenUserTriesToVoteInClosedSession() {
-        VoteRequestDTO voteRequest = VoteFixtures.createValidVoteRequestDto();
+        VoteRequest voteRequest = VoteFixtures.createValidVoteRequest();
         String message = "Sessão de votação já encerrada";
 
         doThrow(new VotingSessionClosedException(message))
@@ -116,10 +116,10 @@ public class VoterControllerTest {
     @Test
     @DisplayName("Deve buscar os resultados da votação e retornar sucesso")
     void shouldFetchVotingResultsAndReturnSuccess() {
-        VoteResultResponseDTO voteResultResponse = VoteFixtures.createVoteResultResponseDto();
+        VoteResultResponse voteResultResponse = VoteFixtures.createVoteResultResponse();
 
         when(voteServiceImpl.calculateVotingResult(VALID_SESSION_ID)).thenReturn(voteResultResponse);
-        ResponseEntity<VoteResultResponseDTO> response = voterController.getVotingResults(VALID_SESSION_ID);
+        ResponseEntity<VoteResultResponse> response = voterController.getVotingResults(VALID_SESSION_ID);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(voteResultResponse, response.getBody());

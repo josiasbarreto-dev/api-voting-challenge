@@ -27,29 +27,29 @@ public class AdminController {
 
     @Operation(summary = "Create a new admin user", description = "Creates a new admin user with a unique CPF.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Admin user created successfully", content = @Content(schema = @Schema(implementation = AdminUserResponseDto.class))),
+            @ApiResponse(responseCode = "201", description = "Admin user created successfully", content = @Content(schema = @Schema(implementation = AdminUserResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request "),
             @ApiResponse(responseCode = "409", description = "Admin user with the given CPF already exists")})
     @PostMapping
-    public ResponseEntity<AdminUserResponseDto> create(@RequestBody @Valid AdminUserRequestDto requestAdmin) {
+    public ResponseEntity<AdminUserResponse> create(@RequestBody @Valid AdminUserRequest requestAdmin) {
         return ResponseEntity.status(HttpStatus.CREATED).body(adminService.create(requestAdmin));
     }
 
     @Operation(summary = "Update an existing admin user", description = "Updates the information of an admin user by ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Admin user updated successfully", content = @Content(schema = @Schema(implementation = AdminUserResponseDto.class))),
+            @ApiResponse(responseCode = "200", description = "Admin user updated successfully", content = @Content(schema = @Schema(implementation = AdminUserResponse.class))),
             @ApiResponse(responseCode = "404", description = "Admin user not found")})
     @PutMapping("/{id}")
-    public ResponseEntity<AdminUserResponseDto> update(@PathVariable Long id, @RequestBody @Valid AdminUserRequestDto requestAdmin) {
+    public ResponseEntity<AdminUserResponse> update(@PathVariable Long id, @RequestBody @Valid AdminUserRequest requestAdmin) {
         return ResponseEntity.status(HttpStatus.OK).body(adminService.update(id, requestAdmin));
     }
 
     @Operation(summary = "Get admin user by ID", description = "Retrieves an admin user's details by their unique ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Admin user found successfully", content = @Content(schema = @Schema(implementation = AdminUserResponseDto.class))),
+            @ApiResponse(responseCode = "200", description = "Admin user found successfully", content = @Content(schema = @Schema(implementation = AdminUserResponse.class))),
             @ApiResponse(responseCode = "404", description = "Admin user not found")})
     @GetMapping("/{id}")
-    public ResponseEntity<AdminUserResponseDto> getById(@PathVariable Long id) {
+    public ResponseEntity<AdminUserResponse> getById(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(adminService.getById(id));
     }
 
@@ -65,47 +65,47 @@ public class AdminController {
 
     @Operation(summary = "Get admin user by email", description = "Retrieves an admin user's details by their email address.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Admin user found successfully", content = @Content(schema = @Schema(implementation = AdminUserResponseDto.class))),
+            @ApiResponse(responseCode = "200", description = "Admin user found successfully", content = @Content(schema = @Schema(implementation = AdminUserResponse.class))),
             @ApiResponse(responseCode = "404", description = "Admin user not found")})
     @GetMapping("/email")
-    public ResponseEntity<AdminUserResponseDto> getByEmail(@RequestParam String email) {
+    public ResponseEntity<AdminUserResponse> getByEmail(@RequestParam String email) {
         return ResponseEntity.status(HttpStatus.OK).body(adminService.getByEmail(email));
     }
 
     @Operation(summary = "Get admin user by CPF", description = "Retrieves an admin user's details by their CPF.")
     @ApiResponses(value = {@
-            ApiResponse(responseCode = "200", description = "Admin user found successfully", content = @Content(schema = @Schema(implementation = AdminUserResponseDto.class))),
+            ApiResponse(responseCode = "200", description = "Admin user found successfully", content = @Content(schema = @Schema(implementation = AdminUserResponse.class))),
             @ApiResponse(responseCode = "404", description = "Admin user not found")})
     @GetMapping("/cpf")
-    public ResponseEntity<AdminUserResponseDto> getByCpf(@RequestParam String cpf) {
+    public ResponseEntity<AdminUserResponse> getByCpf(@RequestParam String cpf) {
         return ResponseEntity.status(HttpStatus.OK).body(adminService.getByCpf(cpf));
     }
 
     @Operation(summary = "Create a new agenda for voting", description = "Allows an admin to create a new agenda. The agenda is initially in an inactive state.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Agenda created successfully", content = @Content(schema = @Schema(implementation = AgendaResponseDto.class))),
+            @ApiResponse(responseCode = "201", description = "Agenda created successfully", content = @Content(schema = @Schema(implementation = AgendaResponse.class))),
             @ApiResponse(responseCode = "404", description = "Admin user not found")})
     @PostMapping("/{id}/agenda")
-    public ResponseEntity<AgendaResponseDto> createAgenda(@RequestBody @Valid AgendaRequestDto agendaRequestDto, @PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(agendaService.createAgenda(agendaRequestDto, id));
+    public ResponseEntity<AgendaResponse> createAgenda(@RequestBody @Valid AgendaRequest agendaRequest, @PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(agendaService.createAgenda(agendaRequest, id));
     }
 
     @Operation(summary = "Open a new voting session for an agenda", description = "Starts a voting session for a specific agenda. The session duration can be specified, or it defaults to 1 minute.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Voting session opened successfully", content = @Content(schema = @Schema(implementation = VotingSessionResponseDto.class))),
+            @ApiResponse(responseCode = "201", description = "Voting session opened successfully", content = @Content(schema = @Schema(implementation = VotingSessionResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request or voting session already exists"),
             @ApiResponse(responseCode = "404", description = "Agenda not found")})
     @PostMapping("/agenda/{id}/voting-session")
-    public ResponseEntity<VotingSessionResponseDto> createVotingSession(@PathVariable Long id, @RequestBody VotingSessionRequestDto votingSessionRequestDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(votingSessionService.openVotingSession(id, votingSessionRequestDto));
+    public ResponseEntity<VotingSessionResponse> createVotingSession(@PathVariable Long id, @RequestBody VotingSessionRequest votingSessionRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(votingSessionService.openVotingSession(id, votingSessionRequest));
     }
 
     @Operation(summary = "Create a new voter user", description = "Creates a new voter user. This user can cast a vote in an open session.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Voter user created successfully", content = @Content(schema = @Schema(implementation = VoterResponseDto.class))),
+            @ApiResponse(responseCode = "201", description = "Voter user created successfully", content = @Content(schema = @Schema(implementation = VoterResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request or user already exists")})
     @PostMapping("/voters")
-    public ResponseEntity<VoterResponseDto> createVoter(@RequestBody @Valid VoterRequestDto voterRequestDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(adminService.createVoter(voterRequestDto));
+    public ResponseEntity<VoterResponse> createVoter(@RequestBody @Valid VoterRequest voterRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(adminService.createVoter(voterRequest));
     }
 }

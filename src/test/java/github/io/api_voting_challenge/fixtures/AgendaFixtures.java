@@ -1,7 +1,7 @@
 package github.io.api_voting_challenge.fixtures;
 
-import github.io.api_voting_challenge.dto.AgendaRequestDto;
-import github.io.api_voting_challenge.dto.AgendaResponseDto;
+import github.io.api_voting_challenge.dto.AgendaRequest;
+import github.io.api_voting_challenge.dto.AgendaResponse;
 import github.io.api_voting_challenge.model.Agenda;
 import github.io.api_voting_challenge.model.enums.Status;
 
@@ -10,20 +10,20 @@ import java.time.LocalDate;
 import static github.io.api_voting_challenge.fixtures.TestConstants.*;
 
 public class AgendaFixtures {
-    public static AgendaRequestDto.AgendaRequestDtoBuilder createValidAgendaRequestDtoBuilder() {
-        return AgendaRequestDto.builder()
+    public static AgendaRequest.AgendaRequestBuilder createValidAgendaRequestBuilder() {
+        return AgendaRequest.builder()
                 .title(VALID_AGENDA_TITLE)
                 .description(VALID_AGENDA_DESCRIPTION);
     }
 
-    public static AgendaRequestDto.AgendaRequestDtoBuilder createInvalidAgendaRequestDtoBuilder() {
-        return AgendaRequestDto.builder()
+    public static AgendaRequest.AgendaRequestBuilder createInvalidAgendaRequestBuilder() {
+        return AgendaRequest.builder()
                 .title("")
                 .description("");
     }
 
-    public static AgendaResponseDto.AgendaResponseDtoBuilder createAgendaResponseDtoBuilder() {
-        return AgendaResponseDto.builder()
+    public static AgendaResponse.AgendaResponseBuilder createAgendaResponseBuilder() {
+        return AgendaResponse.builder()
                 .id(VALID_ID)
                 .title(VALID_AGENDA_TITLE)
                 .description(VALID_AGENDA_DESCRIPTION)
@@ -53,16 +53,16 @@ public class AgendaFixtures {
                 .build();
     }
 
-    public static AgendaRequestDto createValidAgendaRequestDto() {
-        return createValidAgendaRequestDtoBuilder().build();
+    public static AgendaRequest createValidAgendaRequest() {
+        return createValidAgendaRequestBuilder().build();
     }
 
-    public static AgendaResponseDto createAgendaResponseDto() {
-        return createAgendaResponseDtoBuilder().build();
+    public static AgendaResponse createAgendaResponse() {
+        return createAgendaResponseBuilder().build();
     }
 
-    public static AgendaRequestDto createInvalidAgendaRequestDto() {
-        return createInvalidAgendaRequestDtoBuilder().build();
+    public static AgendaRequest createInvalidAgendaRequest() {
+        return createInvalidAgendaRequestBuilder().build();
     }
 
     public static Agenda createAgenda() {

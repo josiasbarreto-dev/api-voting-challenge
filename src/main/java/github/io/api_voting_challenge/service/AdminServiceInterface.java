@@ -1,16 +1,16 @@
 package github.io.api_voting_challenge.service;
 
-import github.io.api_voting_challenge.dto.AdminUserRequestDto;
-import github.io.api_voting_challenge.dto.AdminUserResponseDto;
-import github.io.api_voting_challenge.dto.VoterRequestDto;
-import github.io.api_voting_challenge.dto.VoterResponseDto;
+import github.io.api_voting_challenge.dto.AdminUserRequest;
+import github.io.api_voting_challenge.dto.AdminUserResponse;
+import github.io.api_voting_challenge.dto.VoterRequest;
+import github.io.api_voting_challenge.dto.VoterResponse;
 
 public interface AdminServiceInterface {
-    AdminUserResponseDto create(AdminUserRequestDto userRequestDto);
-    AdminUserResponseDto update(Long id, AdminUserRequestDto updateUserRequest );
-    AdminUserResponseDto getById(Long id);
+    AdminUserResponse create(AdminUserRequest userRequest);
+    AdminUserResponse update(Long id, AdminUserRequest updateUserRequest );
+    AdminUserResponse getById(Long id);
     void delete(Long id);
-    AdminUserResponseDto getByEmail(String email);
-    AdminUserResponseDto getByCpf(String cpf);
-    VoterResponseDto createVoter(VoterRequestDto voterRequestDto);
+    AdminUserResponse getByEmail(String email);
+    AdminUserResponse getByCpf(String cpf);
+    VoterResponse createVoter(VoterRequest voterRequest);
 }

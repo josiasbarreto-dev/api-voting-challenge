@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.time.LocalDate;
 
 @Builder
-public record AgendaResponseDto(
+public record AgendaResponse(
         Long id,
         String title,
         String description,

@@ -4,7 +4,7 @@ import github.io.api_voting_challenge.model.enums.Role;
 import lombok.Builder;
 
 @Builder
-public record AdminUserResponseDto(
+public record AdminUserResponse(
         Long id,
         String name,
         String cpf,

@@ -1,31 +1,31 @@
 package github.io.api_voting_challenge.fixtures;
 
-import github.io.api_voting_challenge.dto.AdminUserRequestDto;
-import github.io.api_voting_challenge.dto.AdminUserResponseDto;
+import github.io.api_voting_challenge.dto.AdminUserRequest;
+import github.io.api_voting_challenge.dto.AdminUserResponse;
 import github.io.api_voting_challenge.model.AdminUser;
 import github.io.api_voting_challenge.model.enums.Role;
 
 import static github.io.api_voting_challenge.fixtures.TestConstants.*;
 
 public class AdminFixtures {
-    public static AdminUserRequestDto.AdminUserRequestDtoBuilder createValidAdminUserRequestDtoBuilder() {
-        return AdminUserRequestDto.builder()
+    public static AdminUserRequest.AdminUserRequestBuilder createValidAdminUserRequestBuilder() {
+        return AdminUserRequest.builder()
                 .name(VALID_NAME)
                 .cpf(VALID_CPF)
                 .email(VALID_EMAIL)
                 .password(VALID_PASSWORD);
     }
 
-    public static AdminUserRequestDto.AdminUserRequestDtoBuilder createInvalidAdminUserRequestDtoBuilder() {
-        return AdminUserRequestDto.builder()
+    public static AdminUserRequest.AdminUserRequestBuilder createInvalidAdminUserRequestBuilder() {
+        return AdminUserRequest.builder()
                 .name("admin Test")
                 .cpf(INVALID_CPF)
                 .email(INVALID_EMAIL)
                 .password("12345678");
     }
 
-    public static AdminUserResponseDto.AdminUserResponseDtoBuilder createAdminUserResponseDtoBuilder() {
-        return AdminUserResponseDto.builder()
+    public static AdminUserResponse.AdminUserResponseBuilder createAdminUserResponseBuilder() {
+        return AdminUserResponse.builder()
                 .id(VALID_ID)
                 .name(VALID_NAME)
                 .cpf("528.375.080-98")
@@ -33,16 +33,16 @@ public class AdminFixtures {
                 .role(Role.ADMIN);
     }
 
-    public static AdminUserRequestDto.AdminUserRequestDtoBuilder createAdminUserUpdateRequestDtoBuilder() {
-        return AdminUserRequestDto.builder()
+    public static AdminUserRequest.AdminUserRequestBuilder createAdminUserUpdateRequestBuilder() {
+        return AdminUserRequest.builder()
                 .name(UPDATED_NAME)
                 .cpf(VALID_CPF)
                 .email("email@test.com")
                 .password(UPDATED_PASSWORD);
     }
 
-    public static AdminUserResponseDto.AdminUserResponseDtoBuilder createAdminUserResponseDtoAfterUpdateBuilder() {
-        return AdminUserResponseDto.builder()
+    public static AdminUserResponse.AdminUserResponseBuilder createAdminUserResponseAfterUpdateBuilder() {
+        return AdminUserResponse.builder()
                 .id(VALID_ID)
                 .name("User Updated")
                 .cpf(VALID_CPF)
@@ -59,24 +59,24 @@ public class AdminFixtures {
                 .email(VALID_EMAIL)
                 .password(VALID_PASSWORD);
     }
-    public static AdminUserRequestDto createValidAdminUserRequestDto() {
-        return createValidAdminUserRequestDtoBuilder().build();
+    public static AdminUserRequest createValidAdminUserRequest() {
+        return createValidAdminUserRequestBuilder().build();
     }
 
-    public static AdminUserRequestDto createInvalidAdminUserRequestDto() {
-        return createInvalidAdminUserRequestDtoBuilder().build();
+    public static AdminUserRequest createInvalidAdminUserRequest() {
+        return createInvalidAdminUserRequestBuilder().build();
     }
 
-    public static AdminUserResponseDto createAdminUserResponseDto() {
-        return createAdminUserResponseDtoBuilder().build();
+    public static AdminUserResponse createAdminUserResponse() {
+        return createAdminUserResponseBuilder().build();
     }
 
-    public static AdminUserRequestDto createAdminUserUpdateRequestDto() {
-        return createAdminUserUpdateRequestDtoBuilder().build();
+    public static AdminUserRequest createAdminUserUpdateRequest() {
+        return createAdminUserUpdateRequestBuilder().build();
     }
 
-    public static AdminUserResponseDto createAdminUserResponseDtoAfterUpdate() {
-        return createAdminUserResponseDtoAfterUpdateBuilder().build();
+    public static AdminUserResponse createAdminUserResponseAfterUpdate() {
+        return createAdminUserResponseAfterUpdateBuilder().build();
     }
 
     public static AdminUser createValidAdminUserEntity() {

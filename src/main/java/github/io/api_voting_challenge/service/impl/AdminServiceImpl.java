@@ -1,9 +1,9 @@
 package github.io.api_voting_challenge.service.impl;
 
-import github.io.api_voting_challenge.dto.AdminUserRequestDto;
-import github.io.api_voting_challenge.dto.AdminUserResponseDto;
-import github.io.api_voting_challenge.dto.VoterRequestDto;
-import github.io.api_voting_challenge.dto.VoterResponseDto;
+import github.io.api_voting_challenge.dto.AdminUserRequest;
+import github.io.api_voting_challenge.dto.AdminUserResponse;
+import github.io.api_voting_challenge.dto.VoterRequest;
+import github.io.api_voting_challenge.dto.VoterResponse;
 import github.io.api_voting_challenge.exception.CpfAlreadyRegisteredException;
 import github.io.api_voting_challenge.exception.CpfModificationNotAllowedException;
 import github.io.api_voting_challenge.exception.UserNotFoundException;
@@ -28,11 +28,11 @@ public class AdminServiceImpl implements AdminServiceInterface {
 
     @Override
     @Transactional
-    public AdminUserResponseDto create(AdminUserRequestDto userRequestDto) {
-        if (userAdminRepository.existsByCpf(userRequestDto.cpf())) {
-            throw new CpfAlreadyRegisteredException("CPF already registered: " + userRequestDto.cpf());
+    public AdminUserResponse create(AdminUserRequest userRequest) {
+        if (userAdminRepository.existsByCpf(userRequest.cpf())) {
+            throw new CpfAlreadyRegisteredException("CPF already registered: " + userRequest.cpf());
         }
-        AdminUser adminUser = userMapper.toEntity(userRequestDto);
+        AdminUser adminUser = userMapper.toEntity(userRequest);
         adminUser.setRole(Role.ADMIN);
 
         return userMapper.toDto(userAdminRepository.save(adminUser));
@@ -40,21 +40,21 @@ public class AdminServiceImpl implements AdminServiceInterface {
 
     @Override
     @Transactional
-    public AdminUserResponseDto update(Long id, AdminUserRequestDto userRequestDto) {
+    public AdminUserResponse update(Long id, AdminUserRequest userRequest) {
         AdminUser existingUser = getUser(id);
-        if (!Objects.equals(existingUser.getCpf(), userRequestDto.cpf())){
+        if (!Objects.equals(existingUser.getCpf(), userRequest.cpf())){
             throw new CpfModificationNotAllowedException("Cannot change the CPF of an existing Admin.");
         }
-        existingUser.setName(userRequestDto.name());
-        existingUser.setEmail(userRequestDto.email());
-        existingUser.setPassword(userRequestDto.password());
+        existingUser.setName(userRequest.name());
+        existingUser.setEmail(userRequest.email());
+        existingUser.setPassword(userRequest.password());
         existingUser.setRole(Role.ADMIN);
 
         return userMapper.toDto(userAdminRepository.save(existingUser));
     }
 
     @Override
-    public AdminUserResponseDto getById(Long id) {
+    public AdminUserResponse getById(Long id) {
         return userMapper.toDto(
                 userAdminRepository.findById(id).orElseThrow(
                         () -> new UserNotFoundException("Admin not found with ID: " + id)
@@ -68,7 +68,7 @@ public class AdminServiceImpl implements AdminServiceInterface {
     }
 
     @Override
-    public AdminUserResponseDto getByEmail(String email) {
+    public AdminUserResponse getByEmail(String email) {
         return userMapper.toDto(
                 userAdminRepository.findByEmail(email).orElseThrow(
                         () -> new UserNotFoundException("Admin not found with email: " + email)
@@ -77,7 +77,7 @@ public class AdminServiceImpl implements AdminServiceInterface {
     }
 
     @Override
-    public AdminUserResponseDto getByCpf(String cpf) {
+    public AdminUserResponse getByCpf(String cpf) {
         return userMapper.toDto(
                 userAdminRepository.findByCpf(cpf).orElseThrow(
                         () -> new UserNotFoundException("Admin not found with CPF: " + cpf)
@@ -92,11 +92,11 @@ public class AdminServiceImpl implements AdminServiceInterface {
     }
 
     @Override
-    public VoterResponseDto createVoter(VoterRequestDto voterRequestDto) {
-        if (userVotingRepository.existsByCpf(voterRequestDto.cpf())) {
-            throw new CpfAlreadyRegisteredException("CPF already registered: " + voterRequestDto.cpf());
+    public VoterResponse createVoter(VoterRequest voterRequest) {
+        if (userVotingRepository.existsByCpf(voterRequest.cpf())) {
+            throw new CpfAlreadyRegisteredException("CPF already registered: " + voterRequest.cpf());
         }
-        var voter = userMapper.toEntity(voterRequestDto);
+        var voter = userMapper.toEntity(voterRequest);
         voter.setRole(Role.USER);
         return userMapper.toDto(userVotingRepository.save(voter));
     }

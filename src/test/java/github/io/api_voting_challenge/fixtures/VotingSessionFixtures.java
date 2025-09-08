@@ -1,7 +1,7 @@
 package github.io.api_voting_challenge.fixtures;
 
-import github.io.api_voting_challenge.dto.VotingSessionRequestDto;
-import github.io.api_voting_challenge.dto.VotingSessionResponseDto;
+import github.io.api_voting_challenge.dto.VotingSessionRequest;
+import github.io.api_voting_challenge.dto.VotingSessionResponse;
 import github.io.api_voting_challenge.model.Agenda;
 import github.io.api_voting_challenge.model.VotingSession;
 import github.io.api_voting_challenge.model.enums.Status;
@@ -19,18 +19,18 @@ import static github.io.api_voting_challenge.fixtures.AgendaFixtures.createAgend
 import static github.io.api_voting_challenge.fixtures.TestConstants.*;
 
 public class VotingSessionFixtures {
-    public static VotingSessionRequestDto.VotingSessionRequestDtoBuilder createValidVotingSessionRequestDtoBuilder() {
-        return VotingSessionRequestDto.builder()
+    public static VotingSessionRequest.VotingSessionRequestBuilder createValidVotingSessionRequestBuilder() {
+        return VotingSessionRequest.builder()
                 .durationInMinutes(60);
     }
 
-    public static VotingSessionRequestDto.VotingSessionRequestDtoBuilder createInvalidVotingSessionRequestDtoBuilder() {
-        return VotingSessionRequestDto.builder()
+    public static VotingSessionRequest.VotingSessionRequestBuilder createInvalidVotingSessionRequestBuilder() {
+        return VotingSessionRequest.builder()
                 .durationInMinutes(null);
     }
 
-    public static VotingSessionResponseDto.VotingSessionResponseDtoBuilder createVotingSessionResponseDtoBuilder() {
-        return VotingSessionResponseDto.builder()
+    public static VotingSessionResponse.VotingSessionResponseBuilder createVotingSessionResponseBuilder() {
+        return VotingSessionResponse.builder()
                 .id(VALID_ID)
                 .durationInMinutes(60)
                 .startTime(LocalDateTime.now().toString())
@@ -39,10 +39,10 @@ public class VotingSessionFixtures {
                 .agendaId(VALID_ID);
     }
 
-    public static List<VotingSessionResponseDto> createVotingSessionResponseDtoListBuilder() {
+    public static List<VotingSessionResponse> createVotingSessionResponseListBuilder() {
         return List.of(
-                createVotingSessionResponseDtoBuilder().build(),
-                VotingSessionResponseDto.builder()
+                createVotingSessionResponseBuilder().build(),
+                VotingSessionResponse.builder()
                         .id(2L)
                         .durationInMinutes(30)
                         .startTime(LocalDateTime.now().toString())
@@ -116,29 +116,29 @@ public class VotingSessionFixtures {
                 .build();
     }
 
-    public static VotingSessionRequestDto createValidVotingSessionRequestDto() {
-        return createValidVotingSessionRequestDtoBuilder().build();
+    public static VotingSessionRequest createValidVotingSessionRequest() {
+        return createValidVotingSessionRequestBuilder().build();
     }
 
-    public static VotingSessionResponseDto createVotingSessionResponseDto() {
-        return createVotingSessionResponseDtoBuilder().build();
+    public static VotingSessionResponse createVotingSessionResponse() {
+        return createVotingSessionResponseBuilder().build();
     }
 
-    public static List<VotingSessionResponseDto> createVotingSessionResponseDtoList() {
-        return createVotingSessionResponseDtoListBuilder();
+    public static List<VotingSessionResponse> createVotingSessionResponseList() {
+        return createVotingSessionResponseListBuilder();
     }
 
     public static VotingSession createValidVotingSessionEntity() {
         return createVotingSessionEntity().build();
     }
 
-    public static VotingSessionRequestDto createInvalidVotingSessionRequestDto() {
-        return createInvalidVotingSessionRequestDtoBuilder().build();
+    public static VotingSessionRequest createInvalidVotingSessionRequest() {
+        return createInvalidVotingSessionRequestBuilder().build();
     }
 
-    public static List<VotingSessionResponseDto> createVotingSessionResponseDtoList(int count) {
+    public static List<VotingSessionResponse> createVotingSessionResponseList(int count) {
         return IntStream.range(0, count)
-                .mapToObj(i -> VotingSessionResponseDto.builder()
+                .mapToObj(i -> VotingSessionResponse.builder()
                         .id((long) i + 1)
                         .durationInMinutes(60)
                         .startTime(LocalDateTime.now().toString())
@@ -149,10 +149,10 @@ public class VotingSessionFixtures {
                 .collect(Collectors.toList());
     }
 
-    public static Page<VotingSessionResponseDto> createVotingSessionResponseDtoPage(long totalElements, Pageable pageable) {
-        List<VotingSessionResponseDto> content = IntStream.range(pageable.getPageNumber() * pageable.getPageSize(),
+    public static Page<VotingSessionResponse> createVotingSessionResponsePage(long totalElements, Pageable pageable) {
+        List<VotingSessionResponse> content = IntStream.range(pageable.getPageNumber() * pageable.getPageSize(),
                         Math.min((pageable.getPageNumber() + 1) * pageable.getPageSize(), (int) totalElements))
-                .mapToObj(i -> VotingSessionResponseDto.builder()
+                .mapToObj(i -> VotingSessionResponse.builder()
                         .id((long) i + 1)
                         .durationInMinutes(60)
                         .startTime(LocalDateTime.now().toString())

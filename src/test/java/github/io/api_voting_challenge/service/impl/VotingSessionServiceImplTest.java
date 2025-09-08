@@ -1,7 +1,7 @@
 package github.io.api_voting_challenge.service.impl;
 
-import github.io.api_voting_challenge.dto.VotingSessionRequestDto;
-import github.io.api_voting_challenge.dto.VotingSessionResponseDto;
+import github.io.api_voting_challenge.dto.VotingSessionRequest;
+import github.io.api_voting_challenge.dto.VotingSessionResponse;
 import github.io.api_voting_challenge.exception.AgendaNotFoundException;
 import github.io.api_voting_challenge.fixtures.AgendaFixtures;
 import github.io.api_voting_challenge.fixtures.VotingSessionFixtures;
@@ -47,17 +47,17 @@ public class VotingSessionServiceImplTest {
     void shouldOpenVotingSessionSuccessfullyWhenAgendaIsPending() {
         Agenda agenda = AgendaFixtures.createAgenda();
 
-        VotingSessionRequestDto votingSessionRequestDto = VotingSessionFixtures.createValidVotingSessionRequestDto();
-        VotingSessionResponseDto votingSessionResponseDto = VotingSessionFixtures.createVotingSessionResponseDto();
+        VotingSessionRequest votingSessionRequest = VotingSessionFixtures.createValidVotingSessionRequest();
+        VotingSessionResponse votingSessionResponse = VotingSessionFixtures.createVotingSessionResponse();
 
         when(agendaRepository.findById(VALID_ID)).thenReturn(Optional.of(agenda));
         when(agendaRepository.save(agenda)).thenReturn(agenda);
-        doReturn(votingSessionResponseDto).when(votingSessionMapper).toDto(any(VotingSession.class));
+        doReturn(votingSessionResponse).when(votingSessionMapper).toDto(any(VotingSession.class));
 
-        VotingSessionResponseDto result = votingSessionService.openVotingSession(1L, votingSessionRequestDto);
+        VotingSessionResponse result = votingSessionService.openVotingSession(1L, votingSessionRequest);
 
         assertNotNull(result);
-        assertEquals(votingSessionResponseDto, result);
+        assertEquals(votingSessionResponse, result);
         assertEquals(Status.IN_PROGRESS, agenda.getStatus());
 
         verifyNoMoreInteractions(agendaRepository, votingSessionRepository, votingSessionMapper);
@@ -66,14 +66,14 @@ public class VotingSessionServiceImplTest {
     @Test
     @DisplayName("Deverá abrir a sessão de votação com duração padrão de um minuto")
     void shouldOpenVotingSessionWithDefaultDurationOfOneMinute() {
-        VotingSessionRequestDto votingSessionRequestDto = VotingSessionFixtures.createInvalidVotingSessionRequestDto();
+        VotingSessionRequest votingSessionRequest = VotingSessionFixtures.createInvalidVotingSessionRequest();
         Agenda agenda = AgendaFixtures.createAgenda();
 
 
         when(agendaRepository.findById(VALID_ID)).thenReturn(Optional.of(agenda));
         when(agendaRepository.save(agenda)).thenReturn(agenda);
 
-        votingSessionService.openVotingSession(1L, votingSessionRequestDto);
+        votingSessionService.openVotingSession(1L, votingSessionRequest);
 
         ArgumentCaptor<Agenda> agendaCaptor = ArgumentCaptor.forClass(Agenda.class);
         verify(agendaRepository, times(1)).save(agendaCaptor.capture());
@@ -86,12 +86,12 @@ public class VotingSessionServiceImplTest {
     @Test
     @DisplayName("Deve lançar AgendaNotFoundException quando a agenda não existir")
     void shouldThrowAgendaNotFoundExceptionWhenAgendaDoesNotExist() {
-        VotingSessionRequestDto votingSessionRequestDto = VotingSessionFixtures.createInvalidVotingSessionRequestDto();
+        VotingSessionRequest votingSessionRequest = VotingSessionFixtures.createInvalidVotingSessionRequest();
 
         when(agendaRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
 
         AgendaNotFoundException exception = assertThrows(AgendaNotFoundException.class, () ->
-                votingSessionService.openVotingSession(INVALID_ID, votingSessionRequestDto)
+                votingSessionService.openVotingSession(INVALID_ID, votingSessionRequest)
         );
 
         assertEquals("Agenda not found with ID: " + INVALID_ID, exception.getMessage());
@@ -105,12 +105,12 @@ public class VotingSessionServiceImplTest {
         Agenda agenda = AgendaFixtures.createAgenda();
         agenda.setStatus(Status.IN_PROGRESS);
 
-        VotingSessionRequestDto votingSessionRequestDto = VotingSessionFixtures.createInvalidVotingSessionRequestDto();
+        VotingSessionRequest votingSessionRequest = VotingSessionFixtures.createInvalidVotingSessionRequest();
 
         when(agendaRepository.findById(VALID_ID)).thenReturn(Optional.of(agenda));
 
         IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
-                votingSessionService.openVotingSession(VALID_ID, votingSessionRequestDto)
+                votingSessionService.openVotingSession(VALID_ID, votingSessionRequest)
         );
 
         verify(agendaRepository, times(1)).findById(VALID_ID);

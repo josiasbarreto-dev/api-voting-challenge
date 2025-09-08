@@ -1,8 +1,8 @@
 package github.io.api_voting_challenge.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import github.io.api_voting_challenge.dto.VoteRequestDTO;
-import github.io.api_voting_challenge.dto.VotingSessionResponseDto;
+import github.io.api_voting_challenge.dto.VoteRequest;
+import github.io.api_voting_challenge.dto.VotingSessionResponse;
 import github.io.api_voting_challenge.fixtures.VotingSessionFixtures;
 import github.io.api_voting_challenge.service.VoteServiceInterface;
 import github.io.api_voting_challenge.service.VotingSessionSchedulerInterface;
@@ -43,9 +43,9 @@ public class VoterControllerIntegrationTest {
     @Test
     @DisplayName("Deve buscar a primeira página de sessões ativas com sucesso e retornar status 200")
     void shouldFetchFirstPageOfActiveVotingSessionsAndReturnStatus200() throws Exception {
-        List<VotingSessionResponseDto> sessions = VotingSessionFixtures.createVotingSessionResponseDtoList(5);
+        List<VotingSessionResponse> sessions = VotingSessionFixtures.createVotingSessionResponseList(5);
 
-        Page<VotingSessionResponseDto> mockPage = new PageImpl<>(sessions, PageRequest.of(0, 5), 15);
+        Page<VotingSessionResponse> mockPage = new PageImpl<>(sessions, PageRequest.of(0, 5), 15);
 
         when(votingSessionScheduler.getOpenVotingSessions(any(Pageable.class))).thenReturn(mockPage);
 
@@ -67,9 +67,9 @@ public class VoterControllerIntegrationTest {
     @Test
     @DisplayName("Deve buscar a segunda página de sessões ativas com sucesso")
     void shouldFetchSecondPageOfActiveVotingSessions() throws Exception {
-        List<VotingSessionResponseDto> sessions = VotingSessionFixtures.createVotingSessionResponseDtoList(5);
+        List<VotingSessionResponse> sessions = VotingSessionFixtures.createVotingSessionResponseList(5);
 
-        Page<VotingSessionResponseDto> mockPage = new PageImpl<>(sessions, PageRequest.of(1, 5), 15);
+        Page<VotingSessionResponse> mockPage = new PageImpl<>(sessions, PageRequest.of(1, 5), 15);
         when(votingSessionScheduler.getOpenVotingSessions(any(Pageable.class))).thenReturn(mockPage);
 
         mockMvc.perform(get("/api/v1/voters/open-sessions")
@@ -90,7 +90,7 @@ public class VoterControllerIntegrationTest {
     @Test
     @DisplayName("Deve retornar 422 ao tentar registrar voto com payload inválido")
     void shouldReturnUnprocessableEntityWhenTryingToRegisterVoteWithInvalidPayload() throws Exception {
-        VoteRequestDTO invalidRequest = new VoteRequestDTO(null);
+        VoteRequest invalidRequest = new VoteRequest(null);
         Long sessionId = 1L;
         Long userId = 1L;
 

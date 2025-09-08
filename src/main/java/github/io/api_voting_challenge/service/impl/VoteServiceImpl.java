@@ -1,7 +1,7 @@
 package github.io.api_voting_challenge.service.impl;
 
-import github.io.api_voting_challenge.dto.VoteRequestDTO;
-import github.io.api_voting_challenge.dto.VoteResultResponseDTO;
+import github.io.api_voting_challenge.dto.VoteRequest;
+import github.io.api_voting_challenge.dto.VoteResultResponse;
 import github.io.api_voting_challenge.exception.*;
 import github.io.api_voting_challenge.model.Agenda;
 import github.io.api_voting_challenge.model.Vote;
@@ -27,7 +27,7 @@ public class VoteServiceImpl implements VoteServiceInterface {
     private final VoteRepository voteRepository;
 
     @Override
-    public void registerVote(Long sessionId, Long userId, VoteRequestDTO voteRequest) {
+    public void registerVote(Long sessionId, Long userId, VoteRequest voteRequest) {
         VotingUser user = userVotingRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException("User not found with ID: " + userId));
         VotingSession session = votingSessionRepository.findById(sessionId).orElseThrow(
@@ -52,7 +52,7 @@ public class VoteServiceImpl implements VoteServiceInterface {
     }
 
     @Override
-    public VoteResultResponseDTO calculateVotingResult(Long sessionId) {
+    public VoteResultResponse calculateVotingResult(Long sessionId) {
         VotingSession session = votingSessionRepository.findById(sessionId).orElseThrow(
                 () -> new VotingSessionNotFoundException("Voting session not found with ID: " + sessionId));
         if (LocalDateTime.now().isBefore(session.getEndTime())) {
@@ -63,6 +63,6 @@ public class VoteServiceImpl implements VoteServiceInterface {
         long yesVotes = voteRepository.countByAgendaIdAndVoteOption(agenda.getId(), VoteOption.YES);
         long noVotes = voteRepository.countByAgendaIdAndVoteOption(agenda.getId(), VoteOption.NO);
 
-        return new VoteResultResponseDTO("Vote Result: ", yesVotes, noVotes);
+        return new VoteResultResponse("Vote Result: ", yesVotes, noVotes);
     }
 }

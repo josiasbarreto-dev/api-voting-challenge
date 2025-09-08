@@ -1,7 +1,7 @@
 package github.io.api_voting_challenge.service.impl;
 
-import github.io.api_voting_challenge.dto.VoteRequestDTO;
-import github.io.api_voting_challenge.dto.VoteResultResponseDTO;
+import github.io.api_voting_challenge.dto.VoteRequest;
+import github.io.api_voting_challenge.dto.VoteResultResponse;
 import github.io.api_voting_challenge.exception.*;
 import github.io.api_voting_challenge.fixtures.AgendaFixtures;
 import github.io.api_voting_challenge.fixtures.VoteFixtures;
@@ -53,14 +53,14 @@ public class VoteServiceImplTest {
         Agenda agenda = AgendaFixtures.createAgenda();
         VotingSession votingSession = VotingSessionFixtures.createValidVotingSessionEntity();
         votingSession.setAgenda(agenda);
-        VoteRequestDTO voteRequestDto = VoteFixtures.createValidVoteRequestDto();
+        VoteRequest voteRequest = VoteFixtures.createValidVoteRequest();
 
         when(userVotingRepository.findById(VALID_ID)).thenReturn(Optional.of(votingUser));
         when(votingSessionRepository.findById(VALID_ID)).thenReturn(Optional.of(votingSession));
         when(voteRepository.existsByUserIdAndAgenda_Id(VALID_ID, VALID_ID)).thenReturn(false);
         when(voteRepository.save(any(Vote.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        voteServiceImpl.registerVote(VALID_ID, VALID_ID, voteRequestDto);
+        voteServiceImpl.registerVote(VALID_ID, VALID_ID, voteRequest);
 
         ArgumentCaptor<Vote> voteCaptor = ArgumentCaptor.forClass(Vote.class);
         verify(voteRepository, times(1)).save(voteCaptor.capture());
@@ -69,7 +69,7 @@ public class VoteServiceImplTest {
 
         assertEquals(votingUser, capturedVote.getUser());
         assertEquals(agenda, capturedVote.getAgenda());
-        assertEquals(voteRequestDto.voteOption(), capturedVote.getVoteOption());
+        assertEquals(voteRequest.voteOption(), capturedVote.getVoteOption());
 
         verifyNoMoreInteractions(userVotingRepository, votingSessionRepository, voteRepository);
     }
@@ -77,11 +77,11 @@ public class VoteServiceImplTest {
     @Test
     @DisplayName("Deve lançar exceção se o usuário não for encontrado")
     void shouldThrowExceptionWhenUserNotFound() {
-        VoteRequestDTO voteRequestDto = VoteFixtures.createValidVoteRequestDto();
+        VoteRequest voteRequest = VoteFixtures.createValidVoteRequest();
         when(userVotingRepository.findById(VALID_ID)).thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class, () ->
-                voteServiceImpl.registerVote(VALID_ID, VALID_ID, voteRequestDto));
+                voteServiceImpl.registerVote(VALID_ID, VALID_ID, voteRequest));
 
         verifyNoMoreInteractions(votingSessionRepository, voteRepository);
     }
@@ -90,13 +90,13 @@ public class VoteServiceImplTest {
     @DisplayName("Deve lançar exceção se a sessão de votação não for encontrada")
     void shouldThrowExceptionWhenVotingSessionNotFound() {
         VotingUser votingUser = VoterFixtures.createValidVotingUserEntity();
-        VoteRequestDTO voteRequestDto = VoteFixtures.createValidVoteRequestDto();
+        VoteRequest voteRequest = VoteFixtures.createValidVoteRequest();
 
         when(userVotingRepository.findById(VALID_ID)).thenReturn(Optional.of(votingUser));
         when(votingSessionRepository.findById(VALID_ID)).thenReturn(Optional.empty());
 
         assertThrows(VotingSessionNotFoundException.class, () ->
-                voteServiceImpl.registerVote(VALID_ID, VALID_ID, voteRequestDto));
+                voteServiceImpl.registerVote(VALID_ID, VALID_ID, voteRequest));
 
         verifyNoMoreInteractions(voteRepository);
     }
@@ -107,13 +107,13 @@ public class VoteServiceImplTest {
         VotingUser votingUser = VoterFixtures.createValidVotingUserEntity();
         VotingSession votingSession = VotingSessionFixtures.createValidVotingSessionEntity();
         votingSession.setEndTime(LocalDateTime.now().minusMinutes(5));
-        VoteRequestDTO voteRequestDto = VoteFixtures.createValidVoteRequestDto();
+        VoteRequest voteRequest = VoteFixtures.createValidVoteRequest();
 
         when(userVotingRepository.findById(VALID_ID)).thenReturn(Optional.of(votingUser));
         when(votingSessionRepository.findById(VALID_ID)).thenReturn(Optional.of(votingSession));
 
         assertThrows(VotingSessionClosedException.class, () ->
-                voteServiceImpl.registerVote(VALID_ID, VALID_ID, voteRequestDto));
+                voteServiceImpl.registerVote(VALID_ID, VALID_ID, voteRequest));
 
         verifyNoMoreInteractions(voteRepository);
     }
@@ -123,14 +123,14 @@ public class VoteServiceImplTest {
     void shouldThrowExceptionWhenUserAlreadyVoted() {
         VotingUser votingUser = VoterFixtures.createValidVotingUserEntity();
         VotingSession votingSession = VotingSessionFixtures.createValidVotingSessionEntity();
-        VoteRequestDTO voteRequestDto = VoteFixtures.createValidVoteRequestDto();
+        VoteRequest voteRequest = VoteFixtures.createValidVoteRequest();
 
         when(userVotingRepository.findById(VALID_ID)).thenReturn(Optional.of(votingUser));
         when(votingSessionRepository.findById(VALID_ID)).thenReturn(Optional.of(votingSession));
         when(voteRepository.existsByUserIdAndAgenda_Id(VALID_ID, VALID_ID)).thenReturn(true);
 
         assertThrows(UserAlreadyVotedException.class, () ->
-                voteServiceImpl.registerVote(VALID_ID, VALID_ID, voteRequestDto));
+                voteServiceImpl.registerVote(VALID_ID, VALID_ID, voteRequest));
 
         verifyNoMoreInteractions(voteRepository);
     }
@@ -147,7 +147,7 @@ public class VoteServiceImplTest {
         when(voteRepository.countByAgendaIdAndVoteOption(agenda.getId(), VoteOption.YES)).thenReturn(10L);
         when(voteRepository.countByAgendaIdAndVoteOption(agenda.getId(), VoteOption.NO)).thenReturn(5L);
 
-        VoteResultResponseDTO result = voteServiceImpl.calculateVotingResult(VALID_ID);
+        VoteResultResponse result = voteServiceImpl.calculateVotingResult(VALID_ID);
 
         assertNotNull(result);
         assertEquals(10L, result.yesVotes());

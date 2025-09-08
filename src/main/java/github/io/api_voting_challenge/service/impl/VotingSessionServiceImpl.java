@@ -1,7 +1,7 @@
 package github.io.api_voting_challenge.service.impl;
 
-import github.io.api_voting_challenge.dto.VotingSessionRequestDto;
-import github.io.api_voting_challenge.dto.VotingSessionResponseDto;
+import github.io.api_voting_challenge.dto.VotingSessionRequest;
+import github.io.api_voting_challenge.dto.VotingSessionResponse;
 import github.io.api_voting_challenge.exception.AgendaNotFoundException;
 import github.io.api_voting_challenge.mapper.VotingSessionMapper;
 import github.io.api_voting_challenge.model.Agenda;
@@ -25,7 +25,7 @@ public class VotingSessionServiceImpl implements VotingSessionServiceInterface {
     private final VotingSessionMapper votingSessionMapper;
 
     @Override
-    public VotingSessionResponseDto openVotingSession(Long id, VotingSessionRequestDto votingSessionRequestDto) {
+    public VotingSessionResponse openVotingSession(Long id, VotingSessionRequest votingSessionRequest) {
         Agenda agenda = agendaRepository.findById(id).orElseThrow(
                 () -> new AgendaNotFoundException("Agenda not found with ID: " + id)
         );
@@ -34,7 +34,7 @@ public class VotingSessionServiceImpl implements VotingSessionServiceInterface {
             throw new IllegalStateException("Voting session can only be created for agendas with status PENDING.");
         }
 
-        int durationMinutes = votingSessionRequestDto.durationInMinutes() != null ? votingSessionRequestDto.durationInMinutes() : 1;
+        int durationMinutes = votingSessionRequest.durationInMinutes() != null ? votingSessionRequest.durationInMinutes() : 1;
         LocalDateTime now = LocalDateTime.now();
 
         VotingSession votingSession = VotingSession.builder()

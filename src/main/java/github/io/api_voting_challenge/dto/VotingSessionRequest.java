@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
-public record VotingSessionRequestDto(
+public record VotingSessionRequest(
         @NotNull(message = "Duration in minutes cannot be null.")
         @Min(value = 1, message = "Duration must be at least 1 minute.")
         Integer durationInMinutes

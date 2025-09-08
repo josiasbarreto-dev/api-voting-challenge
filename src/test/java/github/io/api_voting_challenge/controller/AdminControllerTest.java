@@ -43,11 +43,11 @@ public class AdminControllerTest {
     @Test
     @DisplayName("Deve criar um usuário administrador com sucesso e retornar o status 201")
     void shouldCreateAdminUserSuccessfully() {
-        AdminUserRequestDto requestDto = AdminFixtures.createValidAdminUserRequestDto();
-        AdminUserResponseDto responseFixture = AdminFixtures.createAdminUserResponseDto();
+        AdminUserRequest request = AdminFixtures.createValidAdminUserRequest();
+        AdminUserResponse responseFixture = AdminFixtures.createAdminUserResponse();
 
-        when(adminService.create(requestDto)).thenReturn(responseFixture);
-        ResponseEntity<AdminUserResponseDto> response = adminController.create(requestDto);
+        when(adminService.create(request)).thenReturn(responseFixture);
+        ResponseEntity<AdminUserResponse> response = adminController.create(request);
 
         assertEquals(responseFixture, response.getBody());
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -57,12 +57,12 @@ public class AdminControllerTest {
     @Test
     @DisplayName("Deve lançar uma exceção ao tentar criar um usuário administrador com nome inválido")
     void shouldThrowExceptionWhenCreatingAdminUserWithInvalidName() {
-        AdminUserRequestDto requestDto = AdminFixtures.createInvalidAdminUserRequestDto();
+        AdminUserRequest request = AdminFixtures.createInvalidAdminUserRequest();
 
         String message = "Invalid name";
-        when(adminService.create(requestDto)).thenThrow(new IllegalArgumentException(message));
+        when(adminService.create(request)).thenThrow(new IllegalArgumentException(message));
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> adminController.create(requestDto));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> adminController.create(request));
 
         assertEquals(message, exception.getMessage());
         verifyNoMoreInteractions(adminService);
@@ -71,12 +71,12 @@ public class AdminControllerTest {
     @Test
     @DisplayName("Deve lançar uma exceção ao tentar criar um usuário administrador com CPF inválido")
     void shouldThrowExceptionWhenCreatingAdminUserWithInvalidCpf() {
-        AdminUserRequestDto requestDto = AdminFixtures.createInvalidAdminUserRequestDto();
+        AdminUserRequest request = AdminFixtures.createInvalidAdminUserRequest();
 
         String message = "Invalid CPF";
-        when(adminService.create(requestDto)).thenThrow(new IllegalArgumentException(message));
+        when(adminService.create(request)).thenThrow(new IllegalArgumentException(message));
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> adminController.create(requestDto));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> adminController.create(request));
 
         assertEquals(message, exception.getMessage());
         verifyNoMoreInteractions(adminService);
@@ -85,12 +85,12 @@ public class AdminControllerTest {
     @Test
     @DisplayName("Deve lançar uma exceção ao tentar criar um usuário administrador com email inválido")
     void shouldThrowExceptionWhenCreatingAdminUserWithInvalidEmail() {
-        AdminUserRequestDto requestDto = AdminFixtures.createInvalidAdminUserRequestDto();
+        AdminUserRequest request = AdminFixtures.createInvalidAdminUserRequest();
 
         String message = "Invalid email";
-        when(adminService.create(requestDto)).thenThrow(new IllegalArgumentException(message));
+        when(adminService.create(request)).thenThrow(new IllegalArgumentException(message));
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> adminController.create(requestDto));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> adminController.create(request));
 
         assertEquals(message, exception.getMessage());
         verifyNoMoreInteractions(adminService);
@@ -99,12 +99,12 @@ public class AdminControllerTest {
     @Test
     @DisplayName("Deve lançar uma exceção ao tentar criar um usuário administrador com senha inválida")
     void shouldThrowExceptionWhenCreatingAdminUserWithInvalidPassword() {
-        AdminUserRequestDto requestDto = AdminFixtures.createInvalidAdminUserRequestDto();
+        AdminUserRequest request = AdminFixtures.createInvalidAdminUserRequest();
 
         String message = "Invalid password";
-        when(adminService.create(requestDto)).thenThrow(new IllegalArgumentException(message));
+        when(adminService.create(request)).thenThrow(new IllegalArgumentException(message));
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> adminController.create(requestDto));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> adminController.create(request));
 
         assertEquals(message, exception.getMessage());
         verifyNoMoreInteractions(adminService);
@@ -113,26 +113,26 @@ public class AdminControllerTest {
     @Test
     @DisplayName("Deve atualizar um usuário administrador com sucesso e retornar o status 200")
     void shouldUpdateAdminUserSuccessfully() {
-        AdminUserRequestDto requestDto = AdminFixtures.createAdminUserUpdateRequestDto();
-        AdminUserResponseDto responseFixture = AdminFixtures.createAdminUserResponseDtoAfterUpdate();
+        AdminUserRequest request = AdminFixtures.createAdminUserUpdateRequest();
+        AdminUserResponse responseFixture = AdminFixtures.createAdminUserResponseAfterUpdate();
 
-        when(adminService.update(VALID_ID, requestDto)).thenReturn(responseFixture);
-        ResponseEntity<AdminUserResponseDto> response = adminController.update(VALID_ID, requestDto);
+        when(adminService.update(VALID_ID, request)).thenReturn(responseFixture);
+        ResponseEntity<AdminUserResponse> response = adminController.update(VALID_ID, request);
 
         assertEquals(responseFixture, response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        verify(adminService).update(VALID_ID, requestDto);
+        verify(adminService).update(VALID_ID, request);
         verifyNoMoreInteractions(adminService);
     }
 
     @Test
     @DisplayName("Deve lançar uma exceção ao tentar atualizar um usuário administrador inexistente")
     void shouldThrowExceptionWhenUpdatingNonExistentAdminUser() {
-        AdminUserRequestDto requestDto = AdminFixtures.createAdminUserUpdateRequestDto();
+        AdminUserRequest request = AdminFixtures.createAdminUserUpdateRequest();
 
-        when(adminService.update(INVALID_ID, requestDto)).thenThrow(new IllegalArgumentException(MESSAGE_ADMIN_NOT_FOUND));
+        when(adminService.update(INVALID_ID, request)).thenThrow(new IllegalArgumentException(MESSAGE_ADMIN_NOT_FOUND));
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> adminController.update(INVALID_ID, requestDto));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> adminController.update(INVALID_ID, request));
 
         assertEquals(MESSAGE_ADMIN_NOT_FOUND, exception.getMessage());
         verifyNoMoreInteractions(adminService);
@@ -141,12 +141,12 @@ public class AdminControllerTest {
     @Test
     @DisplayName("Deve lançar uma exceção ao tentar atualizar o cpf de um usuário administrador já existente")
     void shouldThrowExceptionWhenUpdatingAdminUserWithExistingCpf() {
-        AdminUserRequestDto requestDto = AdminFixtures.createAdminUserUpdateRequestDto();
+        AdminUserRequest request = AdminFixtures.createAdminUserUpdateRequest();
 
         String message = "Voter with this CPF already exists";
-        when(adminService.update(VALID_ID, requestDto)).thenThrow(new CpfAlreadyRegisteredException(message));
+        when(adminService.update(VALID_ID, request)).thenThrow(new CpfAlreadyRegisteredException(message));
 
-        Exception exception = assertThrows(CpfAlreadyRegisteredException.class, () -> adminController.update(VALID_ID, requestDto));
+        Exception exception = assertThrows(CpfAlreadyRegisteredException.class, () -> adminController.update(VALID_ID, request));
 
         assertEquals(message, exception.getMessage());
         verifyNoMoreInteractions(adminService);
@@ -155,10 +155,10 @@ public class AdminControllerTest {
     @Test
     @DisplayName("Deve obter um usuário administrador por ID com sucesso e retornar o status 200")
     void shouldGetAdminUserByIdSuccessfully() {
-        AdminUserResponseDto responseFixture = AdminFixtures.createAdminUserResponseDto();
+        AdminUserResponse responseFixture = AdminFixtures.createAdminUserResponse();
 
         when(adminService.getById(VALID_ID)).thenReturn(responseFixture);
-        ResponseEntity<AdminUserResponseDto> response = adminController.getById(VALID_ID);
+        ResponseEntity<AdminUserResponse> response = adminController.getById(VALID_ID);
 
         assertEquals(responseFixture, response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -200,10 +200,10 @@ public class AdminControllerTest {
     @Test
     @DisplayName("Deve obter um usuário administrador por email com sucesso e retornar o status 200")
     void shouldGetAdminUserByEmailSuccessfully() {
-        AdminUserResponseDto responseFixture = AdminFixtures.createAdminUserResponseDto();
+        AdminUserResponse responseFixture = AdminFixtures.createAdminUserResponse();
 
         when(adminService.getByEmail(VALID_EMAIL)).thenReturn(responseFixture);
-        ResponseEntity<AdminUserResponseDto> response = adminController.getByEmail(VALID_EMAIL);
+        ResponseEntity<AdminUserResponse> response = adminController.getByEmail(VALID_EMAIL);
 
         assertEquals(responseFixture, response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -224,10 +224,10 @@ public class AdminControllerTest {
     @Test
     @DisplayName("Deve obter um usuário administrador por CPF com sucesso e retornar o status 200")
     void shouldGetAdminUserByCpfSuccessfully(){
-        AdminUserResponseDto responseFixture = AdminFixtures.createAdminUserResponseDto();
+        AdminUserResponse responseFixture = AdminFixtures.createAdminUserResponse();
 
         when(adminService.getByCpf(VALID_CPF)).thenReturn(responseFixture);
-        ResponseEntity<AdminUserResponseDto> response = adminController.getByCpf(VALID_CPF);
+        ResponseEntity<AdminUserResponse> response = adminController.getByCpf(VALID_CPF);
 
         assertEquals(responseFixture, response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -248,11 +248,11 @@ public class AdminControllerTest {
     @Test
     @DisplayName("Deve criar uma pauta de votação com sucesso e retornar o status 201")
     void shouldCreateVotingAgendaSuccessfully() {
-        AgendaRequestDto requestDto = AgendaFixtures.createValidAgendaRequestDto();
-        AgendaResponseDto responseFixture = AgendaFixtures.createAgendaResponseDto();
+        AgendaRequest request = AgendaFixtures.createValidAgendaRequest();
+        AgendaResponse responseFixture = AgendaFixtures.createAgendaResponse();
 
-        when(agendaService.createAgenda(requestDto, VALID_ID)).thenReturn(responseFixture);
-        ResponseEntity<AgendaResponseDto> response = adminController.createAgenda(requestDto, VALID_ID);
+        when(agendaService.createAgenda(request, VALID_ID)).thenReturn(responseFixture);
+        ResponseEntity<AgendaResponse> response = adminController.createAgenda(request, VALID_ID);
 
         assertEquals(responseFixture, response.getBody());
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -262,12 +262,12 @@ public class AdminControllerTest {
     @Test
     @DisplayName("Deve lançar uma exceção ao tentar criar uma pauta de votação com título inválido")
     void shouldThrowExceptionWhenCreatingVotingAgendaWithInvalidTitle() {
-        AgendaRequestDto requestDto = AgendaFixtures.createInvalidAgendaRequestDto();
+        AgendaRequest request = AgendaFixtures.createInvalidAgendaRequest();
 
         String message = "title and description cannot be empty";
-        when(agendaService.createAgenda(requestDto, VALID_ID)).thenThrow(new IllegalArgumentException(message));
+        when(agendaService.createAgenda(request, VALID_ID)).thenThrow(new IllegalArgumentException(message));
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> adminController.createAgenda(requestDto, VALID_ID));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> adminController.createAgenda(request, VALID_ID));
 
         assertEquals(message, exception.getMessage());
         verifyNoMoreInteractions(agendaService);
@@ -276,11 +276,11 @@ public class AdminControllerTest {
     @Test
     @DisplayName("Deve criar uma sessão de votação com sucesso e retornar o status 201")
     void shouldCreateVotingSessionSuccessfully() {
-        VotingSessionRequestDto requestDto = VotingSessionFixtures.createValidVotingSessionRequestDto();
-        VotingSessionResponseDto responseFixture = VotingSessionFixtures.createVotingSessionResponseDto();
+        VotingSessionRequest request = VotingSessionFixtures.createValidVotingSessionRequest();
+        VotingSessionResponse responseFixture = VotingSessionFixtures.createVotingSessionResponse();
 
-        when(votingSessionService.openVotingSession(VALID_ID, requestDto)).thenReturn(responseFixture);
-        ResponseEntity<VotingSessionResponseDto> response = adminController.createVotingSession(VALID_ID, requestDto);
+        when(votingSessionService.openVotingSession(VALID_ID, request)).thenReturn(responseFixture);
+        ResponseEntity<VotingSessionResponse> response = adminController.createVotingSession(VALID_ID, request);
 
         assertEquals(responseFixture, response.getBody());
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -290,12 +290,12 @@ public class AdminControllerTest {
     @Test
     @DisplayName("Deve lançar uma exceção ao tentar criar uma sessão de votação para uma pauta inexistente")
     void shouldThrowExceptionWhenCreatingVotingSessionForNonExistentAgenda() {
-        VotingSessionRequestDto requestDto = VotingSessionFixtures.createValidVotingSessionRequestDto();
+        VotingSessionRequest request = VotingSessionFixtures.createValidVotingSessionRequest();
         String message = "Agenda not found";
 
-        when(votingSessionService.openVotingSession(INVALID_ID, requestDto)).thenThrow(new AgendaNotFoundException(message));
+        when(votingSessionService.openVotingSession(INVALID_ID, request)).thenThrow(new AgendaNotFoundException(message));
 
-        Exception exception = assertThrows(AgendaNotFoundException.class, () -> adminController.createVotingSession(INVALID_ID, requestDto));
+        Exception exception = assertThrows(AgendaNotFoundException.class, () -> adminController.createVotingSession(INVALID_ID, request));
 
         assertEquals(message, exception.getMessage());
         verifyNoMoreInteractions(votingSessionService);
@@ -304,11 +304,11 @@ public class AdminControllerTest {
     @Test
     @DisplayName("Deve criar um usuário votante com sucesso e retornar o status 201")
     void shouldCreateVoterUserSuccessfully() {
-        VoterRequestDto requestDto = VoterFixtures.createValidVoterRequestDto();
-        VoterResponseDto responseFixture = VoterFixtures.createVoterResponseDto();
+        VoterRequest request = VoterFixtures.createValidVoterRequest();
+        VoterResponse responseFixture = VoterFixtures.createVoterResponse();
 
-        when(adminService.createVoter(requestDto)).thenReturn(responseFixture);
-        ResponseEntity<VoterResponseDto> response = adminController.createVoter(requestDto);
+        when(adminService.createVoter(request)).thenReturn(responseFixture);
+        ResponseEntity<VoterResponse> response = adminController.createVoter(request);
 
         assertEquals(responseFixture, response.getBody());
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -318,12 +318,12 @@ public class AdminControllerTest {
     @Test
     @DisplayName("Deve lançar uma exceção ao tentar criar um usuário votante com CPF inválido")
     void shouldThrowExceptionWhenCreatingVoterUserWithInvalidCpf() {
-        VoterRequestDto requestDto = VoterFixtures.createInvalidVoterRequestDto();
+        VoterRequest request = VoterFixtures.createInvalidVoterRequest();
 
         String message = "Invalid CPF";
-        when(adminService.createVoter(requestDto)).thenThrow(new IllegalArgumentException(message));
+        when(adminService.createVoter(request)).thenThrow(new IllegalArgumentException(message));
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> adminController.createVoter(requestDto));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> adminController.createVoter(request));
 
         assertEquals(message, exception.getMessage());
         verifyNoMoreInteractions(adminService);
@@ -332,12 +332,12 @@ public class AdminControllerTest {
     @Test
     @DisplayName("Deve lançar uma exceção ao tentar criar um usuário votante com nome inválido")
     void shouldThrowExceptionWhenCreatingVoterUserWithInvalidName() {
-        VoterRequestDto requestDto = VoterFixtures.createInvalidVoterRequestDto();
+        VoterRequest request = VoterFixtures.createInvalidVoterRequest();
 
         String message = "Invalid name";
-        when(adminService.createVoter(requestDto)).thenThrow(new IllegalArgumentException(message));
+        when(adminService.createVoter(request)).thenThrow(new IllegalArgumentException(message));
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> adminController.createVoter(requestDto));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> adminController.createVoter(request));
 
         assertEquals(message, exception.getMessage());
         verifyNoMoreInteractions(adminService);
@@ -346,12 +346,12 @@ public class AdminControllerTest {
     @Test
     @DisplayName("Deve lançar uma exceção ao tentar criar um usuário votante com CPF já existente")
     void shouldThrowExceptionWhenCreatingVoterUserWithExistingCpf() {
-        VoterRequestDto requestDto = VoterFixtures.createValidVoterRequestDto();
+        VoterRequest request = VoterFixtures.createValidVoterRequest();
         String message = "Voter with this CPF already exists";
 
-        when(adminService.createVoter(requestDto)).thenThrow(new CpfAlreadyRegisteredException(message));
+        when(adminService.createVoter(request)).thenThrow(new CpfAlreadyRegisteredException(message));
 
-        Exception exception = assertThrows(CpfAlreadyRegisteredException.class, () -> adminController.createVoter(requestDto));
+        Exception exception = assertThrows(CpfAlreadyRegisteredException.class, () -> adminController.createVoter(request));
 
         assertEquals(message, exception.getMessage());
         verifyNoMoreInteractions(adminService);

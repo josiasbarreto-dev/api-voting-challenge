@@ -1,7 +1,7 @@
 package github.io.api_voting_challenge.service.impl;
 
-import github.io.api_voting_challenge.dto.AgendaRequestDto;
-import github.io.api_voting_challenge.dto.AgendaResponseDto;
+import github.io.api_voting_challenge.dto.AgendaRequest;
+import github.io.api_voting_challenge.dto.AgendaResponse;
 import github.io.api_voting_challenge.exception.UserNotFoundException;
 import github.io.api_voting_challenge.fixtures.AdminFixtures;
 import github.io.api_voting_challenge.fixtures.AgendaFixtures;
@@ -43,32 +43,32 @@ public class AgendaServiceImplTest {
     @Test
     @DisplayName("Deve criar uma agenda com sucesso")
     void shouldCreateAgendaSuccessfully(){
-        AgendaRequestDto agendaRequestDto = AgendaFixtures.createValidAgendaRequestDto();
-        AgendaResponseDto agendaResponseDto = AgendaFixtures.createAgendaResponseDto();
+        AgendaRequest agendaRequest = AgendaFixtures.createValidAgendaRequest();
+        AgendaResponse agendaResponse = AgendaFixtures.createAgendaResponse();
         Agenda agendaEntity = AgendaFixtures.createAgenda();
         AdminUser adminUser = AdminFixtures.createValidAdminUserEntity();
 
         when(userAdminRepository.findById(VALID_ID)).thenReturn(Optional.of(adminUser));
         when(agendaRepository.save(any(Agenda.class))).thenReturn(agendaEntity);
-        when(agendaMapper.toDto(any(Agenda.class))).thenReturn(agendaResponseDto);
+        when(agendaMapper.toDto(any(Agenda.class))).thenReturn(agendaResponse);
 
-        AgendaResponseDto result = agendaServiceImpl.createAgenda(agendaRequestDto, VALID_ID);
+        AgendaResponse result = agendaServiceImpl.createAgenda(agendaRequest, VALID_ID);
 
         assertNotNull(result);
-        assertEquals(agendaResponseDto, result);
+        assertEquals(agendaResponse, result);
         verifyNoMoreInteractions(agendaMapper, agendaRepository, userAdminRepository);
     }
 
     @Test
     @DisplayName("Deve retornar UserNotFoundException quando o admin não for encontrado")
     void shouldThrowUserNotFoundExceptionWhenAdminNotFound() {
-        AgendaRequestDto agendaRequestDto = AgendaFixtures.createValidAgendaRequestDto();
+        AgendaRequest agendaRequest = AgendaFixtures.createValidAgendaRequest();
 
         when(userAdminRepository.findById(VALID_ID)).thenReturn(Optional.empty());
 
         UserNotFoundException exception = assertThrows(
                 UserNotFoundException.class, () -> {
-                    agendaServiceImpl.createAgenda(agendaRequestDto, VALID_ID);
+                    agendaServiceImpl.createAgenda(agendaRequest, VALID_ID);
                 });
         String message = String.format("Admin user not found with id: %d", VALID_ID);
 
