@@ -24,7 +24,6 @@ public class Agenda {
     @Enumerated(EnumType.STRING)
     private Status status;
     private LocalDate creationDate;
-    private String createdBy;
 
     @OneToOne(mappedBy = "agenda", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
