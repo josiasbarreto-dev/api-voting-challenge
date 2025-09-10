@@ -4,5 +4,5 @@ import github.io.api_voting_challenge.dto.VotingSessionRequest;
 import github.io.api_voting_challenge.dto.VotingSessionResponse;
 
 public interface VotingSessionService {
-    VotingSessionResponse openVotingSession(Long id, VotingSessionRequest votingSessionRequest);
+    VotingSessionResponse openVotingSession(VotingSessionRequest votingSessionRequest);
 }

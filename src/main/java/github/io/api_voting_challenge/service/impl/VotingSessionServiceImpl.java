@@ -5,8 +5,8 @@ import github.io.api_voting_challenge.dto.VotingSessionResponse;
 import github.io.api_voting_challenge.exception.AgendaNotFoundException;
 import github.io.api_voting_challenge.mapper.VotingSessionMapper;
 import github.io.api_voting_challenge.model.Agenda;
-import github.io.api_voting_challenge.model.enums.Status;
 import github.io.api_voting_challenge.model.VotingSession;
+import github.io.api_voting_challenge.model.enums.Status;
 import github.io.api_voting_challenge.repository.AgendaRepository;
 import github.io.api_voting_challenge.repository.VotingSessionRepository;
 import github.io.api_voting_challenge.service.VotingSessionService;
@@ -25,9 +25,9 @@ public class VotingSessionServiceImpl implements VotingSessionService {
     private final VotingSessionMapper votingSessionMapper;
 
     @Override
-    public VotingSessionResponse openVotingSession(Long id, VotingSessionRequest votingSessionRequest) {
-        Agenda agenda = agendaRepository.findById(id).orElseThrow(
-                () -> new AgendaNotFoundException("Agenda not found with ID: " + id)
+    public VotingSessionResponse openVotingSession(VotingSessionRequest votingSessionRequest) {
+        Agenda agenda = agendaRepository.findById(votingSessionRequest.agendaId()).orElseThrow(
+                () -> new AgendaNotFoundException("Agenda not found with ID: " + votingSessionRequest.agendaId())
         );
 
         if (agenda.getStatus() != Status.PENDING) {
