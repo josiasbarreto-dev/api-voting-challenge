@@ -8,7 +8,7 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="agendas")
+@Table(name="tb_agendas")
 @Getter
 @Setter
 @Builder
