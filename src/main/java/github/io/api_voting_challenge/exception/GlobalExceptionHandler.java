@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleUserNotFoundException(UserNotFoundException ex) {
         Map<String, Object> response = new HashMap<>();
-        response.put("error", "Admin not found");
+        response.put("error", "User not found");
         response.put("status", HttpStatus.NOT_FOUND.value());
         response.put("message", ex.getMessage());
 
@@ -86,10 +86,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleCpfModificationNotAllowedException(CpfModificationNotAllowedException ex) {
         Map<String, Object> response = new HashMap<>();
         response.put("error", "CPF modification not allowed");
-        response.put("status", HttpStatus.FORBIDDEN.value());
+        response.put("status", HttpStatus.CONFLICT.value());
         response.put("message", ex.getMessage());
 
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     @ExceptionHandler(VotingSessionClosedException.class)
