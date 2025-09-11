@@ -11,7 +11,6 @@ public interface AgendaMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "creationDate", ignore = true)
-    @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "votingSession", ignore = true)
     Agenda toEntity(AgendaRequest agendaRequest);
     AgendaResponse toDto(Agenda agenda);
