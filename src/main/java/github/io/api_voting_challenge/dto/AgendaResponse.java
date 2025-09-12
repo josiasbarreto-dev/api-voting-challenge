@@ -10,6 +10,5 @@ public record AgendaResponse(
         String title,
         String description,
         String status,
-        LocalDate creationDate,
-        String createdBy
+        LocalDate creationDate
 ) {}
