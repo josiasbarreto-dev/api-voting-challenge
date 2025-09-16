@@ -4,6 +4,7 @@ import github.io.api_voting_challenge.controller.docs.VotingSessionControllerDoc
 import github.io.api_voting_challenge.dto.VoteResultResponse;
 import github.io.api_voting_challenge.dto.VotingSessionRequest;
 import github.io.api_voting_challenge.dto.VotingSessionResponse;
+import github.io.api_voting_challenge.service.VoteService;
 import github.io.api_voting_challenge.service.VotingSessionScheduler;
 import github.io.api_voting_challenge.service.VotingSessionService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class VotingSessionController implements VotingSessionControllerDocs {
     private final VotingSessionService votingSessionService;
     private final VotingSessionScheduler votingSessionScheduler;
+    private final VoteService voteService;
 
     @Override
     @PostMapping
@@ -37,6 +39,6 @@ public class VotingSessionController implements VotingSessionControllerDocs {
     @Override
     @GetMapping("/{sessionId}/results")
     public ResponseEntity<VoteResultResponse> getVotingResults(@PathVariable Long sessionId) {
-        return ResponseEntity.ok(votingSessionService.calculateVotingResult(sessionId));
+        return ResponseEntity.ok(voteService.calculateVotingResult(sessionId));
     }
 }
