@@ -2,15 +2,16 @@ FROM maven:3.9.6-eclipse-temurin-17 AS builder
 WORKDIR /app
 
 COPY pom.xml .
+RUN mvn dependency:go-offline -B
 
 COPY src ./src
 
-COPY .env .
-
-RUN mvn clean package -DskipTests
+RUN mvn clean package -Dmaven.test.skip
 
 FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
+
+COPY .env .
 
 COPY --from=builder /app/target/*.jar app.jar
 
