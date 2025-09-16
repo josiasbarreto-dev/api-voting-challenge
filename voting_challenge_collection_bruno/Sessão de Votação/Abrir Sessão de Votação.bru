@@ -1,0 +1,15 @@
+meta {
+  name: Abrir Sessão de Votação
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/api/v1/voting-sessions
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
