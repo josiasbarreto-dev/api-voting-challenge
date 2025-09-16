@@ -29,7 +29,6 @@ public class VotingSessionSchedulerImpl implements VotingSessionScheduler {
     public void checkExpiredVotingSessions() {
         LocalDateTime now = LocalDateTime.now();
 
-
         List<VotingSession> expiredSessions = votingSessionRepository.findByEndTimeBeforeAndAgendaStatus(now, Status.IN_PROGRESS);
 
         for (VotingSession session : expiredSessions) {
