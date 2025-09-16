@@ -6,9 +6,9 @@ import github.io.api_voting_challenge.exception.*;
 import github.io.api_voting_challenge.model.Agenda;
 import github.io.api_voting_challenge.model.Vote;
 import github.io.api_voting_challenge.model.VotingSession;
-import github.io.api_voting_challenge.model.VotingUser;
+import github.io.api_voting_challenge.model.User;
 import github.io.api_voting_challenge.model.enums.VoteOption;
-import github.io.api_voting_challenge.repository.UserVotingRepository;
+import github.io.api_voting_challenge.repository.UserRepository;
 import github.io.api_voting_challenge.repository.VoteRepository;
 import github.io.api_voting_challenge.repository.VotingSessionRepository;
 import github.io.api_voting_challenge.service.VoteService;
@@ -22,25 +22,17 @@ import java.time.LocalDateTime;
 @Transactional
 @RequiredArgsConstructor
 public class VoteServiceImpl implements VoteService {
-    private final UserVotingRepository userVotingRepository;
+    private final UserRepository userRepository;
     private final VotingSessionRepository votingSessionRepository;
     private final VoteRepository voteRepository;
 
     @Override
-    public void registerVote(Long sessionId, Long userId, VoteRequest voteRequest) {
-        VotingUser user = userVotingRepository.findById(userId).orElseThrow(
-                () -> new UserNotFoundException("User not found with ID: " + userId));
-        VotingSession session = votingSessionRepository.findById(sessionId).orElseThrow(
-                () -> new VotingSessionNotFoundException("Voting session not found with ID: " + sessionId));
+    public void registerVote(Long sessionId, VoteRequest voteRequest) {
+        User user = getUser(voteRequest.userId());
+        VotingSession session = getVotingSession(sessionId);
 
-        if(LocalDateTime.now().isAfter(session.getEndTime())){
-            throw new VotingSessionClosedException("Voting session is closed for ID: " + sessionId);
-        }
-
-        boolean alreadyVoted = voteRepository.existsByUserIdAndAgenda_Id(userId, sessionId);
-        if (alreadyVoted) {
-            throw new UserAlreadyVotedException("User has already voted in this session.");
-        }
+        validateVotingSessionIsOpen(session);
+        checkIfUserAlreadyVoted(voteRequest.userId(), sessionId);
 
         Vote vote = Vote.builder()
                 .user(user)
@@ -64,5 +56,28 @@ public class VoteServiceImpl implements VoteService {
         long noVotes = voteRepository.countByAgendaIdAndVoteOption(agenda.getId(), VoteOption.NO);
 
         return new VoteResultResponse("Vote Result: ", yesVotes, noVotes);
+    }
+
+    private User getUser(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new UserNotFoundException("User not found with ID: " + id));
+    }
+
+    private VotingSession getVotingSession(Long id) {
+        return votingSessionRepository.findById(id).orElseThrow(
+                () -> new VotingSessionNotFoundException("Voting session not found with ID: " + id));
+    }
+
+    private void validateVotingSessionIsOpen(VotingSession session) {
+        if(LocalDateTime.now().isAfter(session.getEndTime())){
+            throw new VotingSessionClosedException("Voting session is closed for ID: " + session.getId());
+        }
+    }
+
+    private void checkIfUserAlreadyVoted(Long userId, Long sessionId) {
+        boolean alreadyVoted = voteRepository.existsByUserIdAndAgenda_Id(userId, sessionId);
+        if (alreadyVoted) {
+            throw new UserAlreadyVotedException("User has already voted in this session.");
+        }
     }
 }
