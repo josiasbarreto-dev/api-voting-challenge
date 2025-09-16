@@ -21,11 +21,13 @@ import static github.io.api_voting_challenge.fixtures.TestConstants.*;
 public class VotingSessionFixtures {
     public static VotingSessionRequest.VotingSessionRequestBuilder createValidVotingSessionRequestBuilder() {
         return VotingSessionRequest.builder()
+                .agendaId(VALID_ID)
                 .durationInMinutes(60);
     }
 
     public static VotingSessionRequest.VotingSessionRequestBuilder createInvalidVotingSessionRequestBuilder() {
         return VotingSessionRequest.builder()
+                .agendaId(VALID_ID)
                 .durationInMinutes(null);
     }
 
@@ -100,7 +102,6 @@ public class VotingSessionFixtures {
                 .description(VALID_AGENDA_DESCRIPTION)
                 .status(status)
                 .creationDate(LocalDate.now())
-                .createdBy(VALID_NAME)
                 .build();
     }
 
