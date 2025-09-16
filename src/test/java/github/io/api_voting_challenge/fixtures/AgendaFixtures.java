@@ -4,8 +4,14 @@ import github.io.api_voting_challenge.dto.AgendaRequest;
 import github.io.api_voting_challenge.dto.AgendaResponse;
 import github.io.api_voting_challenge.model.Agenda;
 import github.io.api_voting_challenge.model.enums.Status;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static github.io.api_voting_challenge.fixtures.TestConstants.*;
 
@@ -27,7 +33,7 @@ public class AgendaFixtures {
                 .id(VALID_ID)
                 .title(VALID_AGENDA_TITLE)
                 .description(VALID_AGENDA_DESCRIPTION)
-                .status(String.valueOf(Status.PENDING))
+                .status(Status.PENDING)
                 .creationDate(LocalDate.now());
     }
 
@@ -40,14 +46,32 @@ public class AgendaFixtures {
                 .creationDate(LocalDate.now());
     }
 
-    public static Agenda createAgendaWithStatus(Status status) {
-        return Agenda.builder()
-                .id(VALID_ID)
-                .title(VALID_AGENDA_TITLE)
-                .description(VALID_AGENDA_DESCRIPTION)
-                .status(status)
-                .creationDate(LocalDate.now())
-                .build();
+    public static List<AgendaResponse> createAgendaResponseList(int count) {
+        return IntStream.range(0, count)
+                .mapToObj(i -> AgendaResponse.builder()
+                        .id((long) i + 1)
+                        .title(VALID_AGENDA_TITLE + " " + (i + 1))
+                        .description(VALID_AGENDA_DESCRIPTION + " " + (i + 1))
+                        .creationDate(LocalDate.now())
+                        .status(Status.PENDING)
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public static Page<AgendaResponse> createAgendaResponsePage(long totalElements, Pageable pageable) {
+        List<AgendaResponse> content = IntStream.range(
+                        pageable.getPageNumber() * pageable.getPageSize(),
+                        Math.min((pageable.getPageNumber() + 1) * pageable.getPageSize(), (int) totalElements))
+                .mapToObj(i -> AgendaResponse.builder()
+                        .id((long) i + 1)
+                        .title(VALID_AGENDA_TITLE + " " + (i + 1))
+                        .description(VALID_AGENDA_DESCRIPTION + " " + (i + 1))
+                        .creationDate(LocalDate.now())
+                        .status(Status.PENDING)
+                        .build())
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(content, pageable, totalElements);
     }
 
     public static AgendaRequest createValidAgendaRequest() {
