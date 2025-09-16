@@ -86,10 +86,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleCpfModificationNotAllowedException(CpfModificationNotAllowedException ex) {
         Map<String, Object> response = new HashMap<>();
         response.put("error", "CPF modification not allowed");
-        response.put("status", HttpStatus.CONFLICT.value());
+        response.put("status", HttpStatus.FORBIDDEN.value());
         response.put("message", ex.getMessage());
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 
     @ExceptionHandler(VotingSessionClosedException.class)
