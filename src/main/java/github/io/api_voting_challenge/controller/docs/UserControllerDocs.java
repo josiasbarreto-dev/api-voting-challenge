@@ -22,6 +22,7 @@ public interface UserControllerDocs {
             @ApiResponse(responseCode = "201", description = "User created successfully", content = @Content(schema = @Schema(implementation = UserResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request"),
             @ApiResponse(responseCode = "409", description = "User with the given CPF already exists"),
+            @ApiResponse(responseCode = "422", description = "Validation error – one or more fields are invalid"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     ResponseEntity<UserResponse> create(@RequestBody @Valid UserRequest userRequest);
@@ -30,8 +31,9 @@ public interface UserControllerDocs {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User updated successfully", content = @Content(schema = @Schema(implementation = UserResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request"),
-            @ApiResponse(responseCode = "409", description = "CPF modification is not allowed"),
             @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "409", description = "CPF modification is not allowed"),
+            @ApiResponse(responseCode = "422", description = "Validation error – one or more fields are invalid"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     ResponseEntity<UserResponse> update(@PathVariable Long id, @RequestBody @Valid UserRequest userRequest);

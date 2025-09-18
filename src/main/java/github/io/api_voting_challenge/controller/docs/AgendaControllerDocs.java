@@ -20,6 +20,7 @@ public interface AgendaControllerDocs {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Agenda created successfully", content = @Content(schema = @Schema(implementation = AgendaResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "422", description = "Validation error – one or more fields are invalid"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     ResponseEntity<AgendaResponse> create(@RequestBody @Valid AgendaRequest agendaRequest);
@@ -28,6 +29,8 @@ public interface AgendaControllerDocs {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Agenda updated successfully", content = @Content(schema = @Schema(implementation = AgendaResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "404", description = "Agenda not found"),
+            @ApiResponse(responseCode = "422", description = "Validation error – one or more fields are invalid"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     ResponseEntity<AgendaResponse> update(@PathVariable Long id, @RequestBody @Valid AgendaRequest agendaRequest);

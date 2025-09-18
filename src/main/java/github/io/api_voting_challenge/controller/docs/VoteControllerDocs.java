@@ -17,7 +17,9 @@ public interface VoteControllerDocs {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Vote registered successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request or user has already voted"),
-            @ApiResponse(responseCode = "404", description = "Voting session not found or is closed")
+            @ApiResponse(responseCode = "404", description = "Voting session not found or is closed"),
+            @ApiResponse(responseCode = "422", description = "Validation error – one or more fields are invalid"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     ResponseEntity<Void> vote(@PathVariable Long sessionId, @RequestBody @Valid VoteRequest voteRequest);
 }
