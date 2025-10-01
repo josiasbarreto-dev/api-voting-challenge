@@ -7,7 +7,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "voting_sessions")
+@Table(name = "tb_voting_sessions")
 @Getter
 @Setter
 @Builder

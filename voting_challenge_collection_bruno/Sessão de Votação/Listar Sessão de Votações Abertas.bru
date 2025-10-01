@@ -1,0 +1,15 @@
+meta {
+  name: Listar Sessão de Votações Abertas
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:8080/api/v1/voting-sessions
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

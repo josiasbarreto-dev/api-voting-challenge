@@ -8,7 +8,7 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="agendas")
+@Table(name="tb_agendas")
 @Getter
 @Setter
 @Builder
@@ -24,7 +24,6 @@ public class Agenda {
     @Enumerated(EnumType.STRING)
     private Status status;
     private LocalDate creationDate;
-    private String createdBy;
 
     @OneToOne(mappedBy = "agenda", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

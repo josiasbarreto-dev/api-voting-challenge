@@ -59,3 +59,7 @@ build/
 # Ignorar o arquivo .jar que o Maven ou Gradle geram
 *.jar
 *.war
+
+# Ignorar pasta e arquivos de logs
+logs/
+*.log

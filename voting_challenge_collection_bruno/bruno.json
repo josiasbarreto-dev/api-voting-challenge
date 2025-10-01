@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "voting_challenge_collection_bruno",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

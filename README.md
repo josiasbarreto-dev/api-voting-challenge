@@ -25,33 +25,47 @@ A API RESTful `API Voting Challenge 2.0` na versão `1.0.0` foi desenvolvida par
 
 ## ✅ Funcionalidades Principais da API
 
-A API é dividida em dois grupos principais de operações, refletindo a estrutura do sistema: `Voter Operations` e `Admin Operations`.
+A API é dividida em quatro grupos principais de operações, refletindo a estrutura do sistema: `Agenda Operations`, `User Operations`, `Vote Operations` e `Voting Session Operations`.
 
-### 🔑 Admin Operations
+### 🔑 User Operations
+Endpoints para gerenciar os usuários de votação.
 
-Endpoints para gerenciar usuários administradores, pautas e sessões de votação.
+| Método HTTP | Endpoint                    | Descrição                             |
+|:------------|:----------------------------|:--------------------------------------|
+| `POST`      | `/api/v1/users`             | Cria um novo usuário.                 |
+| `PUT`       | `/api/v1/users/{id}`        | Atualiza um usuário.                  |
+| `GET`       | `/api/v1/users/{id}`        | Busca um usuário por ID.              |
+| `GET`       | `/api/v1/users/cpf?cpf=...` | Busca um usuário por CPF.             |
+| `GET`       | `/api/v1/users`             | Busca uma lista paginada de usuários. |
+| `DELETE`    | `/api/v1/users/{id}`        | Exclui um usuário.                    |
 
-| Método HTTP | Endpoint | Descrição |
-| :--- | :--- | :--- |
-| `POST` | `/api/v1/admin` | Cria um novo usuário administrador. |
-| `GET` | `/api/v1/admin/{id}` | Busca um usuário administrador por ID. |
-| `PUT` | `/api/v1/admin/{id}` | Atualiza um usuário administrador. |
-| `DELETE` | `/api/v1/admin/{id}` | Exclui um usuário administrador. |
-| `GET` | `/api/v1/admin/email?email=...` | Busca um usuário administrador por e-mail. |
-| `GET` | `/api/v1/admin/cpf?cpf=...` | Busca um usuário administrador por CPF. |
-| `POST` | `/api/v1/admin/{id}/agenda` | Cria uma nova pauta para votação. |
-| `POST` | `/api/v1/admin/voters` | Cria um novo usuário votante. |
-| `POST` | `/api/v1/admin/agenda/{id}/voting-session` | Abre uma nova sessão de votação para uma pauta. |
+### 📝 Agenda Operations
+Endpoints para gerenciar as pautas de votação.
 
-### 🗳️ Voter Operations
+| Método HTTP | Endpoint               | Descrição                           |
+|:------------|:-----------------------|:------------------------------------|
+| `POST`      | `/api/v1/agendas`      | Cria uma nova pauta.                |
+| `PUT`       | `/api/v1/agendas/{id}` | Atualiza uma pauta.                 |
+| `GET`       | `/api/v1/agendas/{id}` | Busca uma pauta por ID.             |
+| `GET`       | `/api/v1/agendas`      | Busca uma lista paginada de pautas. |
+| `DELETE`    | `/api/v1/agendas/{id}` | Exclui uma pauta.                   |
 
-Endpoints para usuários votantes interagirem com as sessões de votação.
+### 🕒 Voting Session Operations
+Endpoints para usuários interagirem nas sessões de votações e pegar resultado de votação.
 
-| Método HTTP | Endpoint | Descrição |
-| :--- | :--- | :--- |
-| `GET` | `/api/v1/voter/open-sessions` | Lista todas as sessões de votação abertas. |
-| `POST` | `/api/v1/voter/voting-session/{sessionId}/vote` | Registra um voto em uma sessão específica. |
-| `GET` | `/api/v1/voter/voting-session/{sessionId}/results` | Busca o resultado da votação de uma sessão. |
+| Método HTTP | Endpoint                                      | Descrição                                                                                              |
+|:------------|:----------------------------------------------|:-------------------------------------------------------------------------------------------------------|
+| `POST`      | `/api/v1/voting-sessions`                     | Permite ao usuário criar uma sessão de votação.                                                        |
+| `GET`       | `/api/v1/voting-sessions`                     | Lista todas as sessões de votação abertas.                                                             |
+| `GET`       | `/api/v1/voting-sessions/{sessionId}/results` | Permite ao usuário buscar o resultado de uma sessão de votação após o tempo de votação ser finalizado. |
+
+### 🗳️ Vote Operations
+
+Endpoints para usuários votarem em uma sessão de votação aberta.
+
+| Método HTTP | Endpoint                                   | Descrição                                  |
+|:------------|:-------------------------------------------|:-------------------------------------------|
+| `POST`      | `/api/v1/voting-sessions/{sessionId}/vote` | Registra um voto em uma sessão específica. |
 
 ## 🚀 Como Executar o Projeto
 

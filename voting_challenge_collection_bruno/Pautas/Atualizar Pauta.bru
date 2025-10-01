@@ -1,0 +1,22 @@
+meta {
+  name: Atualizar Pauta
+  type: http
+  seq: 2
+}
+
+put {
+  url: http://localhost:8080/api/v1/agendas/5
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "title": "Água e Esgoto",
+    "description": "Rede de Água e Esgoto para o Bairro de Campos dos Goytacazes"
+  }
+}
+
+settings {
+  encodeUrl: true
+}
