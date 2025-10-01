@@ -24,18 +24,18 @@ public class UserController implements UserControllerDocs {
     @Override
     @PostMapping
     public ResponseEntity<UserResponse> create(@RequestBody @Valid UserRequest userRequest) {
-        log.info("Received request to create user: {}", userRequest);
+        log.info("Received request to create user: {}", userRequest.name());
         UserResponse userResponse = userService.create(userRequest);
-        log.info("User created successfully: {}", userResponse);
+        log.info("User with id {} created successfully.", userResponse.id());
         return ResponseEntity.status(HttpStatus.CREATED).body(userResponse);
     }
 
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> update(@PathVariable Long id, @RequestBody @Valid UserRequest userRequest) {
-        log.info("Received request to update user with id {}: {}", id, userRequest);
+        log.info("Received request to update user with id {}: {}", id, userRequest.name());
         UserResponse userResponse = userService.update(id, userRequest);
-        log.info("User updated successfully: {}", userResponse);
+        log.info("User with id {} updated successfully.", userResponse.id());
         return ResponseEntity.ok(userResponse);
     }
 
@@ -44,16 +44,16 @@ public class UserController implements UserControllerDocs {
     public ResponseEntity<UserResponse> getById(@PathVariable Long id) {
         log.info("Received request to get user with id: {}", id);
         UserResponse userResponse = userService.getById(id);
-        log.info("User retrieved successfully: {}", userResponse);
+        log.info("User with id {} retrieved successfully.", userResponse.id());
         return ResponseEntity.ok(userResponse);
     }
 
     @Override
     @GetMapping
     public ResponseEntity<UserResponse> getByCpf(@RequestParam String cpf) {
-        log.info("Received request to get user with CPF: {}", cpf);
+        log.info("Received request to get user with CPF.");
         UserResponse userResponse = userService.getByCpf(cpf);
-        log.info("User successfully recovered by CPF: {}", userResponse);
+        log.info("User successfully recovered by CPF: {}", userResponse.name());
         return ResponseEntity.ok(userResponse);
     }
 
@@ -63,7 +63,7 @@ public class UserController implements UserControllerDocs {
         log.info("Received request to get all users - page={}, size={}, sort={}",
                 pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
         Page<UserResponse> users = userService.getAll(pageable);
-        log.info("Users retrieved successfully: {}", users);
+        log.info("Users retrieved successfully: {}", users.getTotalElements());
         return ResponseEntity.ok(users);
     }
 
@@ -72,7 +72,7 @@ public class UserController implements UserControllerDocs {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("Received request to delete user with id: {}", id);
         userService.delete(id);
-        log.info("User with id {} deleted successfully", id);
+        log.info("User with id {} deleted successfully.", id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
