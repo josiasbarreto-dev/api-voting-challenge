@@ -23,18 +23,18 @@ public class AgendaController implements AgendaControllerDocs {
     @Override
     @PostMapping
     public ResponseEntity<AgendaResponse> create(@RequestBody @Valid AgendaRequest agendaRequest) {
-        log.info("Received request to create agenda: {}", agendaRequest);
+        log.info("Received request to create agenda: {}", agendaRequest.title());
         AgendaResponse agendaResponse = agendaService.create(agendaRequest);
-        log.info("Agenda created successfully: {}", agendaResponse);
+        log.info("Agenda with id {} created successfully.", agendaResponse.id());
         return ResponseEntity.status(HttpStatus.CREATED).body(agendaResponse);
     }
 
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<AgendaResponse> update(@PathVariable Long id, @RequestBody @Valid AgendaRequest agendaRequest) {
-        log.info("Received request to update agenda with id {}: {}", id, agendaRequest);
+        log.info("Received request to update agenda with id {}: {}", id, agendaRequest.title());
         AgendaResponse agendaResponse = agendaService.update(id, agendaRequest);
-        log.info("Agenda updated successfully: {}", agendaResponse);
+        log.info("Agenda with id {} updated successfully.", agendaResponse.id());
         return ResponseEntity.ok(agendaResponse);
     }
 
@@ -43,7 +43,7 @@ public class AgendaController implements AgendaControllerDocs {
     public ResponseEntity<AgendaResponse> getById(@PathVariable Long id) {
         log.info("Received request to get agenda with id: {}", id);
         AgendaResponse agendaResponse = agendaService.getById(id);
-        log.info("Agenda retrieved successfully: {}", agendaResponse);
+        log.info("Agenda with id {} retrieved successfully.", agendaResponse.id());
         return ResponseEntity.ok(agendaResponse);
     }
 
@@ -53,7 +53,7 @@ public class AgendaController implements AgendaControllerDocs {
         log.info("Received request to get all agendas - page={}, size={}, sort={}",
                 pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
         Page<AgendaResponse> agendaResponse = agendaService.getAll(pageable);
-        log.info("Agendas retrieved successfully: {}", agendaResponse);
+        log.info("Agendas retrieved successfully: {}", agendaResponse.getTotalElements());
         return ResponseEntity.ok(agendaResponse);
     }
 
@@ -62,7 +62,7 @@ public class AgendaController implements AgendaControllerDocs {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("Received request to delete agenda with id: {}", id);
         agendaService.delete(id);
-        log.info("Agenda with id {} deleted successfully", id);
+        log.info("Agenda with id {} deleted successfully.", id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
