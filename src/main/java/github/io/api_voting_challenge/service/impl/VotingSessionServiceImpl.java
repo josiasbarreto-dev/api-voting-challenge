@@ -11,6 +11,7 @@ import github.io.api_voting_challenge.repository.AgendaRepository;
 import github.io.api_voting_challenge.repository.VotingSessionRepository;
 import github.io.api_voting_challenge.service.VotingSessionService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class VotingSessionServiceImpl implements VotingSessionService {
     private final VotingSessionRepository votingSessionRepository;
     private final AgendaRepository agendaRepository;
@@ -26,15 +28,18 @@ public class VotingSessionServiceImpl implements VotingSessionService {
 
     @Override
     public VotingSessionResponse openVotingSession(VotingSessionRequest votingSessionRequest) {
-        Agenda agenda = agendaRepository.findById(votingSessionRequest.agendaId()).orElseThrow(
-                () -> new AgendaNotFoundException("Agenda not found with ID: " + votingSessionRequest.agendaId())
-        );
+        log.info("Opening voting session for agenda ID: {}", votingSessionRequest.agendaId());
+        Agenda agenda = getAgenda(votingSessionRequest.agendaId());
 
+        log.info("Validating agenda status for ID: {}", votingSessionRequest.agendaId());
         if (agenda.getStatus() != Status.PENDING) {
+            log.error("Cannot open voting session. Agenda ID: {} has status: {}", votingSessionRequest.agendaId(), agenda.getStatus());
             throw new IllegalStateException("Voting session can only be created for agendas with status PENDING.");
         }
 
         int durationMinutes = votingSessionRequest.durationInMinutes() != null ? votingSessionRequest.durationInMinutes() : 1;
+        log.error("Setting voting session duration to {} minutes for agenda ID: {}", durationMinutes, votingSessionRequest.agendaId());
+
         LocalDateTime now = LocalDateTime.now();
 
         VotingSession votingSession = VotingSession.builder()
@@ -47,8 +52,16 @@ public class VotingSessionServiceImpl implements VotingSessionService {
         agenda.setStatus(Status.IN_PROGRESS);
         agenda.setVotingSession(votingSession);
 
+        log.info("Saving voting session for agenda ID: {}", votingSessionRequest.agendaId());
         Agenda savedAgenda = agendaRepository.save(agenda);
 
+        log.info("Voting session opened successfully with ID: {} for agenda ID: {}", savedAgenda.getVotingSession().getId(), votingSessionRequest.agendaId());
         return votingSessionMapper.toDto(savedAgenda.getVotingSession());
+    }
+
+    private Agenda getAgenda(Long agendaId) {
+        return agendaRepository.findById(agendaId).orElseThrow(
+                () -> new AgendaNotFoundException("Agenda not found with ID: " + agendaId)
+        );
     }
 }
