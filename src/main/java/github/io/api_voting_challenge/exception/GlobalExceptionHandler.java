@@ -1,5 +1,6 @@
 package github.io.api_voting_challenge.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationExceptions(
@@ -22,6 +24,7 @@ public class GlobalExceptionHandler {
             String errorMessage = error.getDefaultMessage();
             fieldErrors.put(fieldName, errorMessage);
         });
+        log.error("Validation failed: {}", fieldErrors);
 
         Map<String, Object> response = new HashMap<>();
         response.put("status", HttpStatus.UNPROCESSABLE_ENTITY.value());
@@ -34,6 +37,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AgendaNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleAgendaNotFoundException(AgendaNotFoundException ex) {
+        log.error("Agenda not found: {}", ex.getMessage());
+
         Map<String, Object> response = new HashMap<>();
         response.put("error", "Agenda not found");
         response.put("status", HttpStatus.NOT_FOUND.value());
@@ -44,6 +49,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserAlreadyVotedException.class)
     public ResponseEntity<Map<String, Object>> handleUserAlreadyVotedException(UserAlreadyVotedException ex) {
+        log.error("User has already voted: {}", ex.getMessage());
+
         Map<String, Object> response = new HashMap<>();
         response.put("error", "User has already voted");
         response.put("status", HttpStatus.BAD_REQUEST.value());
@@ -54,6 +61,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleUserNotFoundException(UserNotFoundException ex) {
+        log.error("User not found: {}", ex.getMessage());
+
         Map<String, Object> response = new HashMap<>();
         response.put("error", "User not found");
         response.put("status", HttpStatus.NOT_FOUND.value());
@@ -64,6 +73,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(VotingSessionInProgressException.class)
     public ResponseEntity<Map<String, Object>> handleVotingSessionInProgressException(VotingSessionInProgressException ex) {
+        log.error("Voting session in progress: {}", ex.getMessage());
+
         Map<String, Object> response = new HashMap<>();
         response.put("error", "Voting session is in progress");
         response.put("status", HttpStatus.BAD_REQUEST.value());
@@ -74,6 +85,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CpfAlreadyRegisteredException.class)
     public ResponseEntity<Map<String, Object>> handleCpfAlreadyRegisteredException(CpfAlreadyRegisteredException ex) {
+        log.error("CPF already registered: {}", ex.getMessage());
+
         Map<String, Object> response = new HashMap<>();
         response.put("error", "CPF already registered");
         response.put("status", HttpStatus.CONFLICT.value());
@@ -84,6 +97,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CpfModificationNotAllowedException.class)
     public ResponseEntity<Map<String, Object>> handleCpfModificationNotAllowedException(CpfModificationNotAllowedException ex) {
+        log.error("CPF modification not allowed: {}", ex.getMessage());
+
         Map<String, Object> response = new HashMap<>();
         response.put("error", "CPF modification not allowed");
         response.put("status", HttpStatus.FORBIDDEN.value());
@@ -94,6 +109,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(VotingSessionClosedException.class)
     public ResponseEntity<Map<String, Object>> handleVotingSessionClosedException(VotingSessionClosedException ex) {
+        log.error("Voting session closed: {}", ex.getMessage());
+
         Map<String, Object> response = new HashMap<>();
         response.put("error", "Voting session is closed");
         response.put("status", HttpStatus.BAD_REQUEST.value());
@@ -104,6 +121,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(VotingSessionNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleVotingSessionNotFoundException(VotingSessionNotFoundException ex) {
+        log.error("Voting session not found: {}", ex.getMessage());
+
         Map<String, Object> response = new HashMap<>();
         response.put("error", "Voting session not found");
         response.put("status", HttpStatus.NOT_FOUND.value());
