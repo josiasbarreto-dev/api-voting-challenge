@@ -19,7 +19,7 @@ public class VoteController implements VoteControllerDocs {
     @Override
     @PostMapping("/{sessionId}/vote")
     public ResponseEntity<Void> vote(@PathVariable Long sessionId, @RequestBody @Valid VoteRequest voteRequest) {
-        log.info("Received request to register vote for session {}: {}", sessionId, voteRequest);
+        log.info("Received request to register vote for session {}: {}", sessionId, voteRequest.userId());
         voteService.registerVote(sessionId, voteRequest);
         log.info("Vote registered successfully for session : {}", sessionId);
         return ResponseEntity.ok().build();
