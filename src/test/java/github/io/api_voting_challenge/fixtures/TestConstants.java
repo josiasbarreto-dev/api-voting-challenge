@@ -1,5 +1,7 @@
 package github.io.api_voting_challenge.fixtures;
 
+import java.time.LocalDateTime;
+
 public class TestConstants {
     public static final Long VALID_ID = 1L;
     public static final Long INVALID_ID = 99L;
@@ -20,7 +22,7 @@ public class TestConstants {
     public static final String VALID_AGENDA_DESCRIPTION = "description test";
 
     public static final String MESSAGE_ADMIN_NOT_FOUND = "User not found";
-    public static final int UPDATED_AGENDAS_COUNT = 3;
+    public static final int UPDATED_AGENDAS_COUNT = 2;
 
     private TestConstants() {}
 }
