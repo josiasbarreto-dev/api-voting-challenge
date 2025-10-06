@@ -1,7 +1,7 @@
 package github.io.api_voting_challenge.service.impl;
 
-import github.io.api_voting_challenge.dto.VoteRequest;
-import github.io.api_voting_challenge.dto.VoteResultResponse;
+import github.io.api_voting_challenge.dto.request.VoteRequest;
+import github.io.api_voting_challenge.dto.response.VoteResultResponse;
 import github.io.api_voting_challenge.exception.*;
 import github.io.api_voting_challenge.model.Agenda;
 import github.io.api_voting_challenge.model.Vote;

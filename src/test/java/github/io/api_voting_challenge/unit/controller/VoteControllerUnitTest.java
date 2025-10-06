@@ -1,7 +1,7 @@
 package github.io.api_voting_challenge.unit.controller;
 
 import github.io.api_voting_challenge.controller.VoteController;
-import github.io.api_voting_challenge.dto.VoteRequest;
+import github.io.api_voting_challenge.dto.request.VoteRequest;
 import github.io.api_voting_challenge.exception.UserNotFoundException;
 import github.io.api_voting_challenge.exception.VotingSessionNotFoundException;
 import github.io.api_voting_challenge.fixtures.VoteFixtures;

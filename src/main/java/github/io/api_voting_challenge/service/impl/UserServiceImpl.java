@@ -1,7 +1,7 @@
 package github.io.api_voting_challenge.service.impl;
 
-import github.io.api_voting_challenge.dto.UserRequest;
-import github.io.api_voting_challenge.dto.UserResponse;
+import github.io.api_voting_challenge.dto.request.UserRequest;
+import github.io.api_voting_challenge.dto.response.UserResponse;
 import github.io.api_voting_challenge.exception.CpfAlreadyRegisteredException;
 import github.io.api_voting_challenge.exception.CpfModificationNotAllowedException;
 import github.io.api_voting_challenge.exception.UserNotFoundException;

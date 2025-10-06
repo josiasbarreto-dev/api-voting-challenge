@@ -2,8 +2,8 @@ package github.io.api_voting_challenge.integration.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import github.io.api_voting_challenge.controller.UserController;
-import github.io.api_voting_challenge.dto.UserRequest;
-import github.io.api_voting_challenge.dto.UserResponse;
+import github.io.api_voting_challenge.dto.request.UserRequest;
+import github.io.api_voting_challenge.dto.response.UserResponse;
 import github.io.api_voting_challenge.exception.CpfAlreadyRegisteredException;
 import github.io.api_voting_challenge.exception.CpfModificationNotAllowedException;
 import github.io.api_voting_challenge.exception.GlobalExceptionHandler;

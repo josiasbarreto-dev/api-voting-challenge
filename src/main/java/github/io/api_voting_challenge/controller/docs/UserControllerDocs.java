@@ -1,7 +1,7 @@
 package github.io.api_voting_challenge.controller.docs;
 
-import github.io.api_voting_challenge.dto.UserRequest;
-import github.io.api_voting_challenge.dto.UserResponse;
+import github.io.api_voting_challenge.dto.request.UserRequest;
+import github.io.api_voting_challenge.dto.response.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

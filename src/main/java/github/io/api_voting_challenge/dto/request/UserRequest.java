@@ -1,4 +1,4 @@
-package github.io.api_voting_challenge.dto;
+package github.io.api_voting_challenge.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

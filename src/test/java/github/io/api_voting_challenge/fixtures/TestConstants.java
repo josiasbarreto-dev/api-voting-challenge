@@ -20,6 +20,7 @@ public class TestConstants {
     public static final String VALID_AGENDA_DESCRIPTION = "description test";
 
     public static final String MESSAGE_ADMIN_NOT_FOUND = "User not found";
+    public static final int UPDATED_AGENDAS_COUNT = 3;
 
     private TestConstants() {}
 }

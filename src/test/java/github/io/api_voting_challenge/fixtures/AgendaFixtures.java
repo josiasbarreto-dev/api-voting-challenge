@@ -1,7 +1,7 @@
 package github.io.api_voting_challenge.fixtures;
 
-import github.io.api_voting_challenge.dto.AgendaRequest;
-import github.io.api_voting_challenge.dto.AgendaResponse;
+import github.io.api_voting_challenge.dto.request.AgendaRequest;
+import github.io.api_voting_challenge.dto.response.AgendaResponse;
 import github.io.api_voting_challenge.model.Agenda;
 import github.io.api_voting_challenge.model.enums.Status;
 import org.springframework.data.domain.Page;

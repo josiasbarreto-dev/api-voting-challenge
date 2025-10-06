@@ -2,7 +2,7 @@ package github.io.api_voting_challenge.integration.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import github.io.api_voting_challenge.controller.VoteController;
-import github.io.api_voting_challenge.dto.VoteRequest;
+import github.io.api_voting_challenge.dto.request.VoteRequest;
 import github.io.api_voting_challenge.exception.GlobalExceptionHandler;
 import github.io.api_voting_challenge.exception.VotingSessionNotFoundException;
 import github.io.api_voting_challenge.fixtures.VoteFixtures;

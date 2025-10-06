@@ -1,7 +1,7 @@
 package github.io.api_voting_challenge.fixtures;
 
-import github.io.api_voting_challenge.dto.VoteRequest;
-import github.io.api_voting_challenge.dto.VoteResultResponse;
+import github.io.api_voting_challenge.dto.request.VoteRequest;
+import github.io.api_voting_challenge.dto.response.VoteResultResponse;
 import github.io.api_voting_challenge.model.Vote;
 import github.io.api_voting_challenge.model.enums.VoteOption;
 

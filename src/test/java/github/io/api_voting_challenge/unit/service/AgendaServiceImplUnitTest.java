@@ -1,7 +1,7 @@
 package github.io.api_voting_challenge.unit.service;
 
-import github.io.api_voting_challenge.dto.AgendaRequest;
-import github.io.api_voting_challenge.dto.AgendaResponse;
+import github.io.api_voting_challenge.dto.request.AgendaRequest;
+import github.io.api_voting_challenge.dto.response.AgendaResponse;
 import github.io.api_voting_challenge.exception.AgendaNotFoundException;
 import github.io.api_voting_challenge.fixtures.AgendaFixtures;
 import github.io.api_voting_challenge.mapper.AgendaMapper;

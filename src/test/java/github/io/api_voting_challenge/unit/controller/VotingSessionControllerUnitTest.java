@@ -1,9 +1,9 @@
 package github.io.api_voting_challenge.unit.controller;
 
 import github.io.api_voting_challenge.controller.VotingSessionController;
-import github.io.api_voting_challenge.dto.VoteResultResponse;
-import github.io.api_voting_challenge.dto.VotingSessionRequest;
-import github.io.api_voting_challenge.dto.VotingSessionResponse;
+import github.io.api_voting_challenge.dto.response.VoteResultResponse;
+import github.io.api_voting_challenge.dto.request.VotingSessionRequest;
+import github.io.api_voting_challenge.dto.response.VotingSessionResponse;
 import github.io.api_voting_challenge.exception.AgendaNotFoundException;
 import github.io.api_voting_challenge.exception.VotingSessionNotFoundException;
 import github.io.api_voting_challenge.fixtures.VoteFixtures;

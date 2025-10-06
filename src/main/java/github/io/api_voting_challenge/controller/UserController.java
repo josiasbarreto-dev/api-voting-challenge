@@ -1,8 +1,8 @@
 package github.io.api_voting_challenge.controller;
 
 import github.io.api_voting_challenge.controller.docs.UserControllerDocs;
-import github.io.api_voting_challenge.dto.UserRequest;
-import github.io.api_voting_challenge.dto.UserResponse;
+import github.io.api_voting_challenge.dto.request.UserRequest;
+import github.io.api_voting_challenge.dto.response.UserResponse;
 import github.io.api_voting_challenge.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

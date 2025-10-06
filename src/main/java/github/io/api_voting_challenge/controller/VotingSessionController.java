@@ -1,9 +1,9 @@
 package github.io.api_voting_challenge.controller;
 
 import github.io.api_voting_challenge.controller.docs.VotingSessionControllerDocs;
-import github.io.api_voting_challenge.dto.VoteResultResponse;
-import github.io.api_voting_challenge.dto.VotingSessionRequest;
-import github.io.api_voting_challenge.dto.VotingSessionResponse;
+import github.io.api_voting_challenge.dto.response.VoteResultResponse;
+import github.io.api_voting_challenge.dto.request.VotingSessionRequest;
+import github.io.api_voting_challenge.dto.response.VotingSessionResponse;
 import github.io.api_voting_challenge.service.VoteService;
 import github.io.api_voting_challenge.service.VotingSessionScheduler;
 import github.io.api_voting_challenge.service.VotingSessionService;

@@ -1,6 +1,6 @@
 package github.io.api_voting_challenge.mapper;
 
-import github.io.api_voting_challenge.dto.VotingSessionResponse;
+import github.io.api_voting_challenge.dto.response.VotingSessionResponse;
 import github.io.api_voting_challenge.model.VotingSession;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
