@@ -17,7 +17,7 @@ public interface AgendaRepository extends JpaRepository<Agenda, Long> {
     @Transactional
     @Query("UPDATE Agenda agenda SET agenda.status = :status " +
             "WHERE agenda.id IN (SELECT session.agenda.id FROM VotingSession session " +
-            "WHERE session.endTime < :now")
+            "WHERE session.endTime < :now)")
     int bulkUpdateStatusForExpiredSessions(@Param("status") Status status,
                                            @Param("now") LocalDateTime now);
 }
