@@ -1,4 +1,4 @@
-package github.io.api_voting_challenge.config;
+package github.io.api_voting_challenge.config.swagger;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
