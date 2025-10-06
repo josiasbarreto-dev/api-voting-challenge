@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -63,15 +64,16 @@ public class VotingSessionFixtures {
                 .endTime(LocalDateTime.now().plusMinutes(60));
     }
 
-    public static VotingSession createExpiredVotingSession() {
+    public static VotingSession createExpiredVotingSession(Clock clock) {
         Agenda agenda = createAgenda();
         agenda.setStatus(Status.IN_PROGRESS);
+        LocalDateTime now = LocalDateTime.now(clock);
 
         return VotingSession.builder()
                 .id(99L)
                 .durationInMinutes(1)
-                .startTime(LocalDateTime.now().minusMinutes(5))
-                .endTime(LocalDateTime.now().minusMinutes(4))
+                .startTime(now.minusMinutes(5))
+                .endTime(now.minusMinutes(4))
                 .agenda(agenda)
                 .build();
     }
