@@ -39,3 +39,7 @@ logging:
     github.io.api_voting_challenge: DEBUG
   file:
     name: logs/app.log
+
+external:
+  cpf-api:
+    url: http://app:8081
