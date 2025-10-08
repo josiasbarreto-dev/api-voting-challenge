@@ -130,4 +130,15 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
+
+    @ExceptionHandler(UserUnableToVoteException.class)
+    public ResponseEntity<Map<String, Object>> handleUserUnableToVote(UserUnableToVoteException ex) {
+        log.error("User unable to vote: {}", ex.getMessage());
+        Map<String, Object> response = new HashMap<>();
+        response.put("error", "User unable to vote");
+        response.put("status", HttpStatus.FORBIDDEN.value());
+        response.put("message", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
 }
