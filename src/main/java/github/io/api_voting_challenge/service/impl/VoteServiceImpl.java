@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Slf4j
 public class VoteServiceImpl implements VoteService {
+    public static final String ABLE_TO_VOTE = "ABLE_TO_VOTE";
     private final UserRepository userRepository;
     private final VotingSessionRepository votingSessionRepository;
     private final VoteRepository voteRepository;
@@ -39,7 +40,7 @@ public class VoteServiceImpl implements VoteService {
 
         log.info("Validating CPF for user ID: {}", voteRequest.userId());
         CpfStatusResponse response = cpfApiClient.validateCpf(user.getCpf());
-        if(!"ABLE_TO_VOTE".equalsIgnoreCase(response.status())){
+        if(!ABLE_TO_VOTE.equalsIgnoreCase(response.status())){
             log.info("User with id: {} is not able to vote.", user.getId());
             throw new UserUnableToVoteException("User with CPF: " + user.getCpf() + " is not able to vote.");
         }
