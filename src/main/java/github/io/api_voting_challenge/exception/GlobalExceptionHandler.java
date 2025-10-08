@@ -1,5 +1,6 @@
 package github.io.api_voting_challenge.exception;
 
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -140,5 +141,15 @@ public class GlobalExceptionHandler {
         response.put("message", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<Map<String, Object>> handleFeignException(FeignException ex) {
+        log.error("Feign client error: {}", ex.getMessage());
+        Map<String, Object> response = new HashMap<>();
+        response.put("error", "External service error");
+        response.put("status", ex.status());
+        response.put("message", ex.getMessage());
+        return ResponseEntity.status(ex.status()).body(response);
     }
 }
