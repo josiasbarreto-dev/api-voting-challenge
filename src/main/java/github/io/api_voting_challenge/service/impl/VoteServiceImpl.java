@@ -1,5 +1,7 @@
 package github.io.api_voting_challenge.service.impl;
 
+import github.io.api_voting_challenge.client.CpfApiClient;
+import github.io.api_voting_challenge.client.response.CpfStatusResponse;
 import github.io.api_voting_challenge.dto.request.VoteRequest;
 import github.io.api_voting_challenge.dto.response.VoteResultResponse;
 import github.io.api_voting_challenge.exception.*;
@@ -27,12 +29,20 @@ public class VoteServiceImpl implements VoteService {
     private final UserRepository userRepository;
     private final VotingSessionRepository votingSessionRepository;
     private final VoteRepository voteRepository;
+    private final CpfApiClient cpfApiClient;
 
     @Override
     public void registerVote(Long sessionId, VoteRequest voteRequest) {
         log.info("Registering vote for session ID: {} by user ID: {}", sessionId, voteRequest.userId());
         log.info("Retrieving user with ID: {}", voteRequest.userId());
         User user = getUser(voteRequest.userId());
+
+        log.info("Validating CPF for user ID: {}", voteRequest.userId());
+        CpfStatusResponse response = cpfApiClient.validateCpf(user.getCpf());
+        if(!"ABLE_TO_VOTE".equalsIgnoreCase(response.status())){
+            log.info("User with id: {} is not able to vote.", user.getId());
+            throw new UserUnableToVoteException("User with CPF: " + user.getCpf() + " is not able to vote.");
+        }
 
         log.info("Retrieving voting session with ID: {}", sessionId);
         VotingSession session = getVotingSession(sessionId);
