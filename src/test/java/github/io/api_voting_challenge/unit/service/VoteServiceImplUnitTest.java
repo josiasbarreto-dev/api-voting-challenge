@@ -25,6 +25,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -37,6 +39,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Vote Service Unit Tests")
 public class VoteServiceImplUnitTest {
+
     @InjectMocks
     private VoteServiceImpl voteService;
 
@@ -55,7 +58,8 @@ public class VoteServiceImplUnitTest {
     @Test
     @DisplayName("Deve registrar um voto com sucesso")
     void shouldRegisterVoteSuccessfully() {
-        CpfStatusResponse ableToVoteResponse = new CpfStatusResponse("ABLE_TO_VOTE");
+        ResponseEntity<CpfStatusResponse> ableToVoteResponse =
+                ResponseEntity.ok(new CpfStatusResponse("ABLE_TO_VOTE"));
         User user = UserFixtures.createValidUserEntity();
         Agenda agenda = AgendaFixtures.createAgenda();
         VotingSession votingSession = VotingSessionFixtures.createValidVotingSessionEntity();
@@ -99,7 +103,8 @@ public class VoteServiceImplUnitTest {
     @Test
     @DisplayName("Deve lançar exceção se a sessão de votação não for encontrada")
     void shouldThrowExceptionWhenVotingSessionNotFound() {
-        CpfStatusResponse ableToVoteResponse = new CpfStatusResponse("ABLE_TO_VOTE");
+        ResponseEntity<CpfStatusResponse> ableToVoteResponse =
+                ResponseEntity.ok(new CpfStatusResponse("ABLE_TO_VOTE"));
         User user = UserFixtures.createValidUserEntity();
         VoteRequest voteRequest = VoteFixtures.createValidVoteRequest();
 
@@ -108,8 +113,7 @@ public class VoteServiceImplUnitTest {
         when(votingSessionRepository.findById(VALID_ID)).thenReturn(Optional.empty());
 
         assertThrows(VotingSessionNotFoundException.class, () ->
-                voteService.registerVote(VALID_ID, voteRequest)
-        );
+                voteService.registerVote(VALID_ID, voteRequest));
 
         verify(userRepository).findById(VALID_ID);
         verify(votingSessionRepository).findById(VALID_ID);
@@ -119,7 +123,8 @@ public class VoteServiceImplUnitTest {
     @Test
     @DisplayName("Deve lançar exceção se a sessão de votação estiver fechada")
     void shouldThrowExceptionWhenVotingSessionIsClosed() {
-        CpfStatusResponse ableToVoteResponse = new CpfStatusResponse("ABLE_TO_VOTE");
+        ResponseEntity<CpfStatusResponse> ableToVoteResponse =
+                ResponseEntity.ok(new CpfStatusResponse("ABLE_TO_VOTE"));
         User votingUser = UserFixtures.createValidUserEntity();
         VotingSession votingSession = VotingSessionFixtures.createValidVotingSessionEntity();
         votingSession.setEndTime(LocalDateTime.now().minusMinutes(5));
@@ -140,7 +145,8 @@ public class VoteServiceImplUnitTest {
     @Test
     @DisplayName("Deve lançar exceção se o usuário já tiver votado")
     void shouldThrowExceptionWhenUserAlreadyVoted() {
-        CpfStatusResponse ableToVoteResponse = new CpfStatusResponse("ABLE_TO_VOTE");
+        ResponseEntity<CpfStatusResponse> ableToVoteResponse =
+                ResponseEntity.ok(new CpfStatusResponse("ABLE_TO_VOTE"));
         User user = UserFixtures.createValidUserEntity();
         VotingSession votingSession = VotingSessionFixtures.createValidVotingSessionEntity();
         VoteRequest voteRequest = VoteFixtures.createValidVoteRequest();
@@ -156,6 +162,24 @@ public class VoteServiceImplUnitTest {
         verify(userRepository).findById(VALID_ID);
         verify(votingSessionRepository).findById(VALID_ID);
         verifyNoMoreInteractions(voteRepository, userRepository, votingSessionRepository, cpfApiClient);
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção se o CPF não for apto para votar")
+    void shouldThrowExceptionWhenUserIsUnableToVote() {
+        ResponseEntity<CpfStatusResponse> unableToVoteResponse =
+                ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CpfStatusResponse("UNABLE_TO_VOTE"));
+        User user = UserFixtures.createValidUserEntity();
+        VoteRequest voteRequest = VoteFixtures.createValidVoteRequest();
+
+        when(userRepository.findById(VALID_ID)).thenReturn(Optional.of(user));
+        when(cpfApiClient.validateCpf(VALID_CPF)).thenReturn(unableToVoteResponse);
+
+        assertThrows(UserUnableToVoteException.class, () ->
+                voteService.registerVote(VALID_ID, voteRequest));
+
+        verify(cpfApiClient).validateCpf(VALID_CPF);
+        verifyNoInteractions(votingSessionRepository, voteRepository);
     }
 
     @Test
