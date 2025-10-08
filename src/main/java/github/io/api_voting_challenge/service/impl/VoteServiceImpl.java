@@ -16,6 +16,8 @@ import github.io.api_voting_challenge.repository.VotingSessionRepository;
 import github.io.api_voting_challenge.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,8 +41,8 @@ public class VoteServiceImpl implements VoteService {
         User user = getUser(voteRequest.userId());
 
         log.info("Validating CPF for user ID: {}", voteRequest.userId());
-        CpfStatusResponse response = cpfApiClient.validateCpf(user.getCpf());
-        if(!ABLE_TO_VOTE.equalsIgnoreCase(response.status())){
+        ResponseEntity<CpfStatusResponse> response = cpfApiClient.validateCpf(user.getCpf());
+        if(response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
             log.info("User with id: {} is not able to vote.", user.getId());
             throw new UserUnableToVoteException("User with CPF: " + user.getCpf() + " is not able to vote.");
         }
