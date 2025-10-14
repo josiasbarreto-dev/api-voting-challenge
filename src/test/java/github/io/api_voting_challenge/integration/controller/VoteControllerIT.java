@@ -5,6 +5,7 @@ import github.io.api_voting_challenge.controller.VoteController;
 import github.io.api_voting_challenge.dto.request.VoteRequest;
 import github.io.api_voting_challenge.exception.GlobalExceptionHandler;
 import github.io.api_voting_challenge.exception.VotingSessionNotFoundException;
+import github.io.api_voting_challenge.fixtures.TestNoOperationCacheConfig;
 import github.io.api_voting_challenge.fixtures.VoteFixtures;
 import github.io.api_voting_challenge.service.VoteService;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +13,9 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,6 +28,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("integration")
 @DisplayName("Vote Controller Integration Tests")
 @WebMvcTest({VoteController.class, GlobalExceptionHandler.class})
+@EnableCaching
+@Import(TestNoOperationCacheConfig.class)
+@ActiveProfiles("test")
 public class VoteControllerIT {
     @Autowired
     private MockMvc mockMvc;

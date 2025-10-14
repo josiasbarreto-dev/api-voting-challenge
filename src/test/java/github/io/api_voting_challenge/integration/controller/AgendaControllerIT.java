@@ -7,13 +7,17 @@ import github.io.api_voting_challenge.dto.response.AgendaResponse;
 import github.io.api_voting_challenge.exception.AgendaNotFoundException;
 import github.io.api_voting_challenge.exception.GlobalExceptionHandler;
 import github.io.api_voting_challenge.fixtures.AgendaFixtures;
+import github.io.api_voting_challenge.fixtures.TestNoOperationCacheConfig;
 import github.io.api_voting_challenge.service.AgendaService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -27,6 +31,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("integration")
 @DisplayName("Agenda Controller Integration Tests")
 @WebMvcTest({AgendaController.class, GlobalExceptionHandler.class})
+@EnableCaching
+@Import(TestNoOperationCacheConfig.class)
+@ActiveProfiles("test")
 public class AgendaControllerIT {
     @Autowired
     private MockMvc mockMvc;

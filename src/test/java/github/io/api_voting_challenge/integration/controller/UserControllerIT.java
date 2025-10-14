@@ -8,6 +8,7 @@ import github.io.api_voting_challenge.exception.CpfAlreadyRegisteredException;
 import github.io.api_voting_challenge.exception.CpfModificationNotAllowedException;
 import github.io.api_voting_challenge.exception.GlobalExceptionHandler;
 import github.io.api_voting_challenge.exception.UserNotFoundException;
+import github.io.api_voting_challenge.fixtures.TestNoOperationCacheConfig;
 import github.io.api_voting_challenge.fixtures.UserFixtures;
 import github.io.api_voting_challenge.service.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +16,10 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -28,6 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("integration")
 @DisplayName("User Controller Integration Tests")
 @WebMvcTest({UserController.class, GlobalExceptionHandler.class})
+@EnableCaching
+@Import(TestNoOperationCacheConfig.class)
+@ActiveProfiles("test")
 public class UserControllerIT {
     @Autowired
     private MockMvc mockMvc;
