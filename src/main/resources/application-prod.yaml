@@ -32,6 +32,13 @@ spring:
     baseline-on-migrate: true
     validate-on-migrate: true
 
+  cache:
+    type: redis
+  data:
+    redis:
+      host: voting_redis
+      port: ${REDIS_PORT}
+
 logging:
   level:
     root: INFO
@@ -42,4 +49,4 @@ logging:
 
 external:
   cpf-api:
-    url: http://app:8081
+    url: ${CPF_API_URL}
