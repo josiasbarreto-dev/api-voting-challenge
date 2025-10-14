@@ -12,6 +12,10 @@ import github.io.api_voting_challenge.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,6 +31,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @Caching(
+            put = {
+                    @CachePut(value = "USER_BY_ID_CACHE", key = "#result.id()"),
+                    @CachePut(value = "USER_BY_CPF_CACHE", key = "#result.cpf()")
+            },
+            evict = {
+                    @CacheEvict(value = "USER_PAGE_CACHE", allEntries = true)
+            }
+    )
     public UserResponse create(UserRequest userRequest) {
         log.info("Creating new user with name: {}", userRequest.name());
         if (userRepository.existsByCpf(userRequest.cpf())) {
@@ -41,10 +54,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @Caching(
+            put = {
+                    @CachePut(value = "USER_BY_ID_CACHE", key = "#result.id()"),
+                    @CachePut(value = "USER_BY_CPF_CACHE", key = "#result.cpf()")
+            },
+            evict = {
+                    @CacheEvict(value = "USER_PAGE_CACHE", allEntries = true)
+            }
+    )
     public UserResponse update(Long id, UserRequest userRequest) {
         log.info("Updating user with ID: {}", id);
         User existingUser = getUser(id);
-        if (!Objects.equals(existingUser.getCpf(), userRequest.cpf())){
+        if (!Objects.equals(existingUser.getCpf(), userRequest.cpf())) {
             throw new CpfModificationNotAllowedException("Cannot change the CPF of an existing User.");
         }
 
@@ -56,6 +78,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "USER_BY_ID_CACHE", key = "#id", unless = "#result == null")
     public UserResponse getById(Long id) {
         log.info("Retrieving user with ID: {}", id);
         User existingUser = getUser(id);
@@ -66,6 +89,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "USER_BY_CPF_CACHE", key = "#cpf", unless = "#result == null")
     public UserResponse getByCpf(String cpf) {
         log.info("Retrieving user with CPF.");
         User user = userRepository.findByCpf(cpf).orElseThrow(
@@ -76,7 +100,12 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(user);
     }
 
-    public Page<UserResponse> getAll(Pageable pageable){
+    @Override
+    @Cacheable(
+            value = "USER_PAGE_CACHE",
+            key = "'page:' + #pageable.pageNumber + ':size:' + #pageable.pageSize + ':sort:' + #pageable.sort.toString()",
+            unless = "#result == null || #result.isEmpty()")
+    public Page<UserResponse> getAll(Pageable pageable) {
         log.info("Retrieving all users - page: {}, size: {}, sort: {}",
                 pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
 
@@ -88,6 +117,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "USER_BY_ID_CACHE", key = "#id"),
+                    @CacheEvict(value = "USER_BY_CPF_CACHE", allEntries = true),
+                    @CacheEvict(value = "USER_PAGE_CACHE", allEntries = true)
+            }
+    )
     public void delete(Long id) {
         log.info("Deleting user with ID: {}", id);
         userRepository.delete(getUser(id));
