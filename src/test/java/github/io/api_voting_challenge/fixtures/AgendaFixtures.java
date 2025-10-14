@@ -34,7 +34,7 @@ public class AgendaFixtures {
                 .title(VALID_AGENDA_TITLE)
                 .description(VALID_AGENDA_DESCRIPTION)
                 .status(Status.PENDING)
-                .creationDate(LocalDate.now());
+                .creationDate(String.valueOf(LocalDate.now()));
     }
 
     public static Agenda.AgendaBuilder createAgendaBuilder() {
@@ -52,7 +52,7 @@ public class AgendaFixtures {
                         .id((long) i + 1)
                         .title(VALID_AGENDA_TITLE + " " + (i + 1))
                         .description(VALID_AGENDA_DESCRIPTION + " " + (i + 1))
-                        .creationDate(LocalDate.now())
+                        .creationDate(String.valueOf(LocalDate.now()))
                         .status(Status.PENDING)
                         .build())
                 .collect(Collectors.toList());
@@ -66,7 +66,7 @@ public class AgendaFixtures {
                         .id((long) i + 1)
                         .title(VALID_AGENDA_TITLE + " " + (i + 1))
                         .description(VALID_AGENDA_DESCRIPTION + " " + (i + 1))
-                        .creationDate(LocalDate.now())
+                        .creationDate(String.valueOf(LocalDate.now()))
                         .status(Status.PENDING)
                         .build())
                 .collect(Collectors.toList());
