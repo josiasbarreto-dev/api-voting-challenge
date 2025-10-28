@@ -7,6 +7,7 @@ import github.io.api_voting_challenge.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.br.CPF;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,8 +50,8 @@ public class UserController implements UserControllerDocs {
     }
 
     @Override
-    @GetMapping
-    public ResponseEntity<UserResponse> getByCpf(@RequestParam String cpf) {
+    @GetMapping("/cpf/{cpf}")
+    public ResponseEntity<UserResponse> getByCpf(@PathVariable String cpf) {
         log.info("Received request to get user with CPF.");
         UserResponse userResponse = userService.getByCpf(cpf);
         log.info("User successfully recovered by CPF: {}", userResponse.name());
