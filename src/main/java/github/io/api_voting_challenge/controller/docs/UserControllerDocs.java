@@ -52,7 +52,7 @@ public interface UserControllerDocs {
             @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    ResponseEntity<UserResponse> getByCpf(@RequestParam String cpf);
+    ResponseEntity<UserResponse> getByCpf(@PathVariable String cpf);
 
     @Operation(summary = "Get a paginated list of all users", description = "Retrieves a paginated list of all users in the system.")
     @ApiResponses(value = {
