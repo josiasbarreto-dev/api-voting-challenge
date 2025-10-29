@@ -4,10 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import github.io.api_voting_challenge.controller.UserController;
 import github.io.api_voting_challenge.dto.request.UserRequest;
 import github.io.api_voting_challenge.dto.response.UserResponse;
-import github.io.api_voting_challenge.exception.CpfAlreadyRegisteredException;
-import github.io.api_voting_challenge.exception.CpfModificationNotAllowedException;
+import github.io.api_voting_challenge.exception.BusinessException;
 import github.io.api_voting_challenge.exception.GlobalExceptionHandler;
-import github.io.api_voting_challenge.exception.UserNotFoundException;
 import github.io.api_voting_challenge.fixtures.TestNoOperationCacheConfig;
 import github.io.api_voting_challenge.fixtures.UserFixtures;
 import github.io.api_voting_challenge.service.UserService;
@@ -19,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -66,14 +65,14 @@ public class UserControllerIT {
     }
 
     @Test
-    @DisplayName("Deve retornar status UnProcessable Entity quando criar um usuário com dados inválidos")
-    void shouldReturnStatusUnProcessableEntityWhenCreateUserWithInvalidData() throws Exception {
+    @DisplayName("Deve retornar status BadRequest quando criar um usuário com dados inválidos")
+    void shouldReturnStatusBadRequestWhenCreateUserWithInvalidData() throws Exception {
         UserRequest invalidUserRequest = UserFixtures.createInvalidUserRequest();
 
         mockMvc.perform(post("/api/v1/users")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(invalidUserRequest)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isBadRequest());
 
         verifyNoInteractions(userService);
     }
@@ -83,7 +82,7 @@ public class UserControllerIT {
     void shouldReturnStatusConflictWhenCreateUserWithExistingCpf() throws Exception {
         UserRequest userRequest = UserFixtures.createValidUserRequest();
 
-        when(userService.create(userRequest)).thenThrow(new CpfAlreadyRegisteredException("CPF already registered"));
+        when(userService.create(userRequest)).thenThrow(new BusinessException("CPF already registered", HttpStatus.CONFLICT));
 
         mockMvc.perform(post("/api/v1/users")
                         .contentType("application/json")
@@ -116,30 +115,30 @@ public class UserControllerIT {
     }
 
     @Test
-    @DisplayName("Deve retornar status UnProcessable Entity quando atualizar um usuário com dados inválidos")
-    void shouldReturnStatusUnProcessableEntityWhenUpdateUserWithInvalidData() throws Exception {
+    @DisplayName("Deve retornar status BadRequest quando atualizar um usuário com dados inválidos")
+    void shouldReturnStatusBadRequestWhenUpdateUserWithInvalidData() throws Exception {
         UserRequest invalidUserRequest = UserFixtures.createInvalidUserRequest();
 
         mockMvc.perform(put("/api/v1/users/{id}", VALID_ID)
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(invalidUserRequest)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isBadRequest());
 
         verifyNoInteractions(userService);
     }
 
     @Test
-    @DisplayName("Deve retornar status Proíbido ao tentar atualizar o CPF de um usuário")
-    void shouldReturnStatusForbiddenWhenTryingToUpdateUserCpf() throws Exception {
+    @DisplayName("Deve retornar status Unprocessable Entity ao tentar atualizar o CPF de um usuário")
+    void shouldReturnStatusUnprocessableEntityWhenTryingToUpdateUserCpf() throws Exception {
         UserRequest userRequest = UserFixtures.createValidUserRequest();
 
         when(userService.update(VALID_ID, userRequest))
-                .thenThrow(new CpfModificationNotAllowedException("Cannot change the CPF of an existing User."));
+                .thenThrow(new BusinessException("Cannot change the CPF of an existing User.", HttpStatus.UNPROCESSABLE_ENTITY));
 
         mockMvc.perform(put("/api/v1/users/{id}", VALID_ID)
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(userRequest)))
-                .andExpect(status().isForbidden())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message").value("Cannot change the CPF of an existing User."));
 
         verify(userService, times(1)).update(VALID_ID, userRequest);
@@ -152,7 +151,7 @@ public class UserControllerIT {
         UserRequest userRequest = UserFixtures.createValidUserRequest();
 
         when(userService.update(INVALID_ID, userRequest))
-                .thenThrow(new UserNotFoundException("User not found with ID: " + INVALID_ID));
+                .thenThrow(new BusinessException("User not found with ID: " + INVALID_ID, HttpStatus.NOT_FOUND));
 
         mockMvc.perform(put("/api/v1/users/{id}", INVALID_ID)
                         .contentType("application/json")
@@ -186,7 +185,7 @@ public class UserControllerIT {
     @DisplayName("Deve retornar status Not Found ao tentar recuperar um usuário com ID inexistente")
     void shouldReturnStatusNotFoundWhenTryingToGetUserWithNonExistentId() throws Exception {
         when(userService.getById(INVALID_ID))
-                .thenThrow(new UserNotFoundException("User not found with ID: " + INVALID_ID));
+                .thenThrow(new BusinessException("User not found with ID: " + INVALID_ID, HttpStatus.NOT_FOUND));
 
         mockMvc.perform(get("/api/v1/users/{id}", INVALID_ID)
                         .contentType("application/json"))
@@ -204,8 +203,7 @@ public class UserControllerIT {
 
         when(userService.getByCpf(VALID_CPF)).thenReturn(userResponse);
 
-        mockMvc.perform(get("/api/v1/users")
-                        .param("cpf", VALID_CPF)
+        mockMvc.perform(get("/api/v1/users/cpf/{cpf}", VALID_CPF)
                         .contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(userResponse.id()))
@@ -220,10 +218,9 @@ public class UserControllerIT {
     @DisplayName("Deve retornar status Not Found ao tentar recuperar um usuário com CPF inexistente")
     void shouldReturnStatusNotFoundWhenTryingToGetUserWithNonExistentCpf() throws Exception {
         when(userService.getByCpf(INVALID_CPF))
-                .thenThrow(new UserNotFoundException("User not found with CPF: " + INVALID_CPF));
+                .thenThrow(new BusinessException("User not found with CPF: " + INVALID_CPF, HttpStatus.NOT_FOUND));
 
-        mockMvc.perform(get("/api/v1/users")
-                        .param("cpf", INVALID_CPF)
+        mockMvc.perform(get("/api/v1/users/cpf/{cpf}", INVALID_CPF)
                         .contentType("application/json"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("User not found with CPF: " + INVALID_CPF));
@@ -272,7 +269,7 @@ public class UserControllerIT {
     @Test
     @DisplayName("Deve retornar status Not Found ao tentar deletar um usuário com ID inexistente")
     void shouldReturnStatusNotFoundWhenTryingToDeleteUserWithNonExistentId() throws Exception {
-        doThrow(new UserNotFoundException("User not found with ID: " + INVALID_ID))
+        doThrow(new BusinessException("User not found with ID: " + INVALID_ID, HttpStatus.NOT_FOUND))
                 .when(userService).delete(INVALID_ID);
 
         mockMvc.perform(delete("/api/v1/users/{id}", INVALID_ID)
