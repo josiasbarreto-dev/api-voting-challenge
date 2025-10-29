@@ -2,7 +2,7 @@ package github.io.api_voting_challenge.unit.service;
 
 import github.io.api_voting_challenge.dto.request.AgendaRequest;
 import github.io.api_voting_challenge.dto.response.AgendaResponse;
-import github.io.api_voting_challenge.exception.AgendaNotFoundException;
+import github.io.api_voting_challenge.exception.BusinessException;
 import github.io.api_voting_challenge.fixtures.AgendaFixtures;
 import github.io.api_voting_challenge.mapper.AgendaMapper;
 import github.io.api_voting_challenge.model.Agenda;
@@ -85,7 +85,7 @@ public class AgendaServiceImplUnitTest {
 
         when(agendaRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
         Exception exception = assertThrows(
-                AgendaNotFoundException.class, () -> {
+                BusinessException.class, () -> {
                     agendaService.update(INVALID_ID, agendaRequest);
                 });
 
@@ -120,7 +120,7 @@ public class AgendaServiceImplUnitTest {
     void shouldThrowExceptionWhenGettingAgendaByInvalidId() {
         when(agendaRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
         Exception exception = assertThrows(
-                AgendaNotFoundException.class, () -> {
+                BusinessException.class, () -> {
                     agendaService.getById(INVALID_ID);
                 });
         String message = "Agenda not found with ID: "+ INVALID_ID;
@@ -148,7 +148,7 @@ public class AgendaServiceImplUnitTest {
     void shouldThrowExceptionWhenDeletingAgendaWithInvalidId() {
         when(agendaRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
         Exception exception = assertThrows(
-                AgendaNotFoundException.class, () -> {
+                BusinessException.class, () -> {
                     agendaService.delete(INVALID_ID);
                 });
         String message = "Agenda not found with ID: " + INVALID_ID;
