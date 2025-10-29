@@ -2,7 +2,7 @@ package github.io.api_voting_challenge.service.impl;
 
 import github.io.api_voting_challenge.dto.request.VotingSessionRequest;
 import github.io.api_voting_challenge.dto.response.VotingSessionResponse;
-import github.io.api_voting_challenge.exception.AgendaNotFoundException;
+import github.io.api_voting_challenge.exception.BusinessException;
 import github.io.api_voting_challenge.mapper.VotingSessionMapper;
 import github.io.api_voting_challenge.model.Agenda;
 import github.io.api_voting_challenge.model.VotingSession;
@@ -12,6 +12,7 @@ import github.io.api_voting_challenge.repository.VotingSessionRepository;
 import github.io.api_voting_challenge.service.VotingSessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +35,7 @@ public class VotingSessionServiceImpl implements VotingSessionService {
         log.info("Validating agenda status for ID: {}", votingSessionRequest.agendaId());
         if (agenda.getStatus() != Status.PENDING) {
             log.error("Cannot open voting session. Agenda ID: {} has status: {}", votingSessionRequest.agendaId(), agenda.getStatus());
-            throw new IllegalStateException("Voting session can only be created for agendas with status PENDING.");
+            throw new BusinessException("Voting session can only be created for agendas with status PENDING.", HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
         int durationMinutes = votingSessionRequest.durationInMinutes() != null ? votingSessionRequest.durationInMinutes() : 1;
@@ -61,7 +62,7 @@ public class VotingSessionServiceImpl implements VotingSessionService {
 
     private Agenda getAgenda(Long agendaId) {
         return agendaRepository.findById(agendaId).orElseThrow(
-                () -> new AgendaNotFoundException("Agenda not found with ID: " + agendaId)
+                () -> new BusinessException("Agenda not found with ID: " + agendaId, HttpStatus.NOT_FOUND)
         );
     }
 }
