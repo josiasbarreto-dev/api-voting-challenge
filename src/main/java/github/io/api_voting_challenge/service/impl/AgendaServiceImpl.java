@@ -2,7 +2,7 @@ package github.io.api_voting_challenge.service.impl;
 
 import github.io.api_voting_challenge.dto.request.AgendaRequest;
 import github.io.api_voting_challenge.dto.response.AgendaResponse;
-import github.io.api_voting_challenge.exception.AgendaNotFoundException;
+import github.io.api_voting_challenge.exception.BusinessException;
 import github.io.api_voting_challenge.mapper.AgendaMapper;
 import github.io.api_voting_challenge.model.Agenda;
 import github.io.api_voting_challenge.model.enums.Status;
@@ -17,6 +17,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -66,9 +67,7 @@ public class AgendaServiceImpl implements AgendaService {
     )
     public AgendaResponse update(Long id, AgendaRequest agendaRequest) {
         log.info("Updating agenda with ID: {}", id);
-        Agenda existingAgenda = agendaRepository.findById(id).orElseThrow(
-                () -> new AgendaNotFoundException("Agenda not found with ID: " + id)
-        );
+        Agenda existingAgenda = getAgenda(id);
 
         existingAgenda.setTitle(agendaRequest.title());
         existingAgenda.setDescription(agendaRequest.description());
@@ -121,7 +120,7 @@ public class AgendaServiceImpl implements AgendaService {
 
     private Agenda getAgenda(Long id) {
         return agendaRepository.findById(id).orElseThrow(
-                () -> new AgendaNotFoundException("Agenda not found with ID: " + id)
+                () -> new BusinessException("Agenda not found with ID: " + id, HttpStatus.NOT_FOUND)
         );
     }
 }
