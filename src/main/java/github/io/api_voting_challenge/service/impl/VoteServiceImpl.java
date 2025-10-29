@@ -4,11 +4,11 @@ import github.io.api_voting_challenge.client.CpfApiClient;
 import github.io.api_voting_challenge.client.response.CpfStatusResponse;
 import github.io.api_voting_challenge.dto.request.VoteRequest;
 import github.io.api_voting_challenge.dto.response.VoteResultResponse;
-import github.io.api_voting_challenge.exception.*;
+import github.io.api_voting_challenge.exception.BusinessException;
 import github.io.api_voting_challenge.model.Agenda;
+import github.io.api_voting_challenge.model.User;
 import github.io.api_voting_challenge.model.Vote;
 import github.io.api_voting_challenge.model.VotingSession;
-import github.io.api_voting_challenge.model.User;
 import github.io.api_voting_challenge.model.enums.VoteOption;
 import github.io.api_voting_challenge.repository.UserRepository;
 import github.io.api_voting_challenge.repository.VoteRepository;
@@ -44,7 +44,7 @@ public class VoteServiceImpl implements VoteService {
         ResponseEntity<CpfStatusResponse> response = cpfApiClient.validateCpf(user.getCpf());
         if(response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
             log.info("User with id: {} is not able to vote.", user.getId());
-            throw new UserUnableToVoteException("User with CPF: " + user.getCpf() + " is not able to vote.");
+            throw new BusinessException("User with CPF: " + user.getCpf() + " is not able to vote.", HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
         log.info("Retrieving voting session with ID: {}", sessionId);
@@ -99,12 +99,12 @@ public class VoteServiceImpl implements VoteService {
 
     private VotingSession getSession(Long sessionId) {
         return votingSessionRepository.findById(sessionId).orElseThrow(
-                () -> new VotingSessionNotFoundException("Voting session not found with ID: " + sessionId));
+                () -> new BusinessException("Voting session not found with ID: " + sessionId, HttpStatus.NOT_FOUND));
     }
 
     private User getUser(Long id) {
         return userRepository.findById(id).orElseThrow(
-                () -> new UserNotFoundException("User not found with ID: " + id));
+                () -> new BusinessException("User not found with ID: " + id, HttpStatus.NOT_FOUND));
     }
 
     private VotingSession getVotingSession(Long id) {
@@ -113,20 +113,20 @@ public class VoteServiceImpl implements VoteService {
 
     private void validateVotingSessionIsOpen(VotingSession session) {
         if(LocalDateTime.now().isAfter(session.getEndTime())){
-            throw new VotingSessionClosedException("Voting session is closed for ID: " + session.getId());
+            throw new BusinessException("Voting session is closed.", HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     private void checkIfUserAlreadyVoted(Long userId, Long sessionId) {
         boolean alreadyVoted = voteRepository.existsByUserIdAndAgenda_Id(userId, sessionId);
         if (alreadyVoted) {
-            throw new UserAlreadyVotedException("User has already voted in this session.");
+            throw new BusinessException("User has already voted in this session.", HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     private void checkIfSessionIsClosed(VotingSession session) {
         if (LocalDateTime.now().isBefore(session.getEndTime())) {
-            throw new VotingSessionInProgressException("Voting session is still in progress.");
+            throw new BusinessException("Voting session is still in progress.", HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 }
