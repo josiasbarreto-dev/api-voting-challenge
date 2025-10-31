@@ -69,8 +69,8 @@ public class AgendaServiceImpl implements AgendaService {
         log.info("Updating agenda with ID: {}", id);
         Agenda existingAgenda = getAgenda(id);
 
-        existingAgenda.setTitle(agendaRequest.title());
-        existingAgenda.setDescription(agendaRequest.description());
+        existingAgenda.updateTitle(agendaRequest.title());
+        existingAgenda.updateDescription(agendaRequest.description());
 
         Agenda agenda = agendaRepository.save(existingAgenda);
         log.info("Agenda with ID: {} updated successfully.", agenda.getId());
