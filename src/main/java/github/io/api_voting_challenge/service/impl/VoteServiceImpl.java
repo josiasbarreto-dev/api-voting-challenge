@@ -38,38 +38,41 @@ public class VoteServiceImpl implements VoteService {
     public void registerVote(Long sessionId, VoteRequest voteRequest) {
         log.info("Registering vote for session ID: {} by user ID: {}", sessionId, voteRequest.userId());
         log.info("Retrieving user with ID: {}", voteRequest.userId());
-        User user = getUser(voteRequest.userId());
+        User user = findExistingUser(voteRequest.userId());
 
         log.info("Validating CPF for user ID: {}", voteRequest.userId());
         ResponseEntity<CpfStatusResponse> response = cpfApiClient.validateCpf(user.getCpf());
-        if(response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
-            log.info("User with id: {} is not able to vote.", user.getId());
-            throw new BusinessException("User with CPF: " + user.getCpf() + " is not able to vote.", HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+        validateUserEligibilityToVote(response);
 
         log.info("Retrieving voting session with ID: {}", sessionId);
-        VotingSession session = getVotingSession(sessionId);
+        VotingSession session = findExistingVotingSession(sessionId);
 
-        log.info("Validating if voting session is open for ID: {}", sessionId);
-        validateVotingSessionIsOpen(session);
+        log.info("Validating if voting session is open.");
+        if (!session.isOpen()){
+            log.info("Voting session with ID: {} is closed.", sessionId);
+            throw new BusinessException("Voting session is closed.", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
 
         log.info("Checking if user ID: {} has already voted in session ID: {}", voteRequest.userId(), sessionId);
         checkIfUserAlreadyVoted(voteRequest.userId(), sessionId);
 
-        Vote vote = Vote.builder()
-                .user(user)
-                .agenda(session.getAgenda())
-                .voteOption(voteRequest.voteOption())
-                .build();
+        Vote vote = Vote.createVote(user, session.getAgenda(), voteRequest.voteOption());
 
+        log.info("Agenda associated with session: {}", session.getAgenda());
         voteRepository.save(vote);
         log.info("Vote registered successfully for session ID: {} by user ID: {}", sessionId, voteRequest.userId());
+    }
+
+    private static void validateUserEligibilityToVote(ResponseEntity<CpfStatusResponse> response) {
+        if(response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
+            throw new BusinessException("User unable to vote!", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
     @Override
     public VoteResultResponse calculateVotingResult(Long sessionId) {
         log.info("Calculating voting results for session ID: {}", sessionId);
-        VotingSession session = getSession(sessionId);
+        VotingSession session = findExistingVotingSession(sessionId);
 
         log.info("Checking if voting session is closed for ID: {}", sessionId);
         checkIfSessionIsClosed(session);
@@ -78,43 +81,33 @@ public class VoteServiceImpl implements VoteService {
         Agenda agenda = session.getAgenda();
 
         log.info("Counting yes votes for agenda ID: {}", agenda.getId());
-        long yesVotes = getYesVotes(agenda);
+        long countYesVotes = countYesVotesByAgenda(agenda);
 
         log.info("Counting no votes for agenda ID: {}", agenda.getId());
-        long noVotes = getNoVotes(agenda);
+        long countNoVotes = countNoVotesByAgenda(agenda);
 
-        var result = new VoteResultResponse("Vote Result: ", yesVotes, noVotes);
+        var result = new VoteResultResponse("Vote Result: ", countYesVotes, countNoVotes);
         log.info("Voting results calculated successfully for session ID: {}", sessionId);
 
         return result;
     }
 
-    private long getNoVotes(Agenda agenda) {
+    private long countNoVotesByAgenda(Agenda agenda) {
         return voteRepository.countByAgendaIdAndVoteOption(agenda.getId(), VoteOption.NO);
     }
 
-    private long getYesVotes(Agenda agenda) {
+    private long countYesVotesByAgenda(Agenda agenda) {
         return voteRepository.countByAgendaIdAndVoteOption(agenda.getId(), VoteOption.YES);
     }
 
-    private VotingSession getSession(Long sessionId) {
+    private VotingSession findExistingVotingSession(Long sessionId) {
         return votingSessionRepository.findById(sessionId).orElseThrow(
                 () -> new BusinessException("Voting session not found with ID: " + sessionId, HttpStatus.NOT_FOUND));
     }
 
-    private User getUser(Long id) {
+    private User findExistingUser(Long id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new BusinessException("User not found with ID: " + id, HttpStatus.NOT_FOUND));
-    }
-
-    private VotingSession getVotingSession(Long id) {
-        return getSession(id);
-    }
-
-    private void validateVotingSessionIsOpen(VotingSession session) {
-        if(LocalDateTime.now().isAfter(session.getEndTime())){
-            throw new BusinessException("Voting session is closed.", HttpStatus.UNPROCESSABLE_ENTITY);
-        }
     }
 
     private void checkIfUserAlreadyVoted(Long userId, Long sessionId) {
