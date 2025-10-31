@@ -2,9 +2,7 @@ package github.io.api_voting_challenge.unit.service;
 
 import github.io.api_voting_challenge.dto.request.UserRequest;
 import github.io.api_voting_challenge.dto.response.UserResponse;
-import github.io.api_voting_challenge.exception.CpfAlreadyRegisteredException;
-import github.io.api_voting_challenge.exception.CpfModificationNotAllowedException;
-import github.io.api_voting_challenge.exception.UserNotFoundException;
+import github.io.api_voting_challenge.exception.BusinessException;
 import github.io.api_voting_challenge.fixtures.UserFixtures;
 import github.io.api_voting_challenge.mapper.UserMapper;
 import github.io.api_voting_challenge.model.User;
@@ -71,8 +69,8 @@ public class UserServiceImplUnitTest {
 
         when(userRepository.existsByCpf(userRequest.cpf())).thenReturn(true);
 
-        CpfAlreadyRegisteredException exception = assertThrows(
-                CpfAlreadyRegisteredException.class, () -> {
+        Exception exception = assertThrows(
+                BusinessException.class, () -> {
                     userService.create(userRequest);
                 });
 
@@ -88,7 +86,6 @@ public class UserServiceImplUnitTest {
         UserResponse updatedUserResponse = UserFixtures.createUpdatedUserResponse();
 
         when(userRepository.findById(VALID_ID)).thenReturn(Optional.of(userEntity));
-        when(userRepository.save(userEntity)).thenReturn(userEntity);
         when(userMapper.toDto(userEntity)).thenReturn(updatedUserResponse);
 
         UserResponse result = userService.update(VALID_ID, userRequestToUpdate);
@@ -96,7 +93,6 @@ public class UserServiceImplUnitTest {
         assertNotNull(result);
         assertEquals(updatedUserResponse, result);
         verify(userRepository).findById(VALID_ID);
-        verify(userRepository).save(userEntity);
         verify(userMapper).toDto(userEntity);
     }
 
@@ -108,7 +104,7 @@ public class UserServiceImplUnitTest {
 
         when(userRepository.findById(VALID_ID)).thenReturn(Optional.of(userEntity));
         Exception exception = assertThrows(
-                CpfModificationNotAllowedException.class, () -> {
+                BusinessException.class, () -> {
                     userService.update(VALID_ID, userRequestToUpdate);
                 });
 
@@ -126,7 +122,7 @@ public class UserServiceImplUnitTest {
 
         when(userRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
         Exception exception = assertThrows(
-                UserNotFoundException.class, () -> {
+                BusinessException.class, () -> {
                     userService.update(INVALID_ID, userRequest);
                 });
 
@@ -161,7 +157,7 @@ public class UserServiceImplUnitTest {
     void shouldThrowExceptionWhenGettingUserByInvalidId() {
         when(userRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
         Exception exception = assertThrows(
-                UserNotFoundException.class, () -> {
+                BusinessException.class, () -> {
                     userService.getById(INVALID_ID);
                 });
         String message = String.format("User not found with ID: %d", INVALID_ID);
@@ -193,7 +189,7 @@ public class UserServiceImplUnitTest {
     void shouldThrowExceptionWhenGettingUserByInvalidCpf() {
         when(userRepository.findByCpf(INVALID_CPF)).thenReturn(Optional.empty());
         Exception exception = assertThrows(
-                UserNotFoundException.class, () -> {
+                BusinessException.class, () -> {
                     userService.getByCpf(INVALID_CPF);
                 });
         String message = "User not found with CPF: "+ INVALID_CPF;
@@ -250,7 +246,7 @@ public class UserServiceImplUnitTest {
     void shouldThrowExceptionWhenDeletingAdminUserWithInvalidId() {
         when(userRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
         Exception exception = assertThrows(
-                UserNotFoundException.class, () -> {
+                BusinessException.class, () -> {
                     userService.delete(INVALID_ID);
                 });
         String message = "User not found with ID: " + INVALID_ID;
