@@ -2,9 +2,7 @@ package github.io.api_voting_challenge.service.impl;
 
 import github.io.api_voting_challenge.dto.request.UserRequest;
 import github.io.api_voting_challenge.dto.response.UserResponse;
-import github.io.api_voting_challenge.exception.CpfAlreadyRegisteredException;
-import github.io.api_voting_challenge.exception.CpfModificationNotAllowedException;
-import github.io.api_voting_challenge.exception.UserNotFoundException;
+import github.io.api_voting_challenge.exception.BusinessException;
 import github.io.api_voting_challenge.mapper.UserMapper;
 import github.io.api_voting_challenge.model.User;
 import github.io.api_voting_challenge.repository.UserRepository;
@@ -18,9 +16,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +40,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse create(UserRequest userRequest) {
         log.info("Creating new user with name: {}", userRequest.name());
         if (userRepository.existsByCpf(userRequest.cpf())) {
-            throw new CpfAlreadyRegisteredException("CPF already registered: " + userRequest.cpf());
+            throw new BusinessException("CPF already registered: " + userRequest.cpf(), HttpStatus.CONFLICT);
         }
 
         User user = userRepository.save(userMapper.toEntity(userRequest));
@@ -65,23 +62,19 @@ public class UserServiceImpl implements UserService {
     )
     public UserResponse update(Long id, UserRequest userRequest) {
         log.info("Updating user with ID: {}", id);
-        User existingUser = getUser(id);
-        if (!Objects.equals(existingUser.getCpf(), userRequest.cpf())) {
-            throw new CpfModificationNotAllowedException("Cannot change the CPF of an existing User.");
-        }
+        User existingUser = findExistingUser(id);
 
-        existingUser.setName(userRequest.name());
-        User user = userRepository.save(existingUser);
-        log.info("User with ID: {} updated successfully.", user.getId());
+        existingUser.validateCpfImmutability(userRequest.cpf());
+        existingUser.updateName(userRequest.name());
 
-        return userMapper.toDto(user);
+        return userMapper.toDto(existingUser);
     }
 
     @Override
     @Cacheable(value = "USER_BY_ID_CACHE", key = "#id", unless = "#result == null")
     public UserResponse getById(Long id) {
         log.info("Retrieving user with ID: {}", id);
-        User existingUser = getUser(id);
+        User existingUser = findExistingUser(id);
 
         log.info("User with ID: {} retrieved successfully.", existingUser.getId());
 
@@ -93,7 +86,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse getByCpf(String cpf) {
         log.info("Retrieving user with CPF.");
         User user = userRepository.findByCpf(cpf).orElseThrow(
-                () -> new UserNotFoundException("User not found with CPF: " + cpf));
+                () -> new BusinessException("User not found with CPF: " + cpf, HttpStatus.NOT_FOUND));
 
         log.info("User with CPF retrieved successfully: {}", user.getName());
 
@@ -126,14 +119,14 @@ public class UserServiceImpl implements UserService {
     )
     public void delete(Long id) {
         log.info("Deleting user with ID: {}", id);
-        userRepository.delete(getUser(id));
+        userRepository.delete(findExistingUser(id));
 
         log.info("User with ID: {} deleted successfully.", id);
     }
 
-    public User getUser(Long id) {
+    public User findExistingUser(Long id) {
         return userRepository.findById(id).orElseThrow(
-                () -> new UserNotFoundException("User not found with ID: " + id)
+                () -> new BusinessException("User not found with ID: " + id, HttpStatus.NOT_FOUND)
         );
     }
 }
