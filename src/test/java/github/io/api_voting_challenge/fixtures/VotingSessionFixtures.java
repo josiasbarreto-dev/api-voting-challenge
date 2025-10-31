@@ -66,7 +66,7 @@ public class VotingSessionFixtures {
 
     public static VotingSession createExpiredVotingSession(Clock clock) {
         Agenda agenda = createAgenda();
-        agenda.setStatus(Status.IN_PROGRESS);
+        agenda.updateStatus(Status.IN_PROGRESS);
         LocalDateTime now = LocalDateTime.now(clock);
 
         return VotingSession.builder()
