@@ -114,7 +114,7 @@ public class VotingSessionServiceImplTest {
     @DisplayName("Deve lançar BusinessException quando a agenda não estiver PENDENTE")
     void shouldThrowBusinessExceptionWhenAgendaIsNotPending() {
         Agenda agenda = AgendaFixtures.createAgenda();
-        agenda.setStatus(Status.IN_PROGRESS);
+        agenda.updateStatus(Status.IN_PROGRESS);
 
         VotingSessionRequest votingSessionRequestDto = VotingSessionFixtures.createInvalidVotingSessionRequest();
 
