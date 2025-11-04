@@ -32,6 +32,13 @@ spring:
     baseline-on-migrate: true
     validate-on-migrate: true
 
+  cache:
+    type: redis
+  data:
+    redis:
+      host: voting_redis
+      port: ${REDIS_PORT}
+
 logging:
   level:
     root: INFO
@@ -39,3 +46,7 @@ logging:
     github.io.api_voting_challenge: DEBUG
   file:
     name: logs/app.log
+
+external:
+  cpf-api:
+    url: ${CPF_API_URL}

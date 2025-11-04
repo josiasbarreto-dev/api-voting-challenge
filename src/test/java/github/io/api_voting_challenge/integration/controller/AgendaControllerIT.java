@@ -2,18 +2,23 @@ package github.io.api_voting_challenge.integration.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import github.io.api_voting_challenge.controller.AgendaController;
-import github.io.api_voting_challenge.dto.AgendaRequest;
-import github.io.api_voting_challenge.dto.AgendaResponse;
-import github.io.api_voting_challenge.exception.AgendaNotFoundException;
+import github.io.api_voting_challenge.dto.request.AgendaRequest;
+import github.io.api_voting_challenge.dto.response.AgendaResponse;
+import github.io.api_voting_challenge.exception.BusinessException;
 import github.io.api_voting_challenge.exception.GlobalExceptionHandler;
 import github.io.api_voting_challenge.fixtures.AgendaFixtures;
+import github.io.api_voting_challenge.fixtures.TestNoOperationCacheConfig;
 import github.io.api_voting_challenge.service.AgendaService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -27,6 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("integration")
 @DisplayName("Agenda Controller Integration Tests")
 @WebMvcTest({AgendaController.class, GlobalExceptionHandler.class})
+@EnableCaching
+@Import(TestNoOperationCacheConfig.class)
+@ActiveProfiles("test")
 public class AgendaControllerIT {
     @Autowired
     private MockMvc mockMvc;
@@ -60,14 +68,14 @@ public class AgendaControllerIT {
     }
 
     @Test
-    @DisplayName("Deve retornar status Unprocessable Entity ao tentar criar uma pauta com dados inválidos")
-    void shouldReturnStatusUnprocessableEntityWhenCreatingAgendaWithInvalidData() throws Exception {
+    @DisplayName("Deve retornar status BadRequest Entity ao tentar criar uma pauta com dados inválidos")
+    void shouldReturnStatusBadRequestWhenCreatingAgendaWithInvalidData() throws Exception {
         AgendaRequest invalidAgendaRequest = AgendaFixtures.createInvalidAgendaRequest();
 
         mockMvc.perform(post("/api/v1/agendas")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(invalidAgendaRequest)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isBadRequest());
 
         verifyNoInteractions(agendaService);
     }
@@ -99,7 +107,7 @@ public class AgendaControllerIT {
     void shouldReturnStatusNotFoundWhenUpdatingNonExistentAgenda() throws Exception {
         AgendaRequest agendaRequest = AgendaFixtures.createValidAgendaRequest();
 
-        when(agendaService.update(INVALID_ID, agendaRequest)).thenThrow(new AgendaNotFoundException("Agenda not found"));
+        when(agendaService.update(INVALID_ID, agendaRequest)).thenThrow(new BusinessException("Agenda not found", HttpStatus.NOT_FOUND));
 
         mockMvc.perform(put("/api/v1/agendas/{id}", INVALID_ID)
                         .contentType("application/json")
@@ -111,14 +119,14 @@ public class AgendaControllerIT {
     }
 
     @Test
-    @DisplayName("Deve retornar status Unprocessable Entity ao tentar atualizar uma pauta com dados inválidos")
-    void shouldReturnStatusUnprocessableEntityWhenUpdatingAgendaWithInvalidData() throws Exception {
+    @DisplayName("Deve retornar status BadRequest Entity ao tentar atualizar uma pauta com dados inválidos")
+    void shouldReturnStatusBadRequestWhenUpdatingAgendaWithInvalidData() throws Exception {
         AgendaRequest invalidAgendaRequest = AgendaFixtures.createInvalidAgendaRequest();
 
         mockMvc.perform(put("/api/v1/agendas/{id}", VALID_ID)
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(invalidAgendaRequest)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isBadRequest());
 
         verifyNoInteractions(agendaService);
     }
@@ -146,7 +154,7 @@ public class AgendaControllerIT {
     @Test
     @DisplayName("Deve retornar status Not Found ao tentar buscar uma pauta inexistente por ID")
     void shouldReturnStatusNotFoundWhenGettingNonExistentAgendaById() throws Exception {
-        when(agendaService.getById(INVALID_ID)).thenThrow(new AgendaNotFoundException("Agenda not found"));
+        when(agendaService.getById(INVALID_ID)).thenThrow(new BusinessException("Agenda not found", HttpStatus.NOT_FOUND));
 
         mockMvc.perform(get("/api/v1/agendas/{id}", INVALID_ID)
                         .contentType("application/json"))
@@ -196,7 +204,7 @@ public class AgendaControllerIT {
     @Test
     @DisplayName("Deve retornar status Not Found ao tentar deletar uma pauta inexistente")
     void shouldReturnStatusNotFoundWhenDeletingNonExistentAgenda() throws Exception {
-        doThrow(new AgendaNotFoundException("Agenda not found")).when(agendaService).delete(INVALID_ID);
+        doThrow(new BusinessException("Agenda not found", HttpStatus.NOT_FOUND)).when(agendaService).delete(INVALID_ID);
 
         mockMvc.perform(delete("/api/v1/agendas/{id}", INVALID_ID)
                         .contentType("application/json"))

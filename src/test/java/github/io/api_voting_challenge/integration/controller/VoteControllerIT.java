@@ -2,9 +2,10 @@ package github.io.api_voting_challenge.integration.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import github.io.api_voting_challenge.controller.VoteController;
-import github.io.api_voting_challenge.dto.VoteRequest;
+import github.io.api_voting_challenge.dto.request.VoteRequest;
+import github.io.api_voting_challenge.exception.BusinessException;
 import github.io.api_voting_challenge.exception.GlobalExceptionHandler;
-import github.io.api_voting_challenge.exception.VotingSessionNotFoundException;
+import github.io.api_voting_challenge.fixtures.TestNoOperationCacheConfig;
 import github.io.api_voting_challenge.fixtures.VoteFixtures;
 import github.io.api_voting_challenge.service.VoteService;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +13,10 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,6 +29,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("integration")
 @DisplayName("Vote Controller Integration Tests")
 @WebMvcTest({VoteController.class, GlobalExceptionHandler.class})
+@EnableCaching
+@Import(TestNoOperationCacheConfig.class)
+@ActiveProfiles("test")
 public class VoteControllerIT {
     @Autowired
     private MockMvc mockMvc;
@@ -50,14 +58,14 @@ public class VoteControllerIT {
     }
 
     @Test
-    @DisplayName("Deve retornar status UnProcessable Entity quando o payload for inválido")
-    void shouldReturnStatusUnProcessableEntityWhenPayloadIsInvalid() throws Exception {
+    @DisplayName("Deve retornar status BadRequest quando o payload for inválido")
+    void shouldReturnStatusBadRequestWhenPayloadIsInvalid() throws Exception {
         VoteRequest invalidVoteRequest = VoteFixtures.createInvalidVoteRequest();
 
         mockMvc.perform(post("/api/v1/voting-sessions/{sessionId}/vote", VALID_SESSION_ID)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(invalidVoteRequest)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isBadRequest());
 
         verifyNoInteractions(voteService);
     }
@@ -67,7 +75,7 @@ public class VoteControllerIT {
     void shouldReturnStatusNotFoundWhenVotingSessionDoesNotExist() throws Exception {
         VoteRequest voteRequest = VoteFixtures.createValidVoteRequest();
 
-        doThrow(new VotingSessionNotFoundException("Voting session not found")).
+        doThrow(new BusinessException("Voting session not found", HttpStatus.NOT_FOUND)).
                 when(voteService).registerVote(INVALID_SESSION_ID, voteRequest);
 
         mockMvc.perform(post("/api/v1/voting-sessions/{sessionId}/vote", INVALID_SESSION_ID)

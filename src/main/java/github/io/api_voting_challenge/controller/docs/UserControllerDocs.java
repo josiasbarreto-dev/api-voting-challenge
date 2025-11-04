@@ -1,7 +1,7 @@
 package github.io.api_voting_challenge.controller.docs;
 
-import github.io.api_voting_challenge.dto.UserRequest;
-import github.io.api_voting_challenge.dto.UserResponse;
+import github.io.api_voting_challenge.dto.request.UserRequest;
+import github.io.api_voting_challenge.dto.response.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -52,7 +52,7 @@ public interface UserControllerDocs {
             @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    ResponseEntity<UserResponse> getByCpf(@RequestParam String cpf);
+    ResponseEntity<UserResponse> getByCpf(@PathVariable String cpf);
 
     @Operation(summary = "Get a paginated list of all users", description = "Retrieves a paginated list of all users in the system.")
     @ApiResponses(value = {

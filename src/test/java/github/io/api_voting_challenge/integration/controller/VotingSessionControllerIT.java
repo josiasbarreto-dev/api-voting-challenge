@@ -2,10 +2,11 @@ package github.io.api_voting_challenge.integration.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import github.io.api_voting_challenge.controller.VotingSessionController;
-import github.io.api_voting_challenge.dto.VotingSessionRequest;
-import github.io.api_voting_challenge.dto.VotingSessionResponse;
+import github.io.api_voting_challenge.dto.request.VotingSessionRequest;
+import github.io.api_voting_challenge.dto.response.VotingSessionResponse;
+import github.io.api_voting_challenge.exception.BusinessException;
 import github.io.api_voting_challenge.exception.GlobalExceptionHandler;
-import github.io.api_voting_challenge.exception.VotingSessionNotFoundException;
+import github.io.api_voting_challenge.fixtures.TestNoOperationCacheConfig;
 import github.io.api_voting_challenge.fixtures.VoteFixtures;
 import github.io.api_voting_challenge.fixtures.VotingSessionFixtures;
 import github.io.api_voting_challenge.service.VoteService;
@@ -16,7 +17,11 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -31,6 +36,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("integration")
 @DisplayName("Voting Session Controller Integration Tests")
 @WebMvcTest({VotingSessionController.class, GlobalExceptionHandler.class})
+@EnableCaching
+@Import(TestNoOperationCacheConfig.class)
+@ActiveProfiles("test")
 public class VotingSessionControllerIT {
     @Autowired
     private MockMvc mockMvc;
@@ -114,7 +122,7 @@ public class VotingSessionControllerIT {
     @Test
     @DisplayName("Deve retornar Status Not Found ao buscar o resultado de uma sessão de votação inexistente")
     void shouldReturnStatusNotFoundWhenFetchingResultOfNonExistentVotingSession() throws Exception {
-    when(voteService.calculateVotingResult(VALID_ID)).thenThrow(new VotingSessionNotFoundException("Voting session not found"));
+    when(voteService.calculateVotingResult(VALID_ID)).thenThrow(new BusinessException("Voting session not found", HttpStatus.NOT_FOUND));
 
         mockMvc.perform(get("/api/v1/voting-sessions/{sessionId}/results", VALID_ID)
                         .contentType("application/json"))

@@ -1,11 +1,10 @@
 package github.io.api_voting_challenge.unit.controller;
 
 import github.io.api_voting_challenge.controller.VotingSessionController;
-import github.io.api_voting_challenge.dto.VoteResultResponse;
-import github.io.api_voting_challenge.dto.VotingSessionRequest;
-import github.io.api_voting_challenge.dto.VotingSessionResponse;
-import github.io.api_voting_challenge.exception.AgendaNotFoundException;
-import github.io.api_voting_challenge.exception.VotingSessionNotFoundException;
+import github.io.api_voting_challenge.dto.response.VoteResultResponse;
+import github.io.api_voting_challenge.dto.request.VotingSessionRequest;
+import github.io.api_voting_challenge.dto.response.VotingSessionResponse;
+import github.io.api_voting_challenge.exception.BusinessException;
 import github.io.api_voting_challenge.fixtures.VoteFixtures;
 import github.io.api_voting_challenge.fixtures.VotingSessionFixtures;
 import github.io.api_voting_challenge.service.VoteService;
@@ -71,10 +70,10 @@ public class VotingSessionControllerUnitTest {
         VotingSessionRequest votingSessionRequest = VotingSessionFixtures.createInvalidVotingSessionRequest();
         String message = "Agenda not found";
 
-        when(votingSessionService.openVotingSession(votingSessionRequest)).thenThrow(new AgendaNotFoundException(message));
+        when(votingSessionService.openVotingSession(votingSessionRequest)).thenThrow(new BusinessException(message, HttpStatus.NOT_FOUND));
 
         Exception exception = assertThrows(
-                AgendaNotFoundException.class, () -> votingSessionController.create(votingSessionRequest)
+                BusinessException.class, () -> votingSessionController.create(votingSessionRequest)
         );
 
         assertEquals(message, exception.getMessage());
@@ -99,9 +98,9 @@ public class VotingSessionControllerUnitTest {
     void shouldThrowExceptionWhenFetchingResultsForNonExistentSession() {
         String errorMessage = "Sessão de votação não encontrada com ID: " + INVALID_SESSION_ID;
 
-        when(voteService.calculateVotingResult(INVALID_SESSION_ID)).thenThrow(new VotingSessionNotFoundException(errorMessage));
+        when(voteService.calculateVotingResult(INVALID_SESSION_ID)).thenThrow(new BusinessException(errorMessage, HttpStatus.NOT_FOUND));
 
-        Exception exception = assertThrows(VotingSessionNotFoundException.class,
+        Exception exception = assertThrows(BusinessException.class,
                 () -> votingSessionController.getVotingResults(INVALID_SESSION_ID)
         );
 

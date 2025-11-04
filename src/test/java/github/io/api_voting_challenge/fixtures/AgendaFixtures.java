@@ -1,7 +1,7 @@
 package github.io.api_voting_challenge.fixtures;
 
-import github.io.api_voting_challenge.dto.AgendaRequest;
-import github.io.api_voting_challenge.dto.AgendaResponse;
+import github.io.api_voting_challenge.dto.request.AgendaRequest;
+import github.io.api_voting_challenge.dto.response.AgendaResponse;
 import github.io.api_voting_challenge.model.Agenda;
 import github.io.api_voting_challenge.model.enums.Status;
 import org.springframework.data.domain.Page;
@@ -34,7 +34,7 @@ public class AgendaFixtures {
                 .title(VALID_AGENDA_TITLE)
                 .description(VALID_AGENDA_DESCRIPTION)
                 .status(Status.PENDING)
-                .creationDate(LocalDate.now());
+                .creationDate(String.valueOf(LocalDate.now()));
     }
 
     public static Agenda.AgendaBuilder createAgendaBuilder() {
@@ -52,7 +52,7 @@ public class AgendaFixtures {
                         .id((long) i + 1)
                         .title(VALID_AGENDA_TITLE + " " + (i + 1))
                         .description(VALID_AGENDA_DESCRIPTION + " " + (i + 1))
-                        .creationDate(LocalDate.now())
+                        .creationDate(String.valueOf(LocalDate.now()))
                         .status(Status.PENDING)
                         .build())
                 .collect(Collectors.toList());
@@ -66,7 +66,7 @@ public class AgendaFixtures {
                         .id((long) i + 1)
                         .title(VALID_AGENDA_TITLE + " " + (i + 1))
                         .description(VALID_AGENDA_DESCRIPTION + " " + (i + 1))
-                        .creationDate(LocalDate.now())
+                        .creationDate(String.valueOf(LocalDate.now()))
                         .status(Status.PENDING)
                         .build())
                 .collect(Collectors.toList());

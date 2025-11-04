@@ -1,9 +1,8 @@
 package github.io.api_voting_challenge.unit.controller;
 
 import github.io.api_voting_challenge.controller.VoteController;
-import github.io.api_voting_challenge.dto.VoteRequest;
-import github.io.api_voting_challenge.exception.UserNotFoundException;
-import github.io.api_voting_challenge.exception.VotingSessionNotFoundException;
+import github.io.api_voting_challenge.dto.request.VoteRequest;
+import github.io.api_voting_challenge.exception.BusinessException;
 import github.io.api_voting_challenge.fixtures.VoteFixtures;
 import github.io.api_voting_challenge.service.VoteService;
 import org.junit.jupiter.api.DisplayName;
@@ -50,10 +49,10 @@ public class VoteControllerUnitTest {
         VoteRequest voteRequest = VoteFixtures.createValidVoteRequest();
 
         String errorMensage = "Voting session not found";
-        doThrow(new VotingSessionNotFoundException(errorMensage)).when(voteService).registerVote(INVALID_SESSION_ID, voteRequest);
+        doThrow(new BusinessException(errorMensage, HttpStatus.NOT_FOUND)).when(voteService).registerVote(INVALID_SESSION_ID, voteRequest);
 
         Exception exception = assertThrows(
-                VotingSessionNotFoundException.class,
+                BusinessException.class,
                 () -> voteController.vote(INVALID_SESSION_ID, voteRequest)
         );
 
@@ -68,10 +67,10 @@ public class VoteControllerUnitTest {
         VoteRequest voteRequest = VoteFixtures.createInvalidVoteRequest();
 
         String errorMensage = "User not found";
-        doThrow(new UserNotFoundException(errorMensage)).when(voteService).registerVote(VALID_SESSION_ID, voteRequest);
+        doThrow(new BusinessException(errorMensage, HttpStatus.NOT_FOUND)).when(voteService).registerVote(VALID_SESSION_ID, voteRequest);
 
         Exception exception = assertThrows(
-                UserNotFoundException.class,
+                BusinessException.class,
                 () -> voteController.vote(VALID_SESSION_ID, voteRequest)
         );
 

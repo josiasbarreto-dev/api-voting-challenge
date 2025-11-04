@@ -1,9 +1,9 @@
 package github.io.api_voting_challenge.unit.controller;
 
 import github.io.api_voting_challenge.controller.AgendaController;
-import github.io.api_voting_challenge.dto.AgendaRequest;
-import github.io.api_voting_challenge.dto.AgendaResponse;
-import github.io.api_voting_challenge.exception.AgendaNotFoundException;
+import github.io.api_voting_challenge.dto.request.AgendaRequest;
+import github.io.api_voting_challenge.dto.response.AgendaResponse;
+import github.io.api_voting_challenge.exception.BusinessException;
 import github.io.api_voting_challenge.fixtures.AgendaFixtures;
 import github.io.api_voting_challenge.service.AgendaService;
 import org.junit.jupiter.api.DisplayName;
@@ -86,9 +86,9 @@ public class AgendaControllerUnitTest {
         AgendaRequest agendaRequest = AgendaFixtures.createValidAgendaRequest();
 
         String errorMensage = "Agenda not found with id: " + INVALID_ID;
-        when(agendaService.update(INVALID_ID, agendaRequest)).thenThrow(new AgendaNotFoundException(errorMensage));
+        when(agendaService.update(INVALID_ID, agendaRequest)).thenThrow(new BusinessException(errorMensage, HttpStatus.NOT_FOUND));
         Exception exception = assertThrows(
-                AgendaNotFoundException.class,
+                BusinessException.class,
                 () -> agendaController.update(INVALID_ID, agendaRequest)
         );
 
@@ -114,9 +114,9 @@ public class AgendaControllerUnitTest {
     @DisplayName("Deve lançar exceção ao tentar buscar uma pauta por ID inexistente")
     void shouldThrowExceptionWhenGettingPautaByNonExistentId() {
         String errorMensage = "Pauta not found with id: " + INVALID_ID;
-        when(agendaService.getById(INVALID_ID)).thenThrow(new AgendaNotFoundException(errorMensage));
+        when(agendaService.getById(INVALID_ID)).thenThrow(new BusinessException(errorMensage, HttpStatus.NOT_FOUND));
         Exception exception = assertThrows(
-                AgendaNotFoundException.class,
+                BusinessException.class,
                 () -> agendaController.getById(INVALID_ID)
         );
 
@@ -154,9 +154,9 @@ public class AgendaControllerUnitTest {
     @DisplayName("Deve lançar exceção ao tentar deletar uma pauta inexistente")
     void shouldThrowExceptionWhenDeletingNonExistentAgenda() {
         String errorMensage = "Agenda not found with id: " + INVALID_ID;
-        doThrow(new AgendaNotFoundException(errorMensage)).when(agendaService).delete(INVALID_ID);
+        doThrow(new BusinessException(errorMensage, HttpStatus.NOT_FOUND)).when(agendaService).delete(INVALID_ID);
         Exception exception = assertThrows(
-                AgendaNotFoundException.class,
+                BusinessException.class,
                 () -> agendaController.delete(INVALID_ID)
         );
 

@@ -1,8 +1,7 @@
 package github.io.api_voting_challenge.service.impl;
 
-import github.io.api_voting_challenge.dto.VotingSessionResponse;
+import github.io.api_voting_challenge.dto.response.VotingSessionResponse;
 import github.io.api_voting_challenge.mapper.VotingSessionMapper;
-import github.io.api_voting_challenge.model.Agenda;
 import github.io.api_voting_challenge.model.VotingSession;
 import github.io.api_voting_challenge.model.enums.Status;
 import github.io.api_voting_challenge.repository.AgendaRepository;
@@ -15,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,25 +25,18 @@ public class VotingSessionSchedulerImpl implements VotingSessionScheduler {
     private final AgendaRepository agendaRepository;
     private final VotingSessionRepository votingSessionRepository;
     private final VotingSessionMapper votingSessionMapper;
+    private final Clock clock;
 
     @Override
     @Scheduled(fixedRate = 60000)
     public void checkExpiredVotingSessions() {
         log.info("Checking for expired voting sessions...");
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(clock);
 
         List<VotingSession> expiredSessions = getExpiredSessions(now);
 
-        for (VotingSession session : expiredSessions) {
-            log.info("Getting agenda for voting session id: {}", session.getId());
-            Agenda agenda = session.getAgenda();
-
-            agenda.setStatus(Status.CLOSED);
-            log.info("Agenda id: {} status updated to CLOSED", agenda.getId());
-
-            agendaRepository.save(agenda);
-            log.info("Agenda id: {} saved successfully", agenda.getId());
-        }
+        int updatedCount = agendaRepository.bulkUpdateStatusForExpiredSessions(Status.CLOSED, now);
+        log.info("Found {} expired voting sessions. Updated {} agendas to CLOSED status.", expiredSessions.size(), updatedCount);
     }
 
     private List<VotingSession> getExpiredSessions(LocalDateTime now) {
@@ -52,7 +45,7 @@ public class VotingSessionSchedulerImpl implements VotingSessionScheduler {
 
     @Override
     public Page<VotingSessionResponse> getOpenVotingSessions(Pageable pageable) {
-        return votingSessionRepository.findByEndTimeAfter(LocalDateTime.now(), pageable)
+        return votingSessionRepository.findByEndTimeAfter(LocalDateTime.now(clock), pageable)
                 .map(votingSessionMapper::toDto);
     }
 }

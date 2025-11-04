@@ -1,9 +1,9 @@
 package github.io.api_voting_challenge.unit.controller;
 
 import github.io.api_voting_challenge.controller.UserController;
-import github.io.api_voting_challenge.dto.UserRequest;
-import github.io.api_voting_challenge.dto.UserResponse;
-import github.io.api_voting_challenge.exception.UserNotFoundException;
+import github.io.api_voting_challenge.dto.request.UserRequest;
+import github.io.api_voting_challenge.dto.response.UserResponse;
+import github.io.api_voting_challenge.exception.BusinessException;
 import github.io.api_voting_challenge.fixtures.UserFixtures;
 import github.io.api_voting_challenge.service.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -113,9 +113,9 @@ public class UserControllerUnitTest {
     @DisplayName("Deve lançar exceção ao tentar buscar um usuário por ID inexistente")
     void shouldThrowExceptionWhenGettingUserByNonExistentId() {
         String errorMensage = "User not found with id: " + INVALID_ID;
-        when(userService.getById(INVALID_ID)).thenThrow(new UserNotFoundException(errorMensage));
+        when(userService.getById(INVALID_ID)).thenThrow(new BusinessException(errorMensage, HttpStatus.NOT_FOUND));
         Exception exception = assertThrows(
-                UserNotFoundException.class,
+                BusinessException.class,
                 () -> userController.getById(INVALID_ID)
         );
 
@@ -141,9 +141,9 @@ public class UserControllerUnitTest {
     @DisplayName("Deve lançar exceção ao tentar buscar um usuário por CPF inexistente")
     void shouldThrowExceptionWhenGettingUserByNonExistentCpf() {
         String errorMensage = "User not found with CPF: " + INVALID_CPF;
-        when(userService.getByCpf(INVALID_CPF)).thenThrow(new UserNotFoundException(errorMensage));
+        when(userService.getByCpf(INVALID_CPF)).thenThrow(new BusinessException(errorMensage, HttpStatus.NOT_FOUND));
         Exception exception = assertThrows(
-                UserNotFoundException.class,
+                BusinessException.class,
                 () -> userController.getByCpf(INVALID_CPF)
         );
 
@@ -181,9 +181,9 @@ public class UserControllerUnitTest {
     @DisplayName("Deve lançar exceção ao tentar deletar um usuário inexistente")
     void shouldThrowExceptionWhenDeletingNonExistentUser() {
         String errorMensage = "User not found with id: " + INVALID_ID;
-        doThrow(new UserNotFoundException(errorMensage)).when(userService).delete(INVALID_ID);
+        doThrow(new BusinessException(errorMensage, HttpStatus.NOT_FOUND)).when(userService).delete(INVALID_ID);
         Exception exception = assertThrows(
-                UserNotFoundException.class,
+                BusinessException.class,
                 () -> userController.delete(INVALID_ID)
         );
 

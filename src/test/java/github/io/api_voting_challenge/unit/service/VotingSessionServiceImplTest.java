@@ -1,15 +1,14 @@
 package github.io.api_voting_challenge.unit.service;
 
-import github.io.api_voting_challenge.dto.VotingSessionRequest;
-import github.io.api_voting_challenge.dto.VotingSessionResponse;
-import github.io.api_voting_challenge.exception.AgendaNotFoundException;
+import github.io.api_voting_challenge.dto.request.VotingSessionRequest;
+import github.io.api_voting_challenge.dto.response.VotingSessionResponse;
+import github.io.api_voting_challenge.exception.BusinessException;
 import github.io.api_voting_challenge.fixtures.AgendaFixtures;
 import github.io.api_voting_challenge.fixtures.VotingSessionFixtures;
 import github.io.api_voting_challenge.mapper.VotingSessionMapper;
 import github.io.api_voting_challenge.model.Agenda;
 import github.io.api_voting_challenge.model.VotingSession;
 import github.io.api_voting_challenge.model.enums.Status;
-import github.io.api_voting_challenge.model.enums.VoteOption;
 import github.io.api_voting_challenge.repository.AgendaRepository;
 import github.io.api_voting_challenge.repository.VoteRepository;
 import github.io.api_voting_challenge.repository.VotingSessionRepository;
@@ -22,7 +21,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static github.io.api_voting_challenge.fixtures.TestConstants.INVALID_ID;
@@ -102,7 +100,7 @@ public class VotingSessionServiceImplTest {
 
         when(agendaRepository.findById(INVALID_ID)).thenReturn(Optional.empty());
 
-        AgendaNotFoundException exception = assertThrows(AgendaNotFoundException.class, () ->
+        Exception exception = assertThrows(BusinessException.class, () ->
                 votingSessionService.openVotingSession(votingSessionRequest)
         );
 
@@ -113,16 +111,16 @@ public class VotingSessionServiceImplTest {
     }
 
     @Test
-    @DisplayName("Deve lançar IllegalStateException quando a agenda não estiver PENDENTE")
-    void shouldThrowIllegalStateExceptionWhenAgendaIsNotPending() {
+    @DisplayName("Deve lançar BusinessException quando a agenda não estiver PENDENTE")
+    void shouldThrowBusinessExceptionWhenAgendaIsNotPending() {
         Agenda agenda = AgendaFixtures.createAgenda();
-        agenda.setStatus(Status.IN_PROGRESS);
+        agenda.updateStatus(Status.IN_PROGRESS);
 
         VotingSessionRequest votingSessionRequestDto = VotingSessionFixtures.createInvalidVotingSessionRequest();
 
         when(agendaRepository.findById(VALID_ID)).thenReturn(Optional.of(agenda));
 
-        IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
+        Exception exception = assertThrows(BusinessException.class, () ->
                 votingSessionService.openVotingSession(votingSessionRequestDto)
         );
 
